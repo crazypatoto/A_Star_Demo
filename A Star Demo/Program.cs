@@ -16,7 +16,7 @@ namespace A_Star_Demo
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new AStartDemo());
+            Application.Run(new AStarDemo());
         }
     }
 }

@@ -46,26 +46,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AStartDemo.cs">
+    <Compile Include="AStarDemo.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AStartDemo.Designer.cs">
-      <DependentUpon>AStartDemo.cs</DependentUpon>
+    <Compile Include="AStarDemo.Designer.cs">
+      <DependentUpon>AStarDemo.cs</DependentUpon>
     </Compile>
-    <Compile Include="Dialogs\MapDrawer.cs" />
+    <Compile Include="Maps\MapDrawer.cs" />
     <Compile Include="Dialogs\NewMapDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Dialogs\NewMapDialog.Designer.cs">
       <DependentUpon>NewMapDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Map.cs" />
-    <Compile Include="MapNode.cs" />
+    <Compile Include="Maps\Map.cs" />
+    <Compile Include="Maps\MapEdge.cs" />
+    <Compile Include="Maps\MapNode.cs" />
     <Compile Include="Models\Location.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="AStartDemo.resx">
-      <DependentUpon>AStartDemo.cs</DependentUpon>
+    <EmbeddedResource Include="AStarDemo.resx">
+      <DependentUpon>AStarDemo.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Dialogs\NewMapDialog.resx">
       <DependentUpon>NewMapDialog.cs</DependentUpon>
@@ -92,6 +93,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="PathPlanning\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
