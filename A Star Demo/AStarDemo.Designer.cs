@@ -54,9 +54,11 @@ namespace A_Star_Demo
             this.label5 = new System.Windows.Forms.Label();
             this.timer_mapRefresh = new System.Windows.Forms.Timer(this.components);
             this.groupBox_edgeConstraintsEditor = new System.Windows.Forms.GroupBox();
-            this.comboBox_edgeLayer = new System.Windows.Forms.ComboBox();
+            this.button_deleteLayer = new System.Windows.Forms.Button();
+            this.button_addLayer = new System.Windows.Forms.Button();
+            this.comboBox_constraintLayers = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
-            this.comboBox_edgeConstraints = new System.Windows.Forms.ComboBox();
+            this.comboBox_passingRestrictions = new System.Windows.Forms.ComboBox();
             this.button_startEditingEdge = new System.Windows.Forms.Button();
             this.checkBox_showConstraints = new System.Windows.Forms.CheckBox();
             this.textBox_edgeNode2 = new System.Windows.Forms.TextBox();
@@ -118,7 +120,7 @@ namespace A_Star_Demo
             this.pictureBox_mapViewer.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.pictureBox_mapViewer.Location = new System.Drawing.Point(12, 27);
             this.pictureBox_mapViewer.Name = "pictureBox_mapViewer";
-            this.pictureBox_mapViewer.Size = new System.Drawing.Size(824, 520);
+            this.pictureBox_mapViewer.Size = new System.Drawing.Size(824, 548);
             this.pictureBox_mapViewer.TabIndex = 2;
             this.pictureBox_mapViewer.TabStop = false;
             this.pictureBox_mapViewer.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox_mapViewer_MouseDown);
@@ -288,9 +290,11 @@ namespace A_Star_Demo
             // 
             // groupBox_edgeConstraintsEditor
             // 
-            this.groupBox_edgeConstraintsEditor.Controls.Add(this.comboBox_edgeLayer);
+            this.groupBox_edgeConstraintsEditor.Controls.Add(this.button_deleteLayer);
+            this.groupBox_edgeConstraintsEditor.Controls.Add(this.button_addLayer);
+            this.groupBox_edgeConstraintsEditor.Controls.Add(this.comboBox_constraintLayers);
             this.groupBox_edgeConstraintsEditor.Controls.Add(this.label9);
-            this.groupBox_edgeConstraintsEditor.Controls.Add(this.comboBox_edgeConstraints);
+            this.groupBox_edgeConstraintsEditor.Controls.Add(this.comboBox_passingRestrictions);
             this.groupBox_edgeConstraintsEditor.Controls.Add(this.button_startEditingEdge);
             this.groupBox_edgeConstraintsEditor.Controls.Add(this.checkBox_showConstraints);
             this.groupBox_edgeConstraintsEditor.Controls.Add(this.textBox_edgeNode2);
@@ -300,19 +304,38 @@ namespace A_Star_Demo
             this.groupBox_edgeConstraintsEditor.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.groupBox_edgeConstraintsEditor.Location = new System.Drawing.Point(841, 338);
             this.groupBox_edgeConstraintsEditor.Name = "groupBox_edgeConstraintsEditor";
-            this.groupBox_edgeConstraintsEditor.Size = new System.Drawing.Size(181, 209);
+            this.groupBox_edgeConstraintsEditor.Size = new System.Drawing.Size(181, 237);
             this.groupBox_edgeConstraintsEditor.TabIndex = 6;
             this.groupBox_edgeConstraintsEditor.TabStop = false;
             this.groupBox_edgeConstraintsEditor.Text = "Edge Constraints Editor";
             // 
-            // comboBox_edgeLayer
+            // button_deleteLayer
             // 
-            this.comboBox_edgeLayer.FormattingEnabled = true;
-            this.comboBox_edgeLayer.Location = new System.Drawing.Point(69, 110);
-            this.comboBox_edgeLayer.Name = "comboBox_edgeLayer";
-            this.comboBox_edgeLayer.Size = new System.Drawing.Size(100, 24);
-            this.comboBox_edgeLayer.TabIndex = 16;
-            this.comboBox_edgeLayer.Text = "Default";
+            this.button_deleteLayer.Location = new System.Drawing.Point(94, 142);
+            this.button_deleteLayer.Name = "button_deleteLayer";
+            this.button_deleteLayer.Size = new System.Drawing.Size(75, 23);
+            this.button_deleteLayer.TabIndex = 18;
+            this.button_deleteLayer.Text = "Delete";
+            this.button_deleteLayer.UseVisualStyleBackColor = true;
+            this.button_deleteLayer.Click += new System.EventHandler(this.button_deleteLayer_Click);
+            // 
+            // button_addLayer
+            // 
+            this.button_addLayer.Location = new System.Drawing.Point(9, 142);
+            this.button_addLayer.Name = "button_addLayer";
+            this.button_addLayer.Size = new System.Drawing.Size(75, 23);
+            this.button_addLayer.TabIndex = 17;
+            this.button_addLayer.Text = "Add";
+            this.button_addLayer.UseVisualStyleBackColor = true;
+            this.button_addLayer.Click += new System.EventHandler(this.button_addLayer_Click);
+            // 
+            // comboBox_constraintLayers
+            // 
+            this.comboBox_constraintLayers.FormattingEnabled = true;
+            this.comboBox_constraintLayers.Location = new System.Drawing.Point(69, 110);
+            this.comboBox_constraintLayers.Name = "comboBox_constraintLayers";
+            this.comboBox_constraintLayers.Size = new System.Drawing.Size(100, 24);
+            this.comboBox_constraintLayers.TabIndex = 16;
             // 
             // label9
             // 
@@ -323,17 +346,17 @@ namespace A_Star_Demo
             this.label9.TabIndex = 15;
             this.label9.Text = "Layer:";
             // 
-            // comboBox_edgeConstraints
+            // comboBox_passingRestrictions
             // 
-            this.comboBox_edgeConstraints.FormattingEnabled = true;
-            this.comboBox_edgeConstraints.Location = new System.Drawing.Point(9, 140);
-            this.comboBox_edgeConstraints.Name = "comboBox_edgeConstraints";
-            this.comboBox_edgeConstraints.Size = new System.Drawing.Size(160, 24);
-            this.comboBox_edgeConstraints.TabIndex = 14;
+            this.comboBox_passingRestrictions.FormattingEnabled = true;
+            this.comboBox_passingRestrictions.Location = new System.Drawing.Point(9, 171);
+            this.comboBox_passingRestrictions.Name = "comboBox_passingRestrictions";
+            this.comboBox_passingRestrictions.Size = new System.Drawing.Size(160, 24);
+            this.comboBox_passingRestrictions.TabIndex = 14;
             // 
             // button_startEditingEdge
             // 
-            this.button_startEditingEdge.Location = new System.Drawing.Point(9, 170);
+            this.button_startEditingEdge.Location = new System.Drawing.Point(9, 201);
             this.button_startEditingEdge.Name = "button_startEditingEdge";
             this.button_startEditingEdge.Size = new System.Drawing.Size(166, 30);
             this.button_startEditingEdge.TabIndex = 13;
@@ -389,7 +412,7 @@ namespace A_Star_Demo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1032, 558);
+            this.ClientSize = new System.Drawing.Size(1032, 587);
             this.Controls.Add(this.groupBox_edgeConstraintsEditor);
             this.Controls.Add(this.groupBox_mapInfo);
             this.Controls.Add(this.groupBox_nodeTypeEditor);
@@ -448,9 +471,11 @@ namespace A_Star_Demo
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.CheckBox checkBox_showConstraints;
         private System.Windows.Forms.Button button_startEditingEdge;
-        private System.Windows.Forms.ComboBox comboBox_edgeLayer;
+        private System.Windows.Forms.ComboBox comboBox_constraintLayers;
         private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.ComboBox comboBox_edgeConstraints;
+        private System.Windows.Forms.ComboBox comboBox_passingRestrictions;
+        private System.Windows.Forms.Button button_deleteLayer;
+        private System.Windows.Forms.Button button_addLayer;
     }
 }
 

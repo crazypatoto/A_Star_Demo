@@ -40,7 +40,6 @@ namespace A_Star_Demo.Maps
             this.SpeedLimit = BitConverter.ToSingle(byteArray, index + 1);
         }
 
-
         public byte[] ToBytes()
         {
             byte[] byteArray = new byte[RawBytesLength];
@@ -49,5 +48,11 @@ namespace A_Star_Demo.Maps
             return byteArray;
         }
 
+        public void InvertPassingRestrictionDirection()
+        {
+            if (this.PassingRestriction == PassingRestrictions.NoRestrictions || this.PassingRestriction == PassingRestrictions.NoEnterOrLeaving) return;
+            var inverse = (~((byte)this.PassingRestriction)) & 0x03;
+            this.PassingRestriction = (MapEdge.PassingRestrictions)inverse;
+        }
     }
 }

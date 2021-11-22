@@ -8,9 +8,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
-using A_Star_Demo.Dialogs;
 using System.Reflection;
 using System.IO;
+using A_Star_Demo.Dialogs;
+using A_Star_Demo.Maps;
 
 namespace A_Star_Demo
 {
@@ -29,7 +30,7 @@ namespace A_Star_Demo
             InitializeComponent();
             comboBox_types.DataSource = Enum.GetValues(typeof(MapNode.Types));
             comboBox_types.SelectedIndex = 0;
-            comboBox_edgeConstraints.DataSource = Enum.GetValues(typeof(Map.EdgeConstraints));
+            comboBox_passingRestrictions.DataSource = Enum.GetValues(typeof(MapEdge.PassingRestrictions));
             comboBox_types.SelectedIndex = 0;
         }
 
@@ -57,7 +58,7 @@ namespace A_Star_Demo
                 dialog.Title = "Save map file";
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    _currentMap.SaveMap(dialog.FileName);
+                    _currentMap.SaveToFile(dialog.FileName);
                 }
             }
         }
@@ -118,7 +119,28 @@ namespace A_Star_Demo
                 button_startEditingNode.Enabled = false;
             }
         }
+        private void button_addLayer_Click(object sender, EventArgs e)
+        {
+            _currentMap.ConstraintLayers.Add(new Map.ConstraintLayer(_currentMap, $"Layer {_currentMap.ConstraintLayers.Count}"));
+            comboBox_constraintLayers.Items.Clear();
+            foreach (var layer in _currentMap.ConstraintLayers)
+            {
+                comboBox_constraintLayers.Items.Add(layer.Name);
+            }
+            comboBox_constraintLayers.SelectedIndex = comboBox_constraintLayers.Items.Count - 1;
+        }
 
+        private void button_deleteLayer_Click(object sender, EventArgs e)
+        {
+            if (comboBox_constraintLayers.SelectedIndex == 0) return;
+            _currentMap.ConstraintLayers.RemoveAt(comboBox_constraintLayers.SelectedIndex);
+            comboBox_constraintLayers.Items.Clear();
+            foreach (var layer in _currentMap.ConstraintLayers)
+            {
+                comboBox_constraintLayers.Items.Add(layer.Name);
+            }
+            comboBox_constraintLayers.SelectedIndex = 0;
+        }
 
         #endregion
 
@@ -140,6 +162,11 @@ namespace A_Star_Demo
             textBox_mapSN.Text = _currentMap.SerialNumber;
             textBox_mapZone.Text = _currentMap.ZoneID.ToString();
             textBox_mapDIM.Text = $"{_currentMap.Width} x {_currentMap.Height}";
+            foreach (var layer in _currentMap.ConstraintLayers)
+            {
+                comboBox_constraintLayers.Items.Add(layer.Name);
+            }
+            comboBox_constraintLayers.SelectedIndex = 0;
         }
 
         private void NodeSelect(Point mousePosition, MouseButtons mouseButton)
@@ -193,8 +220,13 @@ namespace A_Star_Demo
 
                             if (_selectedEdgeNode1 != null && _selectedEdgeNode2 != null)
                             {
-                                Debug.WriteLine($"{_selectedEdgeNode1.Name}-{_selectedEdgeNode2.Name}-{(byte)_currentMap.GetEdgeConstraintsByNodes(_selectedEdgeNode1, _selectedEdgeNode2)}");
-                                _currentMap.SetEdgeConstraintsByNodes(_selectedEdgeNode1, _selectedEdgeNode2, (Map.EdgeConstraints)comboBox_edgeConstraints.SelectedItem);
+                                var selectedEdge = _currentMap.GetEdgeByNodes(comboBox_constraintLayers.SelectedIndex, _selectedEdgeNode1,_selectedEdgeNode2);
+                                selectedEdge.PassingRestriction = (MapEdge.PassingRestrictions)comboBox_passingRestrictions.SelectedItem;
+                                if (_selectedEdgeNode1.Location.X + _selectedEdgeNode1.Location.Y > _selectedEdgeNode2.Location.X + _selectedEdgeNode2.Location.Y)
+                                {
+                                    selectedEdge.InvertPassingRestrictionDirection();   
+                                }                               
+                                //_currentMap.SetEdgeConstraintsByNodes(_selectedEdgeNode1, _selectedEdgeNode2, (Map.EdgeConstraints)comboBox_edgeConstraints.SelectedItem);
                             }
                             textBox_edgeNode1.Text = _selectedEdgeNode1?.Name;
                             textBox_edgeNode2.Text = _selectedEdgeNode2?.Name;
@@ -212,7 +244,8 @@ namespace A_Star_Demo
                         break;
                 }
             }
-            else{
+            else
+            {
                 textBox_selectedNodeName.Text = "";
                 textBox_selectedNodeType.Text = "";
             }
@@ -223,9 +256,10 @@ namespace A_Star_Demo
         {
             if (_currentMap != null)
             {
-                pictureBox_mapViewer.Image = _mapDrawer.GetMapPicture(_selectedNode, _selectedEdgeNode1, _selectedEdgeNode2, checkBox_showConstraints.Checked);
+                pictureBox_mapViewer.Image = _mapDrawer.GetMapPicture(_selectedNode, _selectedEdgeNode1, _selectedEdgeNode2, checkBox_showConstraints.Checked, comboBox_constraintLayers.SelectedIndex);
             }
         }
 
+        
     }
 }

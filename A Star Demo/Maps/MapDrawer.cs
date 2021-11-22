@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Diagnostics;
+using A_Star_Demo.Maps;
 using A_Star_Demo.Models;
 
 namespace A_Star_Demo.Dialogs
@@ -32,7 +33,7 @@ namespace A_Star_Demo.Dialogs
             _cellSize = Math.Min(_drawSize.Width / _map.Width, _drawSize.Height / _map.Height);
         }
 
-        public Bitmap GetMapPicture(MapNode selectedNode, MapNode selectedEdgeNode1 = null, MapNode selectedEdgeNode2 = null, bool drawEdgeConstraints = false)
+        public Bitmap GetMapPicture(MapNode selectedNode, MapNode selectedEdgeNode1 = null, MapNode selectedEdgeNode2 = null, bool drawEdgeConstraints = false, int selectedLayerIndex = 0)
         {
             _mapBMP?.Dispose();
             _mapBMP = new Bitmap(_drawSize.Width, _drawSize.Height);
@@ -81,8 +82,8 @@ namespace A_Star_Demo.Dialogs
                     {
                         for (int x = 0; x < _map.Width; x++)
                         {
-                            var edgeConstraints = _map.AllEdges[y, x];
-                            var edgePermission = (~((byte)edgeConstraints)) & 0x03;                            
+                            var edgeConstraints = _map.ConstraintLayers[selectedLayerIndex].EdgeConstraints[y, x];
+                            var edgePermission = (~((byte)edgeConstraints.PassingRestriction)) & 0x03;                            
                             if (edgePermission == 0) continue;
                             pen.StartCap = LineCap.NoAnchor;
                             pen.EndCap = LineCap.NoAnchor;                            

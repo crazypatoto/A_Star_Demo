@@ -5,36 +5,40 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using A_Star_Demo.Maps;
 using A_Star_Demo.Models;
 
 
 namespace A_Star_Demo
 {
     public class Map
-    {
-        [Flags]
-        public enum EdgeConstraints : byte
-        {
-            NoConstraints = 0x00,
-            NoLeaving = 0x01,
-            NoEntering = 0x02,
-            NoEnterOrLeaving = 0x03
-        }
-        public byte ZoneID { get; private set; }
+    {        
         public string SerialNumber { get; private set; }
+        public byte ZoneID { get; private set; }
         public int Width { get; }
         public int Height { get; }
         public MapNode[,] AllNodes { get; private set; }
 
-        public List<EdgeConstraints[,]> ConstraintLayers;
-        public EdgeConstraints[,] AllEdges { get; private set; }
+        public List<ConstraintLayer> ConstraintLayers;
+
         public Map(byte zoneID, int width, int height)
         {
+            this.SerialNumber = Guid.NewGuid().ToString();
             this.ZoneID = zoneID;
             this.Width = width;
             this.Height = height;
-            this.SerialNumber = Guid.NewGuid().ToString();
-            InitializeNewMap();
+
+            this.AllNodes = new MapNode[height, width];
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    this.AllNodes[y, x] = new MapNode(ZoneID, x, y);
+                }
+            }
+
+            this.ConstraintLayers = new List<ConstraintLayer>();
+            this.ConstraintLayers.Add(new ConstraintLayer(this, "Default"));
         }
 
         public Map(string path)
@@ -46,44 +50,30 @@ namespace A_Star_Demo
                 this.Width = binaryReader.ReadInt32();
                 this.Height = binaryReader.ReadInt32();
                 this.AllNodes = new MapNode[Height, Width];
-                for (int y = 0; y < Height; y++)
+                for (int y = 0; y < this.Height; y++)
                 {
-                    for (int x = 0; x < Width; x++)
+                    for (int x = 0; x < this.Width; x++)
                     {
                         this.AllNodes[y, x] = new MapNode(binaryReader.ReadBytes(MapNode.RawBytesLength));
                     }
                 }
-                AllEdges = new EdgeConstraints[2 * Height - 1, Width];
-                for (int y = 0; y < 2 * Height - 1; y++)
+
+                this.ConstraintLayers = new List<ConstraintLayer>();
+                var layersCount = binaryReader.ReadByte();
+                for (int i = 0; i < layersCount; i++)
                 {
-                    for (int x = 0; x < Width; x++)
+                    this.ConstraintLayers.Add(new ConstraintLayer(this, binaryReader.ReadString()));
+                    for (int y = 0; y < 2 * this.Height - 1; y++)
                     {
-                        this.AllEdges[y, x] = (EdgeConstraints)binaryReader.ReadByte();
+                        for (int x = 0; x < this.Width; x++)
+                        {
+                            this.ConstraintLayers[i].EdgeConstraints[y, x] = new MapEdge(binaryReader.ReadBytes(MapEdge.RawBytesLength));
+                        }
                     }
                 }
             }
         }
 
-        private void InitializeNewMap()
-        {
-            this.AllNodes = new MapNode[Height, Width];
-            for (int y = 0; y < Height; y++)
-            {
-                for (int x = 0; x < Width; x++)
-                {
-                    this.AllNodes[y, x] = new MapNode(ZoneID, x, y);
-                }
-            }
-
-            this.AllEdges = new EdgeConstraints[2 * Height - 1, Width];
-            for (int y = 0; y < 2 * Height - 1; y++)
-            {
-                for (int x = 0; x < Width; x++)
-                {
-                    this.AllEdges[y, x] = EdgeConstraints.NoConstraints;
-                }
-            }
-        }
 
         public void ChangeZoneID(byte newZoneID)
         {
@@ -94,7 +84,7 @@ namespace A_Star_Demo
             }
         }
 
-        public void SaveMap(string path)
+        public void SaveToFile(string path)
         {
             using (BinaryWriter binaryWriter = new BinaryWriter(File.Open(path, FileMode.Create)))
             {
@@ -109,11 +99,17 @@ namespace A_Star_Demo
                         binaryWriter.Write(this.AllNodes[y, x].ToBytes());
                     }
                 }
-                for (int y = 0; y < 2 * this.Height - 1; y++)
+
+                binaryWriter.Write((byte)this.ConstraintLayers.Count);
+                for (int i = 0; i < this.ConstraintLayers.Count; i++)
                 {
-                    for (int x = 0; x < this.Width; x++)
+                    binaryWriter.Write(this.ConstraintLayers[i].Name);
+                    for (int y = 0; y < 2 * this.Height - 1; y++)
                     {
-                        binaryWriter.Write((byte)this.AllEdges[y, x]);
+                        for (int x = 0; x < this.Width; x++)
+                        {
+                            binaryWriter.Write(this.ConstraintLayers[i].EdgeConstraints[y, x].ToBytes());
+                        }
                     }
                 }
             }
@@ -127,46 +123,30 @@ namespace A_Star_Demo
             return true;
         }
 
-        public EdgeConstraints GetEdgeConstraintsByNodes(MapNode n1, MapNode n2)
-        {
-            if (this.IsNodeInMap(n1) && this.IsNodeInMap(n2) && n1.IsNeighbourNode(n2))
-            {
-                if ((n1.Location.X + n1.Location.Y) < (n2.Location.X + n2.Location.Y))
-                {
-                    return this.AllEdges[n1.Location.Y + n2.Location.Y, (n1.Location.X + n2.Location.X) / 2];
-                }
-                else
-                {
-                    var constraints = this.AllEdges[n1.Location.Y + n2.Location.Y, (n1.Location.X + n2.Location.X) / 2];
-                    var constraintsFlip = (EdgeConstraints)((((byte)constraints & 0x01) << 1) | (((byte)constraints & 0x02) >> 1));
-                    return constraintsFlip;
-                }
+        public MapEdge GetEdgeByNodes(int edgeLayerIndex, MapNode n1, MapNode n2)
+        {            
+            return this.ConstraintLayers[edgeLayerIndex].EdgeConstraints[n1.Location.Y + n2.Location.Y, (n1.Location.X + n2.Location.X) / 2];
+        }        
 
-            }
-            else
+        public class ConstraintLayer
+        {
+            public string Name { get; set; }
+            public MapEdge[,] EdgeConstraints { get; }
+
+            public ConstraintLayer(Map map, string layerName)
             {
-                throw new Exception("No such edge in map");
+                this.Name = layerName;
+                this.EdgeConstraints = new MapEdge[2 * map.Height - 1, map.Width];
+
+                for (int y = 0; y < 2 * map.Height - 1; y++)
+                {
+                    for (int x = 0; x < map.Width; x++)
+                    {
+                        this.EdgeConstraints[y, x] = new MapEdge();
+                    }
+                }
             }
         }
 
-        public void SetEdgeConstraintsByNodes(MapNode n1, MapNode n2, EdgeConstraints constraints)
-        {
-            if (this.IsNodeInMap(n1) && this.IsNodeInMap(n2) && n1.IsNeighbourNode(n2))
-            {
-                if ((n1.Location.X + n1.Location.Y) < (n2.Location.X + n2.Location.Y))
-                {
-                    this.AllEdges[n1.Location.Y + n2.Location.Y, (n1.Location.X + n2.Location.X) / 2] = constraints;                    
-                }
-                else
-                {
-                    var constraintsFlip = (((byte)constraints & 0x01) > 0 ? 0x02 : 0x00) + (((byte)constraints & 0x02) > 0 ? 0x01 : 0x00);
-                    this.AllEdges[n1.Location.Y + n2.Location.Y, (n1.Location.X + n2.Location.X) / 2] = (Map.EdgeConstraints)constraintsFlip;                    
-                }
-            }
-            else
-            {
-                throw new Exception("No such edge in map");
-            }
-        }
     }
 }
