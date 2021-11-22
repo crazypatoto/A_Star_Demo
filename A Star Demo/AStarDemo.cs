@@ -12,6 +12,7 @@ using System.Reflection;
 using System.IO;
 using A_Star_Demo.Dialogs;
 using A_Star_Demo.Maps;
+using A_Star_Demo.PathPlanning;
 
 namespace A_Star_Demo
 {
@@ -24,6 +25,10 @@ namespace A_Star_Demo
         private MapNode _selectedNode;
         private MapNode _selectedEdgeNode1;
         private MapNode _selectedEdgeNode2;
+        private int _planningFlag = 0;
+        private MapNode _startNode;
+        private MapNode _goalNode;
+        private AStarPlanner _pathPlanner;
 
         public AStarDemo()
         {
@@ -43,7 +48,10 @@ namespace A_Star_Demo
                 {
                     _currentMap = new Map(dialog.MapZoneID, dialog.MapWidth, dialog.MapHeight);
                     _mapDrawer = new MapDrawer(ref _currentMap, pictureBox_mapViewer.Width, pictureBox_mapViewer.Height);
+                    _pathPlanner = new AStarPlanner(_currentMap);
                     saveMapToolStripMenuItem.Enabled = true;
+                    groupBox_nodeTypeEditor.Enabled = true;
+                    groupBox_edgeConstraintsEditor.Enabled = true;
                     UpdateMapInfo();
                 }
             }
@@ -74,7 +82,10 @@ namespace A_Star_Demo
                 {
                     _currentMap = new Map(dialog.FileName);
                     _mapDrawer = new MapDrawer(ref _currentMap, pictureBox_mapViewer.Width, pictureBox_mapViewer.Height);
+                    _pathPlanner = new AStarPlanner(_currentMap);
                     saveMapToolStripMenuItem.Enabled = true;
+                    groupBox_nodeTypeEditor.Enabled = true;
+                    groupBox_edgeConstraintsEditor.Enabled = true;
                     UpdateMapInfo();
                 }
             }
@@ -142,6 +153,15 @@ namespace A_Star_Demo
             comboBox_constraintLayers.SelectedIndex = 0;
         }
 
+        private void button_startPlanning_Click(object sender, EventArgs e)
+        {
+            if (_planningFlag == 0)
+            {
+                button_startPlanning.Enabled = false;
+                button_startPlanning.Text = "Select start node";
+                _planningFlag++;
+            }
+        }
         #endregion
 
         #region PictureBox events
@@ -165,8 +185,10 @@ namespace A_Star_Demo
             foreach (var layer in _currentMap.ConstraintLayers)
             {
                 comboBox_constraintLayers.Items.Add(layer.Name);
+                comboBox_planningLayer.Items.Add(layer.Name);
             }
             comboBox_constraintLayers.SelectedIndex = 0;
+            comboBox_planningLayer.SelectedIndex = 0;
         }
 
         private void NodeSelect(Point mousePosition, MouseButtons mouseButton)
@@ -220,17 +242,35 @@ namespace A_Star_Demo
 
                             if (_selectedEdgeNode1 != null && _selectedEdgeNode2 != null)
                             {
-                                var selectedEdge = _currentMap.GetEdgeByNodes(comboBox_constraintLayers.SelectedIndex, _selectedEdgeNode1,_selectedEdgeNode2);
+                                var selectedEdge = _currentMap.GetEdgeByNodes(comboBox_constraintLayers.SelectedIndex, _selectedEdgeNode1, _selectedEdgeNode2);
                                 selectedEdge.PassingRestriction = (MapEdge.PassingRestrictions)comboBox_passingRestrictions.SelectedItem;
                                 if (_selectedEdgeNode1.Location.X + _selectedEdgeNode1.Location.Y > _selectedEdgeNode2.Location.X + _selectedEdgeNode2.Location.Y)
                                 {
-                                    selectedEdge.InvertPassingRestrictionDirection();   
-                                }                               
-                                //_currentMap.SetEdgeConstraintsByNodes(_selectedEdgeNode1, _selectedEdgeNode2, (Map.EdgeConstraints)comboBox_edgeConstraints.SelectedItem);
+                                    selectedEdge.InvertPassingRestrictionDirection();
+                                }                                
                             }
                             textBox_edgeNode1.Text = _selectedEdgeNode1?.Name;
                             textBox_edgeNode2.Text = _selectedEdgeNode2?.Name;
                         }
+                        if (_planningFlag == 1)
+                        {
+                            button_startPlanning.Text = "Select goal node";
+                            _startNode = _selectedNode;
+                            textBox_startNode.Text = _startNode.Name;
+                            _planningFlag++;
+                        }
+                        else if (_planningFlag == 2)
+                        {
+                            if(_selectedNode != _startNode)
+                            {
+                                _goalNode = _selectedNode;
+                                button_startPlanning.Text = "Start Planning";
+                                textBox_goalNode.Text = _goalNode.Name;
+                                _planningFlag = 0;
+                                MessageBox.Show(_pathPlanner.FindPath(_startNode, _goalNode, comboBox_planningLayer.SelectedIndex).ToString());
+                                button_startPlanning.Enabled = true;
+                            }                            
+                        }          
                         break;
                     case MouseButtons.Right:
                         if (_isEditingType)
@@ -260,6 +300,6 @@ namespace A_Star_Demo
             }
         }
 
-        
+
     }
 }

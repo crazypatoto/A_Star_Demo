@@ -12,7 +12,7 @@ using A_Star_Demo.Models;
 namespace A_Star_Demo
 {
     public class Map
-    {        
+    {
         public string SerialNumber { get; private set; }
         public byte ZoneID { get; private set; }
         public int Width { get; }
@@ -124,9 +124,19 @@ namespace A_Star_Demo
         }
 
         public MapEdge GetEdgeByNodes(int edgeLayerIndex, MapNode n1, MapNode n2)
-        {            
+        {
             return this.ConstraintLayers[edgeLayerIndex].EdgeConstraints[n1.Location.Y + n2.Location.Y, (n1.Location.X + n2.Location.X) / 2];
         }        
+
+        public List<MapNode> GetNeighborNodes(MapNode node)
+        {
+            List<MapNode> neighborNodes = new List<MapNode>();
+            if (node.Location.X - 1 >= 0) neighborNodes.Add(this.AllNodes[node.Location.Y, node.Location.X - 1]);
+            if (node.Location.Y - 1 >= 0) neighborNodes.Add(this.AllNodes[node.Location.Y - 1, node.Location.X]);
+            if (node.Location.X + 1 < this.Width) neighborNodes.Add(this.AllNodes[node.Location.Y, node.Location.X + 1]);
+            if (node.Location.Y + 1 < this.Height) neighborNodes.Add(this.AllNodes[node.Location.Y + 1, node.Location.X]);
+            return neighborNodes;
+        }
 
         public class ConstraintLayer
         {

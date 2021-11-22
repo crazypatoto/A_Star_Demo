@@ -113,11 +113,11 @@ namespace A_Star_Demo.Dialogs
             this.Controls.Add(this.label1);
             this.Font = new System.Drawing.Font("微軟正黑體", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.Margin = new System.Windows.Forms.Padding(5);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "NewMapDialog";
-            this.Text = "NewMapDialog";
+            this.Text = "Create New Map";
             this.ResumeLayout(false);
             this.PerformLayout();
 
