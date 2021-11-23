@@ -11,10 +11,6 @@ namespace A_Star_Demo.PathPlanning
 {
     public class AStarPlanner
     {
-        public enum HeuristicFormulas
-        {
-            Manhattan = 0,
-        }
         public class AStarNode : IEquatable<AStarNode>
         {
             public MapNode RefererMapNode { get; }
@@ -60,20 +56,28 @@ namespace A_Star_Demo.PathPlanning
                 return (this.RefererMapNode.Name != null ? this.RefererMapNode.Name.GetHashCode() : 0);
             }
         }
+        public enum HeuristicFormulas
+        {
+            Manhattan = 0,
+        }
+
+        public HeuristicFormulas HeuristicFormula { get; private set; }
+        public float TurningPenalty { get; set; } = 1;
         private Map _refererMap;
         private AStarNode[,] _allAStarNodes;
         private SimplePriorityQueue<AStarNode> _openList;
         private List<AStarNode> _closedList;
-        public HeuristicFormulas HeuristicFormula { get; private set; }
+
+
 
 
         public AStarPlanner(Map map)
         {
-            _refererMap = map;          
+            _refererMap = map;
         }
 
         private void InitializeAllAStarNodes()
-        {                       
+        {
             _allAStarNodes = new AStarNode[_refererMap.Height, _refererMap.Width];
             for (int y = 0; y < _refererMap.Height; y++)
             {
@@ -90,7 +94,7 @@ namespace A_Star_Demo.PathPlanning
             List<MapNode> path = null;
             _openList = new SimplePriorityQueue<AStarNode>();                                   // Initialize open list
             _closedList = new List<AStarNode>();                                                // Initialize empty closed list
-            var startNode  = _allAStarNodes[startMapNode.Location.Y, startMapNode.Location.X];
+            var startNode = _allAStarNodes[startMapNode.Location.Y, startMapNode.Location.X];
             startNode.H = this.HeuristicFunction(startMapNode, goalMapNode);                    // Initialize start node h = h(startNode)
             startNode.G = 0;                                                                    // Initialize start node g = 0
             _openList.Enqueue(startNode, startNode.F);                                          // Add start node to open list
@@ -117,22 +121,43 @@ namespace A_Star_Demo.PathPlanning
                             continue;
                         }
                     }
-                                        
+
                     var successorNode = _allAStarNodes[neighborMapNode.Location.Y, neighborMapNode.Location.X];
-                    var successorCurrentCost = currentNode.G + 1;                       // Set successor current cost = g(currentNode) + w(currentNode, successorNode)                    
+                    var successorCurrentCost = currentNode.G + 1;                       // Set successor current cost = g(currentNode) + w(currentNode, successorNode) 
+                    
+                    // Add extra cost if a trun is made
+                    if (currentNode.ParentNode != null)
+                    {
+                        if (currentNode.ParentNode.RefererMapNode.Location.X == currentNode.RefererMapNode.Location.X)
+                        {
+                            if (successorNode.RefererMapNode.Location.X != currentNode.RefererMapNode.Location.X)
+                            {
+                                successorCurrentCost += TurningPenalty;
+                            }
+                        }
+                        else
+                        {
+                            if (successorNode.RefererMapNode.Location.Y != currentNode.RefererMapNode.Location.Y)
+                            {
+                                successorCurrentCost += TurningPenalty;
+                            }
+                        }
+                    }
+
+
                     if (_openList.Contains(successorNode))                              // If successorNode is already in open list
                     {
                         if (successorCurrentCost < successorNode.G)                     // If successor current cost is lower than successorNode.G
-                        {                            
+                        {
                             successorNode.G = successorCurrentCost;                     // Update successorNode.G with new lower cost
                             successorNode.ParentNode = currentNode;                     // Set successorNode's parent node to currentNode
                             _openList.UpdatePriority(successorNode, successorNode.F);   // Update successorNode's priority with newly calculated f
                         }
                     }
                     else if (_closedList.Contains(successorNode))                       // If successorNode is already in closed list
-                    {       
+                    {
                         if (successorCurrentCost < successorNode.G)                     // If successor current cost is lower than successorNode.G
-                        {                            
+                        {
                             successorNode.G = successorCurrentCost;                     // Update successorNode.G with new lower cost                 
                             successorNode.ParentNode = currentNode;                     // Set successorNode's parent node to currentNode
                             _closedList.Remove(successorNode);                          // Remove successor from closed list
@@ -147,18 +172,18 @@ namespace A_Star_Demo.PathPlanning
                         _openList.Enqueue(successorNode, successorNode.F);                                  // Put successor node in open list with newly calculated f
                     }
                     _closedList.Add(currentNode);                                       // Add currentNode to closed list
-                }                
+                }
             }
             if (currentNode.RefererMapNode != goalMapNode)      // All node are closed but goal node is not found (No available path found)
             {
                 return path;
             }
-            
+
             int count = 0;
-            path = new List<MapNode>();           
-            while(currentNode != null)                          // Travel back to generate path
+            path = new List<MapNode>();
+            while (currentNode != null)                          // Travel back to generate path
             {
-                count++;                
+                count++;
                 path.Insert(0, currentNode.RefererMapNode);
                 currentNode = currentNode.ParentNode;
             }
