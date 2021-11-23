@@ -69,19 +69,25 @@ namespace A_Star_Demo.PathPlanning
 
         public AStarPlanner(Map map)
         {
-            _refererMap = map;
-            _allAStarNodes = new AStarNode[map.Height, map.Width];
-            for (int y = 0; y < map.Height; y++)
+            _refererMap = map;          
+        }
+
+        private void InitializeAllAStarNodes()
+        {                       
+            _allAStarNodes = new AStarNode[_refererMap.Height, _refererMap.Width];
+            for (int y = 0; y < _refererMap.Height; y++)
             {
-                for (int x = 0; x < map.Width; x++)
+                for (int x = 0; x < _refererMap.Width; x++)
                 {
-                    _allAStarNodes[y, x] = new AStarNode(map.AllNodes[y, x]);
+                    _allAStarNodes[y, x] = new AStarNode(_refererMap.AllNodes[y, x]);
                 }
             }
         }
 
-        public int FindPath(MapNode startMapNode, MapNode goalMapNode, out List<MapNode> path, int constraintLayerIndex = 0, HeuristicFormulas heuristicFormula = HeuristicFormulas.Manhattan)
+        public List<MapNode> FindPath(MapNode startMapNode, MapNode goalMapNode, int constraintLayerIndex = 0, HeuristicFormulas heuristicFormula = HeuristicFormulas.Manhattan)
         {
+            InitializeAllAStarNodes();
+            List<MapNode> path = null;
             _openList = new SimplePriorityQueue<AStarNode>();                                   // Initialize open list
             _closedList = new List<AStarNode>();                                                // Initialize empty closed list
             var startNode  = _allAStarNodes[startMapNode.Location.Y, startMapNode.Location.X];
@@ -145,8 +151,7 @@ namespace A_Star_Demo.PathPlanning
             }
             if (currentNode.RefererMapNode != goalMapNode)      // All node are closed but goal node is not found (No available path found)
             {
-                path = null;
-                return -1;
+                return path;
             }
             
             int count = 0;
@@ -157,7 +162,7 @@ namespace A_Star_Demo.PathPlanning
                 path.Insert(0, currentNode.RefererMapNode);
                 currentNode = currentNode.ParentNode;
             }
-            return count;
+            return path;
         }
 
         private float HeuristicFunction(MapNode currentNode, MapNode goalNode)

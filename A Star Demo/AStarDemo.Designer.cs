@@ -66,14 +66,14 @@ namespace A_Star_Demo
             this.textBox_edgeNode1 = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.groupBox_pathPlanning = new System.Windows.Forms.GroupBox();
+            this.comboBox_planningLayer = new System.Windows.Forms.ComboBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.textBox_planningPath = new System.Windows.Forms.TextBox();
+            this.button_startPlanning = new System.Windows.Forms.Button();
             this.textBox_goalNode = new System.Windows.Forms.TextBox();
             this.textBox_startNode = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
-            this.button_startPlanning = new System.Windows.Forms.Button();
-            this.textBox_planningPath = new System.Windows.Forms.TextBox();
-            this.comboBox_planningLayer = new System.Windows.Forms.ComboBox();
-            this.label12 = new System.Windows.Forms.Label();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_mapViewer)).BeginInit();
             this.groupBox_nodeInfo.SuspendLayout();
@@ -348,6 +348,7 @@ namespace A_Star_Demo
             this.comboBox_constraintLayers.Name = "comboBox_constraintLayers";
             this.comboBox_constraintLayers.Size = new System.Drawing.Size(100, 24);
             this.comboBox_constraintLayers.TabIndex = 16;
+            this.comboBox_constraintLayers.SelectedIndexChanged += new System.EventHandler(this.comboBox_constraintLayers_SelectedIndexChanged);
             // 
             // label9
             // 
@@ -438,6 +439,43 @@ namespace A_Star_Demo
             this.groupBox_pathPlanning.TabStop = false;
             this.groupBox_pathPlanning.Text = "Path Planning";
             // 
+            // comboBox_planningLayer
+            // 
+            this.comboBox_planningLayer.FormattingEnabled = true;
+            this.comboBox_planningLayer.Location = new System.Drawing.Point(68, 80);
+            this.comboBox_planningLayer.Name = "comboBox_planningLayer";
+            this.comboBox_planningLayer.Size = new System.Drawing.Size(100, 24);
+            this.comboBox_planningLayer.TabIndex = 20;
+            this.comboBox_planningLayer.SelectedIndexChanged += new System.EventHandler(this.comboBox_planningLayer_SelectedIndexChanged);
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(21, 83);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(41, 16);
+            this.label12.TabIndex = 19;
+            this.label12.Text = "Layer:";
+            // 
+            // textBox_planningPath
+            // 
+            this.textBox_planningPath.Location = new System.Drawing.Point(6, 152);
+            this.textBox_planningPath.Multiline = true;
+            this.textBox_planningPath.Name = "textBox_planningPath";
+            this.textBox_planningPath.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBox_planningPath.Size = new System.Drawing.Size(160, 384);
+            this.textBox_planningPath.TabIndex = 24;
+            // 
+            // button_startPlanning
+            // 
+            this.button_startPlanning.Location = new System.Drawing.Point(6, 110);
+            this.button_startPlanning.Name = "button_startPlanning";
+            this.button_startPlanning.Size = new System.Drawing.Size(160, 33);
+            this.button_startPlanning.TabIndex = 23;
+            this.button_startPlanning.Text = "Start Planning";
+            this.button_startPlanning.UseVisualStyleBackColor = true;
+            this.button_startPlanning.Click += new System.EventHandler(this.button_startPlanning_Click);
+            // 
             // textBox_goalNode
             // 
             this.textBox_goalNode.Location = new System.Drawing.Point(50, 51);
@@ -471,41 +509,6 @@ namespace A_Star_Demo
             this.label11.Size = new System.Drawing.Size(37, 16);
             this.label11.TabIndex = 19;
             this.label11.Text = "Start:";
-            // 
-            // button_startPlanning
-            // 
-            this.button_startPlanning.Location = new System.Drawing.Point(6, 110);
-            this.button_startPlanning.Name = "button_startPlanning";
-            this.button_startPlanning.Size = new System.Drawing.Size(160, 33);
-            this.button_startPlanning.TabIndex = 23;
-            this.button_startPlanning.Text = "Start Planning";
-            this.button_startPlanning.UseVisualStyleBackColor = true;
-            this.button_startPlanning.Click += new System.EventHandler(this.button_startPlanning_Click);
-            // 
-            // textBox_planningPath
-            // 
-            this.textBox_planningPath.Location = new System.Drawing.Point(6, 152);
-            this.textBox_planningPath.Multiline = true;
-            this.textBox_planningPath.Name = "textBox_planningPath";
-            this.textBox_planningPath.Size = new System.Drawing.Size(160, 384);
-            this.textBox_planningPath.TabIndex = 24;
-            // 
-            // comboBox_planningLayer
-            // 
-            this.comboBox_planningLayer.FormattingEnabled = true;
-            this.comboBox_planningLayer.Location = new System.Drawing.Point(68, 80);
-            this.comboBox_planningLayer.Name = "comboBox_planningLayer";
-            this.comboBox_planningLayer.Size = new System.Drawing.Size(100, 24);
-            this.comboBox_planningLayer.TabIndex = 20;
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(21, 83);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(41, 16);
-            this.label12.TabIndex = 19;
-            this.label12.Text = "Layer:";
             // 
             // AStarDemo
             // 

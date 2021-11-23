@@ -33,7 +33,7 @@ namespace A_Star_Demo.Dialogs
             _cellSize = Math.Min(_drawSize.Width / _map.Width, _drawSize.Height / _map.Height);
         }
 
-        public Bitmap GetMapPicture(MapNode selectedNode, MapNode selectedEdgeNode1 = null, MapNode selectedEdgeNode2 = null, bool drawEdgeConstraints = false, int selectedLayerIndex = 0)
+        public Bitmap GetMapPicture(MapNode selectedNode, MapNode selectedEdgeNode1 = null, MapNode selectedEdgeNode2 = null, bool drawEdgeConstraints = false, int selectedLayerIndex = 0, List<MapNode> path = null)
         {
             _mapBMP?.Dispose();
             _mapBMP = new Bitmap(_drawSize.Width, _drawSize.Height);
@@ -83,27 +83,37 @@ namespace A_Star_Demo.Dialogs
                         for (int x = 0; x < _map.Width; x++)
                         {
                             var edgeConstraints = _map.ConstraintLayers[selectedLayerIndex].EdgeConstraints[y, x];
-                            var edgePermission = (~((byte)edgeConstraints.PassingRestriction)) & 0x03;                            
+                            var edgePermission = (~((byte)edgeConstraints.PassingRestriction)) & 0x03;
                             if (edgePermission == 0) continue;
                             pen.StartCap = LineCap.NoAnchor;
-                            pen.EndCap = LineCap.NoAnchor;                            
+                            pen.EndCap = LineCap.NoAnchor;
                             if ((edgePermission & 0x01) > 0) pen.EndCap = LineCap.ArrowAnchor;
                             if ((edgePermission & 0x02) > 0) pen.StartCap = LineCap.ArrowAnchor;
                             if (y % 2 == 0)     // Draw horizaontal arrows
                             {
-                                if(x < _map.Width - 1)
+                                if (x < _map.Width - 1)
                                 {
                                     graphics.DrawLine(pen, (x + 0.5f) * _cellSize, (y / 2 + 0.5f) * _cellSize, (x + 1.5f) * _cellSize, (y / 2 + 0.5f) * _cellSize);
-                                }                                
+                                }
                             }
                             else                // Draw vertical arrows
                             {
-                                if(y < 2 * _map.Height - 2)
+                                if (y < 2 * _map.Height - 2)
                                 {
                                     graphics.DrawLine(pen, (x + 0.5f) * _cellSize, (y / 2 + 0.5f) * _cellSize, (x + 0.5f) * _cellSize, (y / 2 + 1.5f) * _cellSize);
-                                }                                                                                                
+                                }
                             }
                         }
+                    }
+                }
+                if (path != null)
+                {                    
+                    Pen pen = new Pen(Color.Green, GridWidth * 2);
+                    for (int i = 0; i < path.Count; i++)
+                    {
+                        Color interpolatedColor = Color.FromArgb(i * 255 / path.Count, 255 - i * 255 / path.Count, 0);
+                        pen.Color = interpolatedColor;
+                        graphics.DrawRectangle(pen, path[i].Location.X * _cellSize, path[i].Location.Y * _cellSize, _cellSize, _cellSize);
                     }
                 }
             }
