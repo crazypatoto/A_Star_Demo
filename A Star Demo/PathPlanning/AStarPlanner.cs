@@ -62,7 +62,7 @@ namespace A_Star_Demo.PathPlanning
         }
 
         public HeuristicFormulas HeuristicFormula { get; private set; }
-        public float TurningPenalty { get; set; } = 1;
+        public float TurningPenalty { get; set; } = 3;
         private Map _refererMap;
         private AStarNode[,] _allAStarNodes;
         private SimplePriorityQueue<AStarNode> _openList;
@@ -103,10 +103,11 @@ namespace A_Star_Demo.PathPlanning
             while (_openList.Count > 0)                                                         // Scan until open list is empty
             {
                 currentNode = _openList.Dequeue();                                              // Get node with lowest f in open list                
+               //Debug.WriteLine($"CurrentNode = {currentNode.RefererMapNode.Name}, F = {currentNode.F}");
                 if (currentNode.RefererMapNode == goalMapNode) break;                           // End if currentNode == goalNode (A* path found!)                                
 
                 foreach (var neighborMapNode in _refererMap.GetNeighborNodes(currentNode.RefererMapNode))   // Scan through all successor nodes
-                {
+                {                   
                     if (currentNode.RefererMapNode.Location.X + currentNode.RefererMapNode.Location.Y < neighborMapNode.Location.X + neighborMapNode.Location.Y)
                     {
                         if ((_refererMap.GetEdgeByNodes(constraintLayerIndex, currentNode.RefererMapNode, neighborMapNode).PassingRestriction & MapEdge.PassingRestrictions.NoLeaving) > 0)
@@ -124,7 +125,8 @@ namespace A_Star_Demo.PathPlanning
 
                     var successorNode = _allAStarNodes[neighborMapNode.Location.Y, neighborMapNode.Location.X];
                     var successorCurrentCost = currentNode.G + 1;                       // Set successor current cost = g(currentNode) + w(currentNode, successorNode) 
-                    
+
+                    /*-------------------------------------Calculate extra cost -------------------------------------*/
                     // Add extra cost if a trun is made
                     if (currentNode.ParentNode != null)
                     {
@@ -144,6 +146,14 @@ namespace A_Star_Demo.PathPlanning
                         }
                     }
 
+                    // Add extra cost if successorNode has neighbors that type isn't None.
+                    //foreach (var node in _refererMap.GetNeighborNodes(successorNode.RefererMapNode))
+                    //{
+                    //    if (node.Type != MapNode.Types.None) successorCurrentCost += 0.25f;
+                    //}
+
+                    /*--------------------------------------------- End ---------------------------------------------*/
+
 
                     if (_openList.Contains(successorNode))                              // If successorNode is already in open list
                     {
@@ -152,7 +162,7 @@ namespace A_Star_Demo.PathPlanning
                             successorNode.G = successorCurrentCost;                     // Update successorNode.G with new lower cost
                             successorNode.ParentNode = currentNode;                     // Set successorNode's parent node to currentNode
                             _openList.UpdatePriority(successorNode, successorNode.F);   // Update successorNode's priority with newly calculated f
-                        }
+                        }                        
                     }
                     else if (_closedList.Contains(successorNode))                       // If successorNode is already in closed list
                     {
@@ -162,17 +172,19 @@ namespace A_Star_Demo.PathPlanning
                             successorNode.ParentNode = currentNode;                     // Set successorNode's parent node to currentNode
                             _closedList.Remove(successorNode);                          // Remove successor from closed list
                             _openList.Enqueue(successorNode, successorNode.F);          // Put successor node in open list with newly calculated f
-                        }
+                        }                        
                     }
                     else                                                                // Neighter successorNode is in open list nor closed list
                     {
                         successorNode.H = HeuristicFunction(successorNode.RefererMapNode, goalMapNode);     // Calculate successorNode.H = h(successorNode)
                         successorNode.G = successorCurrentCost;                                             // Set successorNode.G = current successor cost
-                        successorNode.ParentNode = currentNode;                                             // Set successorNode's parent node to currentNode 
+                        Debug.WriteLine($"Successor {successorNode.RefererMapNode.Name}: H = {successorNode.H}, G = {successorNode.G}");
+                        successorNode.ParentNode = currentNode;                                             // Set successorNode's parent node to currentNode                         
                         _openList.Enqueue(successorNode, successorNode.F);                                  // Put successor node in open list with newly calculated f
                     }
-                    _closedList.Add(currentNode);                                       // Add currentNode to closed list
                 }
+                //Debug.WriteLine($"Dequeue {currentNode.RefererMapNode.Name}");
+                _closedList.Add(currentNode);                    // Add currentNode to closed list
             }
             if (currentNode.RefererMapNode != goalMapNode)      // All node are closed but goal node is not found (No available path found)
             {
@@ -185,6 +197,7 @@ namespace A_Star_Demo.PathPlanning
             {
                 count++;
                 path.Insert(0, currentNode.RefererMapNode);
+                //Debug.WriteLine($"Path Node =  {currentNode.RefererMapNode.Name}");
                 currentNode = currentNode.ParentNode;
             }
             return path;

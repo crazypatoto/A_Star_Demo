@@ -74,6 +74,7 @@ namespace A_Star_Demo
             this.textBox_startNode = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
+            this.checkBox_disallowTurning = new System.Windows.Forms.CheckBox();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_mapViewer)).BeginInit();
             this.groupBox_nodeInfo.SuspendLayout();
@@ -130,7 +131,7 @@ namespace A_Star_Demo
             this.pictureBox_mapViewer.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.pictureBox_mapViewer.Location = new System.Drawing.Point(12, 27);
             this.pictureBox_mapViewer.Name = "pictureBox_mapViewer";
-            this.pictureBox_mapViewer.Size = new System.Drawing.Size(824, 548);
+            this.pictureBox_mapViewer.Size = new System.Drawing.Size(824, 573);
             this.pictureBox_mapViewer.TabIndex = 2;
             this.pictureBox_mapViewer.TabStop = false;
             this.pictureBox_mapViewer.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox_mapViewer_MouseDown);
@@ -186,6 +187,7 @@ namespace A_Star_Demo
             // 
             // groupBox_nodeTypeEditor
             // 
+            this.groupBox_nodeTypeEditor.Controls.Add(this.checkBox_disallowTurning);
             this.groupBox_nodeTypeEditor.Controls.Add(this.button_startEditingNode);
             this.groupBox_nodeTypeEditor.Controls.Add(this.comboBox_types);
             this.groupBox_nodeTypeEditor.Controls.Add(this.label4);
@@ -193,14 +195,14 @@ namespace A_Star_Demo
             this.groupBox_nodeTypeEditor.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.groupBox_nodeTypeEditor.Location = new System.Drawing.Point(841, 241);
             this.groupBox_nodeTypeEditor.Name = "groupBox_nodeTypeEditor";
-            this.groupBox_nodeTypeEditor.Size = new System.Drawing.Size(181, 91);
+            this.groupBox_nodeTypeEditor.Size = new System.Drawing.Size(181, 116);
             this.groupBox_nodeTypeEditor.TabIndex = 4;
             this.groupBox_nodeTypeEditor.TabStop = false;
             this.groupBox_nodeTypeEditor.Text = "Node Type Editor";
             // 
             // button_startEditingNode
             // 
-            this.button_startEditingNode.Location = new System.Drawing.Point(17, 52);
+            this.button_startEditingNode.Location = new System.Drawing.Point(17, 78);
             this.button_startEditingNode.Name = "button_startEditingNode";
             this.button_startEditingNode.Size = new System.Drawing.Size(152, 30);
             this.button_startEditingNode.TabIndex = 3;
@@ -314,7 +316,7 @@ namespace A_Star_Demo
             this.groupBox_edgeConstraintsEditor.Controls.Add(this.label7);
             this.groupBox_edgeConstraintsEditor.Enabled = false;
             this.groupBox_edgeConstraintsEditor.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.groupBox_edgeConstraintsEditor.Location = new System.Drawing.Point(841, 338);
+            this.groupBox_edgeConstraintsEditor.Location = new System.Drawing.Point(842, 363);
             this.groupBox_edgeConstraintsEditor.Name = "groupBox_edgeConstraintsEditor";
             this.groupBox_edgeConstraintsEditor.Size = new System.Drawing.Size(181, 237);
             this.groupBox_edgeConstraintsEditor.TabIndex = 6;
@@ -434,7 +436,7 @@ namespace A_Star_Demo
             this.groupBox_pathPlanning.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.groupBox_pathPlanning.Location = new System.Drawing.Point(1028, 30);
             this.groupBox_pathPlanning.Name = "groupBox_pathPlanning";
-            this.groupBox_pathPlanning.Size = new System.Drawing.Size(174, 545);
+            this.groupBox_pathPlanning.Size = new System.Drawing.Size(174, 570);
             this.groupBox_pathPlanning.TabIndex = 7;
             this.groupBox_pathPlanning.TabStop = false;
             this.groupBox_pathPlanning.Text = "Path Planning";
@@ -463,7 +465,7 @@ namespace A_Star_Demo
             this.textBox_planningPath.Multiline = true;
             this.textBox_planningPath.Name = "textBox_planningPath";
             this.textBox_planningPath.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox_planningPath.Size = new System.Drawing.Size(160, 384);
+            this.textBox_planningPath.Size = new System.Drawing.Size(160, 412);
             this.textBox_planningPath.TabIndex = 24;
             // 
             // button_startPlanning
@@ -510,11 +512,21 @@ namespace A_Star_Demo
             this.label11.TabIndex = 19;
             this.label11.Text = "Start:";
             // 
+            // checkBox_disallowTurning
+            // 
+            this.checkBox_disallowTurning.AutoSize = true;
+            this.checkBox_disallowTurning.Location = new System.Drawing.Point(33, 52);
+            this.checkBox_disallowTurning.Name = "checkBox_disallowTurning";
+            this.checkBox_disallowTurning.Size = new System.Drawing.Size(120, 20);
+            this.checkBox_disallowTurning.TabIndex = 4;
+            this.checkBox_disallowTurning.Text = "Disallow Turning";
+            this.checkBox_disallowTurning.UseVisualStyleBackColor = true;
+            // 
             // AStarDemo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(1210, 583);
+            this.ClientSize = new System.Drawing.Size(1210, 607);
             this.Controls.Add(this.groupBox_pathPlanning);
             this.Controls.Add(this.groupBox_edgeConstraintsEditor);
             this.Controls.Add(this.groupBox_mapInfo);
@@ -590,6 +602,7 @@ namespace A_Star_Demo
         private System.Windows.Forms.Button button_startPlanning;
         private System.Windows.Forms.ComboBox comboBox_planningLayer;
         private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.CheckBox checkBox_disallowTurning;
     }
 }
 

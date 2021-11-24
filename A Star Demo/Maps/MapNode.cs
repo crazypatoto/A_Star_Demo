@@ -27,7 +27,7 @@ namespace A_Star_Demo
         /// <summary>
         /// Bytes count of raw node data.
         /// </summary>
-        public const int RawBytesLength = 10;
+        public const int RawBytesLength = 11;
 
         /// <summary>
         /// Zone ID (0~99).
@@ -37,12 +37,17 @@ namespace A_Star_Demo
         /// <summary>
         /// Location of the node.
         /// </summary>
-        public Location Location { get; private set; }
+        public Location Location { get; }
 
         /// <summary>
         /// Type of the node.
         /// </summary>
         public Types Type { get; set; } = Types.None;
+
+        /// <summary>
+        /// Disallow turning actions on current node.
+        /// </summary>
+        public bool DisallowTurningOnNode { get; set; } = false;
 
         /// <summary>
         /// Node name in format of ZoneID-X-Y (00-000-000).
@@ -65,6 +70,7 @@ namespace A_Star_Demo
             ZoneID = byteArray[index + 0];
             Location = new Location(BitConverter.ToInt32(byteArray, index + 1), BitConverter.ToInt32(byteArray, index + 5));
             Type = (Types)byteArray[index + 9];
+            DisallowTurningOnNode = Convert.ToBoolean(byteArray[index + 10]);
         }
         #endregion
 
@@ -80,6 +86,7 @@ namespace A_Star_Demo
             Array.Copy(BitConverter.GetBytes(Location.X), 0, byteArray, 1, 4);
             Array.Copy(BitConverter.GetBytes(Location.Y), 0, byteArray, 5, 4);
             byteArray[9] = (byte)Type;
+            byteArray[10] = Convert.ToByte(DisallowTurningOnNode);
             return byteArray;
         }
 

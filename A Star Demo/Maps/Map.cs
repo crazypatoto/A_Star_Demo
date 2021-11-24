@@ -155,7 +155,7 @@ namespace A_Star_Demo
                         this.EdgeConstraints[y, x] = new MapEdge();
                     }
                 }
-            }
+            }            
         }
 
     }

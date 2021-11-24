@@ -133,12 +133,19 @@ namespace A_Star_Demo
         }
         private void button_addLayer_Click(object sender, EventArgs e)
         {
-            _currentMap.ConstraintLayers.Add(new Map.ConstraintLayer(_currentMap, $"Layer {_currentMap.ConstraintLayers.Count}"));
+            var newLayer = new Map.ConstraintLayer(_currentMap, $"Layer {_currentMap.ConstraintLayers.Count}");
+            _currentMap.ConstraintLayers.Add(newLayer);
             comboBox_constraintLayers.Items.Clear();
             foreach (var layer in _currentMap.ConstraintLayers)
             {
                 comboBox_constraintLayers.Items.Add(layer.Name);
             }
+            comboBox_planningLayer.Items.Clear();
+            foreach (var layer in _currentMap.ConstraintLayers)
+            {
+                comboBox_planningLayer.Items.Add(layer.Name);
+            }
+
             comboBox_constraintLayers.SelectedIndex = comboBox_constraintLayers.Items.Count - 1;
         }
 
@@ -193,6 +200,8 @@ namespace A_Star_Demo
             textBox_mapSN.Text = _currentMap.SerialNumber;
             textBox_mapZone.Text = _currentMap.ZoneID.ToString();
             textBox_mapDIM.Text = $"{_currentMap.Width} x {_currentMap.Height}";
+            comboBox_constraintLayers.Items.Clear();
+            comboBox_constraintLayers.Items.Clear();
             foreach (var layer in _currentMap.ConstraintLayers)
             {
                 comboBox_constraintLayers.Items.Add(layer.Name);
@@ -213,9 +222,11 @@ namespace A_Star_Demo
                     case MouseButtons.Left:
                         textBox_selectedNodeName.Text = _selectedNode.Name;
                         textBox_selectedNodeType.Text = _selectedNode.Type.ToString();
+                        textBox_selectedNodeType.BackColor = MapDrawer.NodeTypeColorDict[_selectedNode.Type];
                         if (_isEditingType)
                         {
                             _selectedNode.Type = (MapNode.Types)comboBox_types.SelectedItem;
+                            _selectedNode.DisallowTurningOnNode = checkBox_disallowTurning.Checked;
                         }
                         if (_isEditingEdge)
                         {

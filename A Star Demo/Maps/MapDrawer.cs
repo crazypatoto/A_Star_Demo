@@ -49,6 +49,12 @@ namespace A_Star_Demo.Dialogs
                             var currentNode = _map.AllNodes[y, x];
                             Brush brush = new SolidBrush(NodeTypeColorDict[currentNode.Type]);
                             graphics.FillRectangle(brush, x * _cellSize, y * _cellSize, _cellSize, _cellSize);
+                            //graphics.DrawEllipse(new Pen(Color.Red, 1), x * _cellSize + 1, y * _cellSize + 1, _cellSize - 2, _cellSize - 2);
+                            if (currentNode.DisallowTurningOnNode)
+                            {
+                                graphics.DrawLine(new Pen(Color.Red, 1), x * _cellSize, y * _cellSize, (x + 1) * _cellSize, (y + 1) * _cellSize);
+                                graphics.DrawLine(new Pen(Color.Red, 1), (x + 1) * _cellSize, y * _cellSize, x * _cellSize, (y + 1) * _cellSize);
+                            }                            
                         }
                         graphics.DrawLine(new Pen(Color.Black, GridWidth), 0, y * _cellSize, _map.Width * _cellSize, y * _cellSize);
                         graphics.DrawLine(new Pen(Color.Black, GridWidth), x * _cellSize, 0, x * _cellSize, _map.Height * _cellSize);
@@ -107,7 +113,7 @@ namespace A_Star_Demo.Dialogs
                     }
                 }
                 if (path != null)
-                {                    
+                {
                     Pen pen = new Pen(Color.Green, GridWidth * 2);
                     for (int i = 0; i < path.Count; i++)
                     {
