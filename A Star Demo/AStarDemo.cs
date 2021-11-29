@@ -201,7 +201,7 @@ namespace A_Star_Demo
             textBox_mapZone.Text = _currentMap.ZoneID.ToString();
             textBox_mapDIM.Text = $"{_currentMap.Width} x {_currentMap.Height}";
             comboBox_constraintLayers.Items.Clear();
-            comboBox_constraintLayers.Items.Clear();
+            comboBox_planningLayer.Items.Clear();
             foreach (var layer in _currentMap.ConstraintLayers)
             {
                 comboBox_constraintLayers.Items.Add(layer.Name);
