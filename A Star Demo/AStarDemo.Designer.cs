@@ -42,6 +42,7 @@ namespace A_Star_Demo
             this.textBox_selectedNodeName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox_nodeTypeEditor = new System.Windows.Forms.GroupBox();
+            this.checkBox_disallowTurning = new System.Windows.Forms.CheckBox();
             this.button_startEditingNode = new System.Windows.Forms.Button();
             this.comboBox_types = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -66,6 +67,7 @@ namespace A_Star_Demo
             this.textBox_edgeNode1 = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.groupBox_pathPlanning = new System.Windows.Forms.GroupBox();
+            this.button_ClearPath = new System.Windows.Forms.Button();
             this.comboBox_planningLayer = new System.Windows.Forms.ComboBox();
             this.label12 = new System.Windows.Forms.Label();
             this.textBox_planningPath = new System.Windows.Forms.TextBox();
@@ -74,7 +76,6 @@ namespace A_Star_Demo
             this.textBox_startNode = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
-            this.checkBox_disallowTurning = new System.Windows.Forms.CheckBox();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_mapViewer)).BeginInit();
             this.groupBox_nodeInfo.SuspendLayout();
@@ -136,6 +137,8 @@ namespace A_Star_Demo
             this.pictureBox_mapViewer.TabStop = false;
             this.pictureBox_mapViewer.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox_mapViewer_MouseDown);
             this.pictureBox_mapViewer.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox_mapViewer_MouseMove);
+            this.pictureBox_mapViewer.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox_mapViewer_MouseUp);
+            this.pictureBox_mapViewer.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.pictureBox_mapViewer_MouseWheel);
             // 
             // groupBox_nodeInfo
             // 
@@ -199,6 +202,16 @@ namespace A_Star_Demo
             this.groupBox_nodeTypeEditor.TabIndex = 4;
             this.groupBox_nodeTypeEditor.TabStop = false;
             this.groupBox_nodeTypeEditor.Text = "Node Type Editor";
+            // 
+            // checkBox_disallowTurning
+            // 
+            this.checkBox_disallowTurning.AutoSize = true;
+            this.checkBox_disallowTurning.Location = new System.Drawing.Point(33, 52);
+            this.checkBox_disallowTurning.Name = "checkBox_disallowTurning";
+            this.checkBox_disallowTurning.Size = new System.Drawing.Size(120, 20);
+            this.checkBox_disallowTurning.TabIndex = 4;
+            this.checkBox_disallowTurning.Text = "Disallow Turning";
+            this.checkBox_disallowTurning.UseVisualStyleBackColor = true;
             // 
             // button_startEditingNode
             // 
@@ -425,6 +438,7 @@ namespace A_Star_Demo
             // 
             // groupBox_pathPlanning
             // 
+            this.groupBox_pathPlanning.Controls.Add(this.button_ClearPath);
             this.groupBox_pathPlanning.Controls.Add(this.comboBox_planningLayer);
             this.groupBox_pathPlanning.Controls.Add(this.label12);
             this.groupBox_pathPlanning.Controls.Add(this.textBox_planningPath);
@@ -440,6 +454,16 @@ namespace A_Star_Demo
             this.groupBox_pathPlanning.TabIndex = 7;
             this.groupBox_pathPlanning.TabStop = false;
             this.groupBox_pathPlanning.Text = "Path Planning";
+            // 
+            // button_ClearPath
+            // 
+            this.button_ClearPath.Location = new System.Drawing.Point(6, 149);
+            this.button_ClearPath.Name = "button_ClearPath";
+            this.button_ClearPath.Size = new System.Drawing.Size(160, 33);
+            this.button_ClearPath.TabIndex = 25;
+            this.button_ClearPath.Text = "Clear Path";
+            this.button_ClearPath.UseVisualStyleBackColor = true;
+            this.button_ClearPath.Click += new System.EventHandler(this.button_ClearPath_Click);
             // 
             // comboBox_planningLayer
             // 
@@ -461,11 +485,11 @@ namespace A_Star_Demo
             // 
             // textBox_planningPath
             // 
-            this.textBox_planningPath.Location = new System.Drawing.Point(6, 152);
+            this.textBox_planningPath.Location = new System.Drawing.Point(6, 188);
             this.textBox_planningPath.Multiline = true;
             this.textBox_planningPath.Name = "textBox_planningPath";
             this.textBox_planningPath.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox_planningPath.Size = new System.Drawing.Size(160, 412);
+            this.textBox_planningPath.Size = new System.Drawing.Size(160, 376);
             this.textBox_planningPath.TabIndex = 24;
             // 
             // button_startPlanning
@@ -511,16 +535,6 @@ namespace A_Star_Demo
             this.label11.Size = new System.Drawing.Size(37, 16);
             this.label11.TabIndex = 19;
             this.label11.Text = "Start:";
-            // 
-            // checkBox_disallowTurning
-            // 
-            this.checkBox_disallowTurning.AutoSize = true;
-            this.checkBox_disallowTurning.Location = new System.Drawing.Point(33, 52);
-            this.checkBox_disallowTurning.Name = "checkBox_disallowTurning";
-            this.checkBox_disallowTurning.Size = new System.Drawing.Size(120, 20);
-            this.checkBox_disallowTurning.TabIndex = 4;
-            this.checkBox_disallowTurning.Text = "Disallow Turning";
-            this.checkBox_disallowTurning.UseVisualStyleBackColor = true;
             // 
             // AStarDemo
             // 
@@ -603,6 +617,7 @@ namespace A_Star_Demo
         private System.Windows.Forms.ComboBox comboBox_planningLayer;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.CheckBox checkBox_disallowTurning;
+        private System.Windows.Forms.Button button_ClearPath;
     }
 }
 

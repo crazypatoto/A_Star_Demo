@@ -30,6 +30,7 @@ namespace A_Star_Demo
         private MapNode _goalNode;
         private AStarPlanner _pathPlanner;
         private List<MapNode> _path;
+        private Point _prevMouseLocation;
 
         public AStarDemo()
         {
@@ -92,7 +93,6 @@ namespace A_Star_Demo
             }
         }
         #endregion
-
 
         #region UI Control Events
         private void comboBox_types_SelectedIndexChanged(object sender, EventArgs e)
@@ -180,6 +180,13 @@ namespace A_Star_Demo
         {
             comboBox_constraintLayers.SelectedIndex = comboBox_planningLayer.SelectedIndex;
         }
+
+        private void button_ClearPath_Click(object sender, EventArgs e)
+        {
+            textBox_planningPath.Clear();
+            _path?.Clear();
+            _path = null;
+        }
         #endregion
 
         #region PictureBox events
@@ -188,10 +195,56 @@ namespace A_Star_Demo
         private void pictureBox_mapViewer_MouseDown(object sender, MouseEventArgs e)
         {
             NodeSelect(e.Location, e.Button);
+            if (e.Button == MouseButtons.Middle)
+            {                
+                _prevMouseLocation = e.Location;
+                Cursor.Current = Cursors.Hand;
+            }
         }
         private void pictureBox_mapViewer_MouseMove(object sender, MouseEventArgs e)
         {
             NodeSelect(e.Location, e.Button);
+            if (e.Button == MouseButtons.Middle && _mapDrawer!= null)
+            {
+                int xDiff = e.Location.X - _prevMouseLocation.X;
+                int yDiff = e.Location.Y - _prevMouseLocation.Y;
+
+                if (xDiff > _mapDrawer.CellSize)
+                {
+                    _mapDrawer.OffsetX += xDiff/_mapDrawer.CellSize;
+                    _prevMouseLocation = e.Location;
+                }
+                else if (-xDiff > _mapDrawer.CellSize)
+                {
+                    _mapDrawer.OffsetX += xDiff / _mapDrawer.CellSize;
+                    _prevMouseLocation = e.Location;
+                }
+                else if (yDiff > _mapDrawer.CellSize)
+                {
+                    _mapDrawer.OffsetY += yDiff / _mapDrawer.CellSize;
+                    _prevMouseLocation = e.Location;
+                }
+                else if (-yDiff > _mapDrawer.CellSize)
+                {
+                    _mapDrawer.OffsetY += yDiff / _mapDrawer.CellSize;
+                    _prevMouseLocation = e.Location;
+                }                
+            }
+        }
+        private void pictureBox_mapViewer_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Middle)
+            {
+                _prevMouseLocation = e.Location;
+                Cursor.Current = Cursors.Default;
+            }
+        }
+        private void pictureBox_mapViewer_MouseWheel(object sender, MouseEventArgs e)
+        {
+            if(_mapDrawer != null)
+            {
+                _mapDrawer.Scale += e.Delta / 1200.0f;                
+            }
         }
         #endregion
 
@@ -213,7 +266,7 @@ namespace A_Star_Demo
 
         private void NodeSelect(Point mousePosition, MouseButtons mouseButton)
         {
-            if (mouseButton == MouseButtons.None) return;
+            if (mouseButton != MouseButtons.Left && mouseButton != MouseButtons.Right) return;
             _selectedNode = _mapDrawer?.GetNodeByPosition(mousePosition.X, mousePosition.Y);
             if (_selectedNode != null)
             {
@@ -330,6 +383,6 @@ namespace A_Star_Demo
             }
         }
 
-
+    
     }
 }
