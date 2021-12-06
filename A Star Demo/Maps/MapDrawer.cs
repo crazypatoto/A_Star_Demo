@@ -13,6 +13,7 @@ namespace A_Star_Demo.Dialogs
 {
     public class MapDrawer
     {
+        private readonly int _minCellSize = 20;
         private Map _map;
         private Bitmap _mapBMP;
         private Size _drawSize;
@@ -22,6 +23,7 @@ namespace A_Star_Demo.Dialogs
         public int GridWidth { get; set; } = 3;
         public int OffsetX { get; set; } = 0;
         public int OffsetY { get; set; } = 0;
+        public int CellSize { get { return _scaledCellSize; } }
         public float Scale
         {
             get
@@ -29,13 +31,30 @@ namespace A_Star_Demo.Dialogs
                 return _scale;
             }
             set
-            {                
+            {
                 _scale = value;
                 if (_scale < 0.1f) _scale = 0.1f;
                 _scaledCellSize = (int)(_cellSize * _scale);
+                if (_scaledCellSize < _minCellSize)
+                {
+                    _scaledCellSize = _minCellSize;
+                    _scale = (float)_scaledCellSize / _cellSize;
+                }
             }
         }
-        public int CellSize { get { return _scaledCellSize; } }
+        public Size DrawSize
+        {
+            get
+            {
+                return _drawSize;
+            }
+            set
+            {
+                _drawSize = value;
+                _cellSize = Math.Min(DrawSize.Width / _map.Width, DrawSize.Height / _map.Height);
+                if (_cellSize < _minCellSize) _cellSize = _minCellSize;
+            }
+        }
 
         public static Dictionary<MapNode.Types, Color> NodeTypeColorDict = new Dictionary<MapNode.Types, Color> {
             {MapNode.Types.None, Color.White },
@@ -45,11 +64,10 @@ namespace A_Star_Demo.Dialogs
             {MapNode.Types.Wall, Color.DarkGray },
         };
 
-        public MapDrawer(ref Map map, int drawWidth, int drawHeight)
+        public MapDrawer(ref Map map, Size drawSize)
         {
             _map = map;
-            _drawSize = new Size(drawWidth, drawHeight);
-            _cellSize = Math.Min(_drawSize.Width / _map.Width, _drawSize.Height / _map.Height);
+            this.DrawSize = drawSize;
             this.Scale = 1.0f;
         }
 

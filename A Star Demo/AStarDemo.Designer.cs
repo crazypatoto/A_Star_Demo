@@ -76,6 +76,8 @@ namespace A_Star_Demo
             this.textBox_startNode = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
+            this.tableLayoutPanel_main = new System.Windows.Forms.TableLayoutPanel();
+            this.panel_infos = new System.Windows.Forms.Panel();
             this.menuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_mapViewer)).BeginInit();
             this.groupBox_nodeInfo.SuspendLayout();
@@ -83,6 +85,8 @@ namespace A_Star_Demo
             this.groupBox_mapInfo.SuspendLayout();
             this.groupBox_edgeConstraintsEditor.SuspendLayout();
             this.groupBox_pathPlanning.SuspendLayout();
+            this.tableLayoutPanel_main.SuspendLayout();
+            this.panel_infos.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
@@ -130,11 +134,13 @@ namespace A_Star_Demo
             // pictureBox_mapViewer
             // 
             this.pictureBox_mapViewer.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.pictureBox_mapViewer.Location = new System.Drawing.Point(12, 27);
+            this.pictureBox_mapViewer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pictureBox_mapViewer.Location = new System.Drawing.Point(3, 3);
             this.pictureBox_mapViewer.Name = "pictureBox_mapViewer";
-            this.pictureBox_mapViewer.Size = new System.Drawing.Size(824, 573);
+            this.pictureBox_mapViewer.Size = new System.Drawing.Size(829, 577);
             this.pictureBox_mapViewer.TabIndex = 2;
             this.pictureBox_mapViewer.TabStop = false;
+            this.pictureBox_mapViewer.SizeChanged += new System.EventHandler(this.pictureBox_mapViewer_SizeChanged);
             this.pictureBox_mapViewer.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pictureBox_mapViewer_MouseDown);
             this.pictureBox_mapViewer.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pictureBox_mapViewer_MouseMove);
             this.pictureBox_mapViewer.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pictureBox_mapViewer_MouseUp);
@@ -147,7 +153,7 @@ namespace A_Star_Demo
             this.groupBox_nodeInfo.Controls.Add(this.textBox_selectedNodeName);
             this.groupBox_nodeInfo.Controls.Add(this.label1);
             this.groupBox_nodeInfo.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.groupBox_nodeInfo.Location = new System.Drawing.Point(841, 146);
+            this.groupBox_nodeInfo.Location = new System.Drawing.Point(3, 122);
             this.groupBox_nodeInfo.Name = "groupBox_nodeInfo";
             this.groupBox_nodeInfo.Size = new System.Drawing.Size(181, 89);
             this.groupBox_nodeInfo.TabIndex = 3;
@@ -196,7 +202,7 @@ namespace A_Star_Demo
             this.groupBox_nodeTypeEditor.Controls.Add(this.label4);
             this.groupBox_nodeTypeEditor.Enabled = false;
             this.groupBox_nodeTypeEditor.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.groupBox_nodeTypeEditor.Location = new System.Drawing.Point(841, 241);
+            this.groupBox_nodeTypeEditor.Location = new System.Drawing.Point(3, 217);
             this.groupBox_nodeTypeEditor.Name = "groupBox_nodeTypeEditor";
             this.groupBox_nodeTypeEditor.Size = new System.Drawing.Size(181, 116);
             this.groupBox_nodeTypeEditor.TabIndex = 4;
@@ -250,7 +256,7 @@ namespace A_Star_Demo
             this.groupBox_mapInfo.Controls.Add(this.textBox_mapZone);
             this.groupBox_mapInfo.Controls.Add(this.label5);
             this.groupBox_mapInfo.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.groupBox_mapInfo.Location = new System.Drawing.Point(841, 27);
+            this.groupBox_mapInfo.Location = new System.Drawing.Point(3, 3);
             this.groupBox_mapInfo.Name = "groupBox_mapInfo";
             this.groupBox_mapInfo.Size = new System.Drawing.Size(181, 113);
             this.groupBox_mapInfo.TabIndex = 5;
@@ -329,7 +335,7 @@ namespace A_Star_Demo
             this.groupBox_edgeConstraintsEditor.Controls.Add(this.label7);
             this.groupBox_edgeConstraintsEditor.Enabled = false;
             this.groupBox_edgeConstraintsEditor.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.groupBox_edgeConstraintsEditor.Location = new System.Drawing.Point(842, 363);
+            this.groupBox_edgeConstraintsEditor.Location = new System.Drawing.Point(4, 339);
             this.groupBox_edgeConstraintsEditor.Name = "groupBox_edgeConstraintsEditor";
             this.groupBox_edgeConstraintsEditor.Size = new System.Drawing.Size(181, 237);
             this.groupBox_edgeConstraintsEditor.TabIndex = 6;
@@ -448,7 +454,7 @@ namespace A_Star_Demo
             this.groupBox_pathPlanning.Controls.Add(this.label10);
             this.groupBox_pathPlanning.Controls.Add(this.label11);
             this.groupBox_pathPlanning.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.groupBox_pathPlanning.Location = new System.Drawing.Point(1028, 30);
+            this.groupBox_pathPlanning.Location = new System.Drawing.Point(190, 6);
             this.groupBox_pathPlanning.Name = "groupBox_pathPlanning";
             this.groupBox_pathPlanning.Size = new System.Drawing.Size(174, 570);
             this.groupBox_pathPlanning.TabIndex = 7;
@@ -536,21 +542,42 @@ namespace A_Star_Demo
             this.label11.TabIndex = 19;
             this.label11.Text = "Start:";
             // 
+            // tableLayoutPanel_main
+            // 
+            this.tableLayoutPanel_main.ColumnCount = 2;
+            this.tableLayoutPanel_main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel_main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 375F));
+            this.tableLayoutPanel_main.Controls.Add(this.pictureBox_mapViewer, 0, 0);
+            this.tableLayoutPanel_main.Controls.Add(this.panel_infos, 1, 0);
+            this.tableLayoutPanel_main.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel_main.Location = new System.Drawing.Point(0, 24);
+            this.tableLayoutPanel_main.Name = "tableLayoutPanel_main";
+            this.tableLayoutPanel_main.RowCount = 1;
+            this.tableLayoutPanel_main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel_main.Size = new System.Drawing.Size(1210, 583);
+            this.tableLayoutPanel_main.TabIndex = 8;
+            // 
+            // panel_infos
+            // 
+            this.panel_infos.Controls.Add(this.groupBox_mapInfo);
+            this.panel_infos.Controls.Add(this.groupBox_pathPlanning);
+            this.panel_infos.Controls.Add(this.groupBox_nodeInfo);
+            this.panel_infos.Controls.Add(this.groupBox_edgeConstraintsEditor);
+            this.panel_infos.Controls.Add(this.groupBox_nodeTypeEditor);
+            this.panel_infos.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel_infos.Location = new System.Drawing.Point(838, 3);
+            this.panel_infos.Name = "panel_infos";
+            this.panel_infos.Size = new System.Drawing.Size(369, 577);
+            this.panel_infos.TabIndex = 3;
+            // 
             // AStarDemo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(1210, 607);
-            this.Controls.Add(this.groupBox_pathPlanning);
-            this.Controls.Add(this.groupBox_edgeConstraintsEditor);
-            this.Controls.Add(this.groupBox_mapInfo);
-            this.Controls.Add(this.groupBox_nodeTypeEditor);
-            this.Controls.Add(this.groupBox_nodeInfo);
-            this.Controls.Add(this.pictureBox_mapViewer);
+            this.Controls.Add(this.tableLayoutPanel_main);
             this.Controls.Add(this.menuStrip);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MainMenuStrip = this.menuStrip;
-            this.MaximizeBox = false;
             this.Name = "AStarDemo";
             this.Text = "A* Demo";
             this.menuStrip.ResumeLayout(false);
@@ -566,6 +593,8 @@ namespace A_Star_Demo
             this.groupBox_edgeConstraintsEditor.PerformLayout();
             this.groupBox_pathPlanning.ResumeLayout(false);
             this.groupBox_pathPlanning.PerformLayout();
+            this.tableLayoutPanel_main.ResumeLayout(false);
+            this.panel_infos.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -618,6 +647,8 @@ namespace A_Star_Demo
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.CheckBox checkBox_disallowTurning;
         private System.Windows.Forms.Button button_ClearPath;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel_main;
+        private System.Windows.Forms.Panel panel_infos;
     }
 }
 

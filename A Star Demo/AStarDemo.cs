@@ -49,7 +49,7 @@ namespace A_Star_Demo
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
                     _currentMap = new Map(dialog.MapZoneID, dialog.MapWidth, dialog.MapHeight);
-                    _mapDrawer = new MapDrawer(ref _currentMap, pictureBox_mapViewer.Width, pictureBox_mapViewer.Height);
+                    _mapDrawer = new MapDrawer(ref _currentMap, pictureBox_mapViewer.Size);
                     _pathPlanner = new AStarPlanner(_currentMap);
                     saveMapToolStripMenuItem.Enabled = true;
                     groupBox_nodeTypeEditor.Enabled = true;
@@ -83,7 +83,7 @@ namespace A_Star_Demo
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
                     _currentMap = new Map(dialog.FileName);
-                    _mapDrawer = new MapDrawer(ref _currentMap, pictureBox_mapViewer.Width, pictureBox_mapViewer.Height);
+                    _mapDrawer = new MapDrawer(ref _currentMap, pictureBox_mapViewer.Size);
                     _pathPlanner = new AStarPlanner(_currentMap);
                     saveMapToolStripMenuItem.Enabled = true;
                     groupBox_nodeTypeEditor.Enabled = true;
@@ -196,7 +196,7 @@ namespace A_Star_Demo
         {
             NodeSelect(e.Location, e.Button);
             if (e.Button == MouseButtons.Middle)
-            {                
+            {
                 _prevMouseLocation = e.Location;
                 Cursor.Current = Cursors.Hand;
             }
@@ -204,14 +204,14 @@ namespace A_Star_Demo
         private void pictureBox_mapViewer_MouseMove(object sender, MouseEventArgs e)
         {
             NodeSelect(e.Location, e.Button);
-            if (e.Button == MouseButtons.Middle && _mapDrawer!= null)
+            if (e.Button == MouseButtons.Middle && _mapDrawer != null)
             {
                 int xDiff = e.Location.X - _prevMouseLocation.X;
                 int yDiff = e.Location.Y - _prevMouseLocation.Y;
 
                 if (xDiff > _mapDrawer.CellSize)
                 {
-                    _mapDrawer.OffsetX += xDiff/_mapDrawer.CellSize;
+                    _mapDrawer.OffsetX += xDiff / _mapDrawer.CellSize;
                     _prevMouseLocation = e.Location;
                 }
                 else if (-xDiff > _mapDrawer.CellSize)
@@ -228,7 +228,7 @@ namespace A_Star_Demo
                 {
                     _mapDrawer.OffsetY += yDiff / _mapDrawer.CellSize;
                     _prevMouseLocation = e.Location;
-                }                
+                }
             }
         }
         private void pictureBox_mapViewer_MouseUp(object sender, MouseEventArgs e)
@@ -241,10 +241,16 @@ namespace A_Star_Demo
         }
         private void pictureBox_mapViewer_MouseWheel(object sender, MouseEventArgs e)
         {
-            if(_mapDrawer != null)
+            if (_mapDrawer != null)
             {
-                _mapDrawer.Scale += e.Delta / 1200.0f;                
+                _mapDrawer.Scale += e.Delta / 1200.0f;
+                Debug.WriteLine(_mapDrawer.Scale);
             }
+        }
+
+        private void pictureBox_mapViewer_SizeChanged(object sender, EventArgs e)
+        {
+            if (_mapDrawer != null) _mapDrawer.DrawSize = pictureBox_mapViewer.Size;
         }
         #endregion
 
@@ -383,6 +389,6 @@ namespace A_Star_Demo
             }
         }
 
-    
+
     }
 }
