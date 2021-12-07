@@ -52,6 +52,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AGVs\AGVHandler.cs" />
+    <Compile Include="AGVs\SimulatedAGV.cs" />
     <Compile Include="AStarDemo.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -104,10 +106,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\AGV.png" />
+    <None Include="Resources\Rack.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Rack.png" />
+    <None Include="Resources\AGV.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

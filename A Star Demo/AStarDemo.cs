@@ -13,6 +13,7 @@ using System.IO;
 using A_Star_Demo.Dialogs;
 using A_Star_Demo.Maps;
 using A_Star_Demo.PathPlanning;
+using A_Star_Demo.AGVs;
 
 namespace A_Star_Demo
 {
@@ -31,6 +32,7 @@ namespace A_Star_Demo
         private AStarPlanner _pathPlanner;
         private List<MapNode> _path;
         private Point _prevMouseLocation;
+        private AGVHandler _agvHandler;
 
         public AStarDemo()
         {
@@ -39,6 +41,7 @@ namespace A_Star_Demo
             comboBox_types.SelectedIndex = 0;
             comboBox_passingRestrictions.DataSource = Enum.GetValues(typeof(MapEdge.PassingRestrictions));
             comboBox_types.SelectedIndex = 0;
+            _agvHandler = new AGVHandler();
         }
 
         #region Menu
@@ -48,13 +51,7 @@ namespace A_Star_Demo
             {
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    _currentMap = new Map(dialog.MapZoneID, dialog.MapWidth, dialog.MapHeight);
-                    _mapDrawer = new MapDrawer(ref _currentMap, pictureBox_mapViewer.Size);
-                    _pathPlanner = new AStarPlanner(_currentMap);
-                    saveMapToolStripMenuItem.Enabled = true;
-                    groupBox_nodeTypeEditor.Enabled = true;
-                    groupBox_edgeConstraintsEditor.Enabled = true;
-                    UpdateMapInfo();
+                    LoadNewMap(new Map(dialog.MapZoneID, dialog.MapWidth, dialog.MapHeight));
                 }
             }
         }
@@ -82,15 +79,32 @@ namespace A_Star_Demo
                 dialog.Title = "Open map file";
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    _currentMap = new Map(dialog.FileName);
-                    _mapDrawer = new MapDrawer(ref _currentMap, pictureBox_mapViewer.Size);
-                    _pathPlanner = new AStarPlanner(_currentMap);
-                    saveMapToolStripMenuItem.Enabled = true;
-                    groupBox_nodeTypeEditor.Enabled = true;
-                    groupBox_edgeConstraintsEditor.Enabled = true;
-                    UpdateMapInfo();
+                    LoadNewMap(new Map(dialog.FileName));   
                 }
             }
+        }
+        private void addAGVToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_selectedNode == null)
+            {
+                MessageBox.Show("Please select a node first!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            if (_selectedNode.Type == MapNode.Types.Wall)
+            {
+                MessageBox.Show("You cannot place an AGV over here!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            if(_agvHandler.AGVList.FindAll(agv => agv.Node == _selectedNode).Count > 0)
+            {
+                MessageBox.Show("You cannot place an AGV over here!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            var selectedAGV = _agvHandler.AddSimulatedAGV(_selectedNode);
+            textBox_selectedAGVName.Text = selectedAGV.Name;
+            textBox_selectedAGVNode.Text = selectedAGV.Node.Name;
+            textBox_selectedAGVStatus.Text = selectedAGV.Status.ToString();
+            textBox_selectedAGVHeading.Text = selectedAGV.Heading.ToString();
         }
         #endregion
 
@@ -254,8 +268,22 @@ namespace A_Star_Demo
         }
         #endregion
 
-        private void UpdateMapInfo()
+        private void LoadNewMap(Map newMap)
         {
+            _currentMap = newMap;
+            _mapDrawer = new MapDrawer(ref _currentMap, pictureBox_mapViewer.Size);
+            _pathPlanner = new AStarPlanner(_currentMap);
+            saveMapToolStripMenuItem.Enabled = true;
+            groupBox_nodeTypeEditor.Enabled = true;
+            groupBox_edgeConstraintsEditor.Enabled = true;
+            _selectedNode = null;
+            _selectedEdgeNode1 = null;
+            _selectedEdgeNode2 = null;
+            textBox_selectedNodeName.Clear();
+            textBox_selectedNodeType.Clear();
+            textBox_edgeNode1.Clear();
+            textBox_edgeNode2.Clear();
+            
             textBox_mapSN.Text = _currentMap.SerialNumber;
             textBox_mapZone.Text = _currentMap.ZoneID.ToString();
             textBox_mapDIM.Text = $"{_currentMap.Width} x {_currentMap.Height}";
@@ -282,6 +310,14 @@ namespace A_Star_Demo
                         textBox_selectedNodeName.Text = _selectedNode.Name;
                         textBox_selectedNodeType.Text = _selectedNode.Type.ToString();
                         textBox_selectedNodeType.BackColor = MapDrawer.NodeTypeColorDict[_selectedNode.Type];
+                        var selectedAGV = _agvHandler.AGVList.Find(agv => agv.Node == _selectedNode);
+                        if (selectedAGV != null)
+                        {
+                            textBox_selectedAGVName.Text = selectedAGV.Name;
+                            textBox_selectedAGVNode.Text = selectedAGV.Node.Name;
+                            textBox_selectedAGVStatus.Text = selectedAGV.Status.ToString();
+                            textBox_selectedAGVHeading.Text = selectedAGV.Heading.ToString();
+                        }          
                         if (_isEditingType)
                         {
                             _selectedNode.Type = (MapNode.Types)comboBox_types.SelectedItem;
@@ -385,10 +421,23 @@ namespace A_Star_Demo
         {
             if (_currentMap != null)
             {
-                pictureBox_mapViewer.Image = _mapDrawer.GetMapPicture(_selectedNode, _selectedEdgeNode1, _selectedEdgeNode2, checkBox_showConstraints.Checked, comboBox_constraintLayers.SelectedIndex, _path);
+                _mapDrawer.DrawNewMap();
+                _mapDrawer.DrawSelectedNode(_selectedNode);
+                _mapDrawer.DrawSelectedEdge(_selectedEdgeNode1, _selectedEdgeNode2);
+                if (checkBox_showConstraints.Checked)
+                {
+                    _mapDrawer.DrawEdgeConstraints(comboBox_constraintLayers.SelectedIndex);
+                }
+                _mapDrawer.DrawSinglePath(_path);
+                _mapDrawer.DrawAGVs(_agvHandler.AGVList);
+                pictureBox_mapViewer.Image = _mapDrawer.GetMapPicture();
             }
         }
 
+        private void testToolStripMenuItem_Click(object sender, EventArgs e)
+        {            
+        }
 
+       
     }
 }

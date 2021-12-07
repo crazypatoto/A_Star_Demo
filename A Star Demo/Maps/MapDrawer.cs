@@ -8,6 +8,7 @@ using System.Drawing.Drawing2D;
 using System.Diagnostics;
 using A_Star_Demo.Maps;
 using A_Star_Demo.Models;
+using A_Star_Demo.AGVs;
 
 namespace A_Star_Demo.Dialogs
 {
@@ -71,7 +72,11 @@ namespace A_Star_Demo.Dialogs
             this.Scale = 1.0f;
         }
 
-        public Bitmap GetMapPicture(MapNode selectedNode, MapNode selectedEdgeNode1 = null, MapNode selectedEdgeNode2 = null, bool drawEdgeConstraints = false, int selectedLayerIndex = 0, List<MapNode> path = null)
+        public Bitmap GetMapPicture()
+        {
+            return _mapBMP;
+        }
+        public void DrawNewMap()
         {
             _mapBMP?.Dispose();
             _mapBMP = new Bitmap(_drawSize.Width, _drawSize.Height);
@@ -88,26 +93,42 @@ namespace A_Star_Demo.Dialogs
                         if (x != _map.Width && y != _map.Height)
                         {
                             var currentNode = _map.AllNodes[y, x];
-                            Brush brush = new SolidBrush(NodeTypeColorDict[currentNode.Type]);
-                            graphics.FillRectangle(brush, drawX * _scaledCellSize, drawY * _scaledCellSize, _scaledCellSize, _scaledCellSize);
-                            if (currentNode.DisallowTurningOnNode)
+                            if (currentNode.Type != MapNode.Types.None)
                             {
-                                graphics.DrawLine(new Pen(Color.Red, 1), drawX * _scaledCellSize, drawY * _scaledCellSize, (drawX + 1) * _scaledCellSize, (drawY + 1) * _scaledCellSize);
-                                graphics.DrawLine(new Pen(Color.Red, 1), (drawX + 1) * _scaledCellSize, drawY * _scaledCellSize, drawX * _scaledCellSize, (drawY + 1) * _scaledCellSize);
+                                Brush brush = new SolidBrush(NodeTypeColorDict[currentNode.Type]);
+                                // Draw node
+                                graphics.FillRectangle(brush, drawX * _scaledCellSize, drawY * _scaledCellSize, _scaledCellSize, _scaledCellSize);
+                                if (currentNode.DisallowTurningOnNode)
+                                {
+                                    // Draw X on disallow truning node
+                                    graphics.DrawLine(new Pen(Color.Red, 1), drawX * _scaledCellSize, drawY * _scaledCellSize, (drawX + 1) * _scaledCellSize, (drawY + 1) * _scaledCellSize);
+                                    graphics.DrawLine(new Pen(Color.Red, 1), (drawX + 1) * _scaledCellSize, drawY * _scaledCellSize, drawX * _scaledCellSize, (drawY + 1) * _scaledCellSize);
+                                }
                             }
                         }
-                        graphics.DrawLine(new Pen(Color.Black, GridWidth), OffsetX * _scaledCellSize, drawY * _scaledCellSize, (_map.Width + OffsetX) * _scaledCellSize, drawY * _scaledCellSize);
-                        graphics.DrawLine(new Pen(Color.Black, GridWidth), drawX * _scaledCellSize, OffsetY * _scaledCellSize, drawX * _scaledCellSize, (_map.Height + OffsetY) * _scaledCellSize);
-
+                        // Draw gird lines
+                        graphics.DrawLine(new Pen(Color.White, GridWidth), OffsetX * _scaledCellSize, drawY * _scaledCellSize, (_map.Width + OffsetX) * _scaledCellSize, drawY * _scaledCellSize);
+                        graphics.DrawLine(new Pen(Color.White, GridWidth), drawX * _scaledCellSize, OffsetY * _scaledCellSize, drawX * _scaledCellSize, (_map.Height + OffsetY) * _scaledCellSize);
                     }
                 }
-                if (selectedNode != null)
-                {
-                    graphics.DrawRectangle(new Pen(Color.Red, GridWidth), (selectedNode.Location.X + OffsetX) * _scaledCellSize, (selectedNode.Location.Y + OffsetY) * _scaledCellSize, _scaledCellSize, _scaledCellSize);
-                }
-                if (selectedEdgeNode1 != null && selectedEdgeNode2 != null && selectedEdgeNode1.IsNeighbourNode(selectedEdgeNode2))
-                {
+            }
+        }
 
+        public void DrawSelectedNode(MapNode selectedNode)
+        {
+            if (selectedNode == null) return;
+            using (var graphics = Graphics.FromImage(_mapBMP))
+            {
+                graphics.DrawRectangle(new Pen(Color.Red, GridWidth), (selectedNode.Location.X + OffsetX) * _scaledCellSize, (selectedNode.Location.Y + OffsetY) * _scaledCellSize, _scaledCellSize, _scaledCellSize);
+            }
+        }
+
+        public void DrawSelectedEdge(MapNode selectedEdgeNode1, MapNode selectedEdgeNode2)
+        {
+            if (selectedEdgeNode1 != null && selectedEdgeNode2 != null && selectedEdgeNode1.IsNeighbourNode(selectedEdgeNode2))
+            {
+                using (var graphics = Graphics.FromImage(_mapBMP))
+                {
                     var n1X = selectedEdgeNode1.Location.X;
                     var n1Y = selectedEdgeNode1.Location.Y;
                     var n2X = selectedEdgeNode2.Location.X;
@@ -121,55 +142,89 @@ namespace A_Star_Demo.Dialogs
                         graphics.DrawRectangle(new Pen(Color.Blue, GridWidth * 2), (n2X + OffsetX) * _scaledCellSize, (n2Y + OffsetY) * _scaledCellSize, (n1X - n2X + 1) * _scaledCellSize, (n1Y - n2Y + 1) * _scaledCellSize);
                     }
                 }
-                if (drawEdgeConstraints)
+            }
+        }
+
+        public void DrawEdgeConstraints(int selectedLayerIndex = 0)
+        {
+            using (var graphics = Graphics.FromImage(_mapBMP))
+            {
+                Pen pen = new Pen(Color.Red, GridWidth * 2);
+                for (int y = 0; y < 2 * _map.Height - 1; y++)
                 {
-                    Pen pen = new Pen(Color.Red, GridWidth * 2);
-                    for (int y = 0; y < 2 * _map.Height - 1; y++)
+                    for (int x = 0; x < _map.Width; x++)
                     {
-                        for (int x = 0; x < _map.Width; x++)
+                        int drawX = x + OffsetX;
+                        int drawY = y + OffsetY * 2;
+                        if (drawX > _drawSize.Width || drawY > _drawSize.Height) continue;
+                        var edgeConstraints = _map.ConstraintLayers[selectedLayerIndex].EdgeConstraints[y, x];
+                        var edgePermission = (~((byte)edgeConstraints.PassingRestriction)) & 0x03;
+                        if (edgePermission == 0) continue;
+                        pen.StartCap = LineCap.NoAnchor;
+                        pen.EndCap = LineCap.NoAnchor;
+                        if ((edgePermission & 0x01) > 0) pen.EndCap = LineCap.ArrowAnchor;
+                        if ((edgePermission & 0x02) > 0) pen.StartCap = LineCap.ArrowAnchor;
+                        if (y % 2 == 0)
                         {
-                            int drawX = x + OffsetX;
-                            int drawY = y + OffsetY * 2;
-                            if (drawX > _drawSize.Width || drawY > _drawSize.Height) continue;
-                            var edgeConstraints = _map.ConstraintLayers[selectedLayerIndex].EdgeConstraints[y, x];
-                            var edgePermission = (~((byte)edgeConstraints.PassingRestriction)) & 0x03;
-                            if (edgePermission == 0) continue;
-                            pen.StartCap = LineCap.NoAnchor;
-                            pen.EndCap = LineCap.NoAnchor;
-                            if ((edgePermission & 0x01) > 0) pen.EndCap = LineCap.ArrowAnchor;
-                            if ((edgePermission & 0x02) > 0) pen.StartCap = LineCap.ArrowAnchor;
-                            if (y % 2 == 0)     // Draw horizaontal arrows
+                            // Draw horizaontal arrows
+                            if (x < _map.Width - 1)
                             {
-                                if (x < _map.Width - 1)
-                                {
-                                    graphics.DrawLine(pen, (drawX + 0.5f) * _scaledCellSize, (drawY / 2 + 0.5f) * _scaledCellSize, (drawX + 1.5f) * _scaledCellSize, (drawY / 2 + 0.5f) * _scaledCellSize);
-                                }
+                                graphics.DrawLine(pen, (drawX + 0.5f) * _scaledCellSize, (drawY / 2 + 0.5f) * _scaledCellSize, (drawX + 1.5f) * _scaledCellSize, (drawY / 2 + 0.5f) * _scaledCellSize);
                             }
-                            else                // Draw vertical arrows
+                        }
+                        else                
+                        {
+                            // Draw vertical arrows
+                            if (y < 2 * _map.Height - 2)
                             {
-                                if (y < 2 * _map.Height - 2)
-                                {
-                                    graphics.DrawLine(pen, (drawX + 0.5f) * _scaledCellSize, (drawY / 2 + 0.5f) * _scaledCellSize, (drawX + 0.5f) * _scaledCellSize, (drawY / 2 + 1.5f) * _scaledCellSize);
-                                }
+                                graphics.DrawLine(pen, (drawX + 0.5f) * _scaledCellSize, (drawY / 2 + 0.5f) * _scaledCellSize, (drawX + 0.5f) * _scaledCellSize, (drawY / 2 + 1.5f) * _scaledCellSize);
                             }
                         }
                     }
                 }
-                if (path != null)
-                {
-                    Pen pen = new Pen(Color.Green, GridWidth * 2);
-                    for (int i = 0; i < path.Count; i++)
-                    {
-                        Color interpolatedColor = Color.FromArgb(i * 255 / path.Count, 255 - i * 255 / path.Count, 0);
-                        pen.Color = interpolatedColor;
-                        graphics.DrawRectangle(pen, (path[i].Location.X + OffsetX) * _scaledCellSize, (path[i].Location.Y + OffsetY) * _scaledCellSize, _scaledCellSize, _scaledCellSize);
-                    }
-                }
-                graphics.DrawImage(Properties.Resources.AGV, 0, 0, _scaledCellSize, _scaledCellSize);
-                graphics.DrawImage(Properties.Resources.Rack, 0, 0, _scaledCellSize, _scaledCellSize);
             }
+        }
 
-            return _mapBMP;
+        public void DrawSinglePath(List<MapNode> path)
+        {
+            if (path == null) return;
+            if (path.Count == 0) return;
+            using (var graphics = Graphics.FromImage(_mapBMP))
+            {
+                Pen pen = new Pen(Color.Green, GridWidth * 1.5f);
+                for (int i = 0; i < path.Count; i++)
+                {
+                    Color interpolatedColor = Color.FromArgb(100, i * 255 / path.Count, 255 - i * 255 / path.Count, 0);
+                    pen.Color = interpolatedColor;
+                    graphics.DrawRectangle(pen, (path[i].Location.X + OffsetX) * _scaledCellSize, (path[i].Location.Y + OffsetY) * _scaledCellSize, _scaledCellSize, _scaledCellSize);
+                }
+            }
+        }
+
+        public void DrawAGVs(List<SimulatedAGV> agvList)
+        {
+            if (agvList == null) return;
+            if (agvList.Count == 0) return;
+            using (var graphics = Graphics.FromImage(_mapBMP))
+            {
+                foreach (var agv in agvList)
+                {
+                    Image agvImage = Properties.Resources.AGV;
+                    switch (agv.Heading)
+                    {
+                        case SimulatedAGV.AGVHeading.Up:
+                            agvImage.RotateFlip(RotateFlipType.Rotate270FlipNone);
+                            break;
+                        case SimulatedAGV.AGVHeading.Left:
+                            agvImage.RotateFlip(RotateFlipType.Rotate180FlipNone);
+                            break;
+                        case SimulatedAGV.AGVHeading.Down:
+                            agvImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                            break;
+                    }
+                    graphics.DrawImage(agvImage, (agv.Node.Location.X + OffsetX) * _scaledCellSize, (agv.Node.Location.Y + OffsetY) * _scaledCellSize, _scaledCellSize, _scaledCellSize);
+                }
+            }
         }
 
         public MapNode GetNodeByPosition(int x, int y)
