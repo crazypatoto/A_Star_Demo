@@ -9,7 +9,7 @@ using A_Star_Demo.Maps;
 using A_Star_Demo.Models;
 
 
-namespace A_Star_Demo
+namespace A_Star_Demo.Maps
 {
     public class Map
     {
@@ -20,6 +20,7 @@ namespace A_Star_Demo
         public MapNode[,] AllNodes { get; private set; }
 
         public List<ConstraintLayer> ConstraintLayers;
+        public List<Rack> RackList;
 
         public Map(byte zoneID, int width, int height)
         {
@@ -39,6 +40,7 @@ namespace A_Star_Demo
 
             this.ConstraintLayers = new List<ConstraintLayer>();
             this.ConstraintLayers.Add(new ConstraintLayer(this, "Default"));
+            this.RackList = new List<Rack>();
         }
 
         public Map(string path)
@@ -71,6 +73,7 @@ namespace A_Star_Demo
                         }
                     }
                 }
+                this.RackList = new List<Rack>();
             }
         }
 

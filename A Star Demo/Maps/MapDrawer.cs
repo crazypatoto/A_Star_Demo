@@ -10,7 +10,7 @@ using A_Star_Demo.Maps;
 using A_Star_Demo.Models;
 using A_Star_Demo.AGVs;
 
-namespace A_Star_Demo.Dialogs
+namespace A_Star_Demo.Maps
 {
     public class MapDrawer
     {
@@ -25,6 +25,8 @@ namespace A_Star_Demo.Dialogs
         public int OffsetX { get; set; } = 0;
         public int OffsetY { get; set; } = 0;
         public int CellSize { get { return _scaledCellSize; } }
+
+        public List<AGV> RefererAGVList { get; set; }
         public float Scale
         {
             get
@@ -34,7 +36,6 @@ namespace A_Star_Demo.Dialogs
             set
             {
                 _scale = value;
-                if (_scale < 0.1f) _scale = 0.1f;
                 _scaledCellSize = (int)(_cellSize * _scale);
                 if (_scaledCellSize < _minCellSize)
                 {
@@ -54,6 +55,7 @@ namespace A_Star_Demo.Dialogs
                 _drawSize = value;
                 _cellSize = Math.Min(DrawSize.Width / _map.Width, DrawSize.Height / _map.Height);
                 if (_cellSize < _minCellSize) _cellSize = _minCellSize;
+                _scale = (float)_scaledCellSize / _cellSize;
             }
         }
 
@@ -65,7 +67,7 @@ namespace A_Star_Demo.Dialogs
             {MapNode.Types.Wall, Color.DarkGray },
         };
 
-        public MapDrawer(ref Map map, Size drawSize)
+        public MapDrawer(Map map, Size drawSize)
         {
             _map = map;
             this.DrawSize = drawSize;
@@ -94,18 +96,18 @@ namespace A_Star_Demo.Dialogs
                         if (x != _map.Width && y != _map.Height)
                         {
                             var currentNode = _map.AllNodes[y, x];
+                            Brush brush = new SolidBrush(NodeTypeColorDict[currentNode.Type]);
+                            // Draw node
                             if (currentNode.Type != MapNode.Types.None)
                             {
-                                Brush brush = new SolidBrush(NodeTypeColorDict[currentNode.Type]);
-                                // Draw node
                                 graphics.FillRectangle(brush, drawX * _scaledCellSize, drawY * _scaledCellSize, _scaledCellSize, _scaledCellSize);
-                                if (currentNode.DisallowTurningOnNode)
-                                {
-                                    // Draw X on disallow truning node
-                                    graphics.DrawLine(new Pen(Color.Red, 1), drawX * _scaledCellSize, drawY * _scaledCellSize, (drawX + 1) * _scaledCellSize, (drawY + 1) * _scaledCellSize);
-                                    graphics.DrawLine(new Pen(Color.Red, 1), (drawX + 1) * _scaledCellSize, drawY * _scaledCellSize, drawX * _scaledCellSize, (drawY + 1) * _scaledCellSize);
-                                }
-                            }
+                            }                            
+                            if (currentNode.DisallowTurningOnNode)
+                            {
+                                // Draw X on disallow truning node
+                                graphics.DrawLine(new Pen(Color.Red, 1), drawX * _scaledCellSize, drawY * _scaledCellSize, (drawX + 1) * _scaledCellSize, (drawY + 1) * _scaledCellSize);
+                                graphics.DrawLine(new Pen(Color.Red, 1), (drawX + 1) * _scaledCellSize, drawY * _scaledCellSize, drawX * _scaledCellSize, (drawY + 1) * _scaledCellSize);
+                            }                            
                         }
                         // Draw gird lines
                         graphics.DrawLine(new Pen(Color.White, GridWidth), OffsetX * _scaledCellSize, drawY * _scaledCellSize, (_map.Width + OffsetX) * _scaledCellSize, drawY * _scaledCellSize);
@@ -202,13 +204,13 @@ namespace A_Star_Demo.Dialogs
             }
         }
 
-        public void DrawAGVs(List<SimulatedAGV> agvList)
+        public void DrawAGVs()
         {
-            if (agvList == null) return;
-            if (agvList.Count == 0) return;
+            if (RefererAGVList == null) return;
+            if (RefererAGVList.Count == 0) return;
             using (var graphics = Graphics.FromImage(_mapBMP))
             {
-                foreach (var agv in agvList)
+                foreach (var agv in RefererAGVList)
                 {
                     Image agvImage = Properties.Resources.AGV;
                     switch (agv.Heading)
@@ -223,28 +225,69 @@ namespace A_Star_Demo.Dialogs
                             agvImage.RotateFlip(RotateFlipType.Rotate90FlipNone);
                             break;
                     }
-                    graphics.DrawImage(agvImage, (agv.Node.Location.X + OffsetX) * _scaledCellSize, (agv.Node.Location.Y + OffsetY) * _scaledCellSize, _scaledCellSize, _scaledCellSize);
+                    graphics.DrawImage(agvImage, (agv.CurrentNode.Location.X + OffsetX) * _scaledCellSize, (agv.CurrentNode.Location.Y + OffsetY) * _scaledCellSize, _scaledCellSize, _scaledCellSize);
                 }
             }
         }
 
-        public void DrawAllAGVPath(List<SimulatedAGV> agvList)
+        public void DrawAllAGVPath()
         {
+            if (RefererAGVList == null) return;
+            if (RefererAGVList.Count == 0) return;
             using (var graphics = Graphics.FromImage(_mapBMP))
             {
-                foreach (var agv in agvList)
+                foreach (var agv in RefererAGVList)
                 {
                     Pen pen = new Pen(Color.Green, GridWidth * 1.5f);
                     if (agv.AssignedPath == null) continue;
                     if (agv.AssignedPath.Count == 0) continue;
                     var path = new List<MapNode>(agv.AssignedPath);
                     pen.Color = Color.FromArgb(100, 0, 255, 0);
-                    graphics.DrawRectangle(pen, (agv.Node.Location.X + OffsetX) * _scaledCellSize, (agv.Node.Location.Y + OffsetY) * _scaledCellSize, _scaledCellSize, _scaledCellSize);
+                    graphics.DrawRectangle(pen, (agv.CurrentNode.Location.X + OffsetX) * _scaledCellSize, (agv.CurrentNode.Location.Y + OffsetY) * _scaledCellSize, _scaledCellSize, _scaledCellSize);
                     for (int i = 0; i < path.Count; i++)
                     {
                         Color interpolatedColor = Color.FromArgb(100, (i + 1) * 255 / path.Count, 255 - (i + 1) * 255 / path.Count, 0);
                         pen.Color = interpolatedColor;
                         graphics.DrawRectangle(pen, (path[i].Location.X + OffsetX) * _scaledCellSize, (path[i].Location.Y + OffsetY) * _scaledCellSize, _scaledCellSize, _scaledCellSize);
+                    }
+                }
+            }
+        }
+
+        public void DrawRacks()
+        {
+            using (var graphics = Graphics.FromImage(_mapBMP))
+            {
+                foreach (var rack in _map.RackList)
+                {
+                    Image rackImage = null;
+                    switch (rack.Heading)
+                    {
+                        case Rack.RackHeading.Up:
+                            rackImage = Properties.Resources.Rack_Up;
+                            break;
+                        case Rack.RackHeading.Left:
+                            rackImage = Properties.Resources.Rack_Left;
+                            break;
+                        case Rack.RackHeading.Right:
+                            rackImage = Properties.Resources.Rack_Right;
+                            break;
+                        case Rack.RackHeading.Down:
+                            rackImage = Properties.Resources.Rack_Down;
+                            break;
+                    }
+                    var agvOnNode = this.RefererAGVList?.Find(agv => agv.CurrentNode == rack.CurrentNode);
+                    if (agvOnNode != null)
+                    {
+                        graphics.DrawImage(rackImage, (rack.CurrentNode.Location.X + OffsetX) * _scaledCellSize, (rack.CurrentNode.Location.Y + OffsetY) * _scaledCellSize, _scaledCellSize / 2, _scaledCellSize / 2);
+                        if(agvOnNode.BoundRack == rack)
+                        {
+                            graphics.DrawImage(Properties.Resources.Link,(rack.CurrentNode.Location.X + OffsetX) * _scaledCellSize, (rack.CurrentNode.Location.Y + OffsetY) * _scaledCellSize, _scaledCellSize, _scaledCellSize);
+                        }
+                    }
+                    else
+                    {
+                        graphics.DrawImage(rackImage, (rack.CurrentNode.Location.X + OffsetX) * _scaledCellSize, (rack.CurrentNode.Location.Y + OffsetY) * _scaledCellSize, _scaledCellSize, _scaledCellSize);
                     }
                 }
             }

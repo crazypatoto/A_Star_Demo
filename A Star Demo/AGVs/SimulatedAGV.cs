@@ -11,81 +11,41 @@ using A_Star_Demo.Models;
 
 namespace A_Star_Demo.AGVs
 {
-    public class SimulatedAGV
-    {
-        #region Enums
-        [Flags]
-        public enum AGVStates
-        {
-            Idle = 0,
-            Moving,                             // AGV is moving.
-            Rotating,                           // AGV is rotating.
-            RotatingRack,                       // AGV is rotating rack.
-            DockingRack,                        // AGV is docking with rack.
-            UnDockingRack,                      // AGV is undocking with rack.
-            DockingChargeStation,               // AGV is docking with charging station.
-            UnDockingChargeStation,             // AGV is undocking with charging staiton.
-            Charging,                           // AGV is charging.
-            ChargeFinished,                     // AGV has finished charging.
-
-            Disconnected = 100,                 // AGV is disconnected
-            Blocked,                            // AGV is blocked by obstacle or other AGVs
-            UnknownError,                       // AGV encounters unknown error
-        }
-
-        public enum AGVHeading : int
-        {
-            Up = 90,
-            Down = -90,
-            Left = 180,
-            Right = 0
-        }
-        #endregion
-        public int ID { get; }
-        public string Name { get; private set; }
-        public MapNode Node { get; private set; }
-
-        public AGVStates State { get; private set; }
-
-        private AGVHeading _heading;
-        public AGVHeading Heading
-        {
-            get
-            {
-                return _heading;
-            }
-            private set
-            {
-                _heading = value;
-                _heading = (AGVHeading)((int)_heading % 360);
-                if ((int)_heading > 180) _heading -= 180;
-                else if ((int)_heading <= -180) _heading += 180;
-            }
-        }
-
-        public List<MapNode> AssignedPath { get; private set; }
-
+    public class SimulatedAGV : AGV
+    {        
+        private AGVHeading? _targetHeading = null;
         private readonly CancellationTokenSource _cts;
-
 
         public SimulatedAGV(int id, string name, MapNode node)
         {
             this.ID = id;
             this.Name = name;
-            this.Node = node;
+            this.CurrentNode = node;
             this.State = AGVStates.Idle;
             this.Heading = AGVHeading.Right;
             _cts = new CancellationTokenSource();
             Task.Run(() => AGVSimulation(_cts.Token));
         }
 
-        public void AssignNewPath(List<MapNode> path)
+        public override void AssignNewPathAndMove(List<MapNode> path)
         {
             if (path == null) return;
-            AssignedPath = new List<MapNode>(path);
+            if (path.Count <= 1) return;
+            if (path.First() != this.CurrentNode) return;
+            this.AssignedPath = new List<MapNode>(path);
+            this.AssignedPath.RemoveAt(0);
+            _targetHeading = GetNextHeading(this.CurrentNode, this.AssignedPath.First());
+            if (this.Heading == _targetHeading)
+            {
+                this.State = AGVStates.Moving;
+            }
+            else
+            {
+                this.State = AGVStates.Rotating;
+            }
         }
 
-        public void Destroy()
+        public override void Disconnect()
         {
             _cts.Cancel();
         }
@@ -97,27 +57,15 @@ namespace A_Star_Demo.AGVs
                 var nextNode = AssignedPath?.FirstOrDefault();
                 switch (this.State)
                 {
-                    case AGVStates.Idle:
-                        if (nextNode != null)
-                        {
-                            if (this.Node == nextNode)
-                            {
-                                this.State = AGVStates.Moving;
-                                AssignedPath.RemoveAt(0);
-                            }
-                            else
-                            {
-                                this.State = AGVStates.UnknownError;
-                                AssignedPath.Clear();
-                            }
-                        }
+                    case AGVStates.Idle:                       
                         break;
                     case AGVStates.Moving:
                         if (nextNode != null)
                         {
-                            if (this.Heading == GetNextHeading(this.Node, nextNode))
+                            _targetHeading = GetNextHeading(this.CurrentNode, nextNode);
+                            if (this.Heading == _targetHeading)
                             {
-                                this.Node = nextNode;
+                                this.CurrentNode = nextNode;
                                 AssignedPath.RemoveAt(0);
                             }
                             else
@@ -131,26 +79,31 @@ namespace A_Star_Demo.AGVs
                         }
                         break;
                     case AGVStates.Rotating:
-                        var nextHeading = GetNextHeading(this.Node, nextNode);
-                        if (this.Heading == nextHeading)
+                        if (_targetHeading == null)
                         {
-                            this.State = AGVStates.Moving;
+                            this.State = AGVStates.UnknownError;
                         }
                         else
                         {
-                            if (Math.Abs(nextHeading - this.Heading) == 180)
+                            if (this.Heading == _targetHeading)
                             {
-                                this.Heading += 90;
+                                this.State = AGVStates.Moving;
                             }
                             else
                             {
-                                this.Heading = nextHeading;
+                                if (Math.Abs((int)(_targetHeading - this.Heading)) == 180)
+                                {
+                                    this.Heading += 90;
+                                }
+                                else
+                                {
+                                    this.Heading = (AGVHeading)_targetHeading;
+                                }
                             }
                         }
                         break;
-                }
-                Debug.WriteLine($"{this.Name}: State = {this.State}, Heading = {this.Heading}");
-                await Task.Delay(100);
+                }                
+                await Task.Delay(200);
             }
             this.State = AGVStates.Disconnected;
         }

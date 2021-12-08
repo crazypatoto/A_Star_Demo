@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AGVs\AGV.cs" />
     <Compile Include="AGVs\AGVHandler.cs" />
     <Compile Include="AGVs\SimulatedAGV.cs" />
     <Compile Include="AStarDemo.cs">
@@ -71,10 +72,17 @@
     <Compile Include="Maps\MapEdge.cs" />
     <Compile Include="Maps\MapNode.cs" />
     <Compile Include="Models\Location.cs" />
+    <Compile Include="Models\Rack.cs" />
     <Compile Include="PathPlanning\AStarPlanner.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\AGVTask.cs" />
+    <Compile Include="Windows\MapEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\MapEditor.Designer.cs">
+      <DependentUpon>MapEditor.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="AStarDemo.resx">
       <DependentUpon>AStarDemo.cs</DependentUpon>
     </EmbeddedResource>
@@ -91,6 +99,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Windows\MapEditor.resx">
+      <DependentUpon>MapEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="app.manifest" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -107,10 +118,25 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\AGV.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Link.png" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="Resources\Rack.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\AGV.png" />
+    <None Include="Resources\Rack_Down.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Rack_Left.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Rack_Right.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Rack_Up.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

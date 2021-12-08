@@ -35,17 +35,19 @@ namespace A_Star_Demo
             this.newMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openMapEditorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.editRacksToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addRackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteRackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.simulationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addAGVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox_nodeInfo = new System.Windows.Forms.GroupBox();
             this.textBox_selectedNodeType = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.textBox_selectedNodeName = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.groupBox_nodeTypeEditor = new System.Windows.Forms.GroupBox();
-            this.checkBox_disallowTurning = new System.Windows.Forms.CheckBox();
-            this.button_startEditingNode = new System.Windows.Forms.Button();
-            this.comboBox_types = new System.Windows.Forms.ComboBox();
-            this.label4 = new System.Windows.Forms.Label();
             this.groupBox_mapInfo = new System.Windows.Forms.GroupBox();
             this.textBox_mapDIM = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
@@ -54,18 +56,6 @@ namespace A_Star_Demo
             this.textBox_mapZone = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.timer_mapRefresh = new System.Windows.Forms.Timer(this.components);
-            this.groupBox_edgeConstraintsEditor = new System.Windows.Forms.GroupBox();
-            this.button_deleteLayer = new System.Windows.Forms.Button();
-            this.button_addLayer = new System.Windows.Forms.Button();
-            this.comboBox_constraintLayers = new System.Windows.Forms.ComboBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.comboBox_passingRestrictions = new System.Windows.Forms.ComboBox();
-            this.button_startEditingEdge = new System.Windows.Forms.Button();
-            this.checkBox_showConstraints = new System.Windows.Forms.CheckBox();
-            this.textBox_edgeNode2 = new System.Windows.Forms.TextBox();
-            this.label8 = new System.Windows.Forms.Label();
-            this.textBox_edgeNode1 = new System.Windows.Forms.TextBox();
-            this.label7 = new System.Windows.Forms.Label();
             this.groupBox_pathPlanning = new System.Windows.Forms.GroupBox();
             this.button_ClearPath = new System.Windows.Forms.Button();
             this.comboBox_planningLayer = new System.Windows.Forms.ComboBox();
@@ -79,38 +69,47 @@ namespace A_Star_Demo
             this.tableLayoutPanel_main = new System.Windows.Forms.TableLayoutPanel();
             this.pictureBox_mapViewer = new System.Windows.Forms.PictureBox();
             this.panel_infos = new System.Windows.Forms.Panel();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.textBox_selectedAGVHeading = new System.Windows.Forms.TextBox();
+            this.groupBox_rackInfo = new System.Windows.Forms.GroupBox();
+            this.textBox_rackHeading = new System.Windows.Forms.TextBox();
+            this.label17 = new System.Windows.Forms.Label();
+            this.textBox_rackHome = new System.Windows.Forms.TextBox();
+            this.label18 = new System.Windows.Forms.Label();
+            this.textBox_rackNode = new System.Windows.Forms.TextBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.textBox_rackName = new System.Windows.Forms.TextBox();
+            this.label20 = new System.Windows.Forms.Label();
+            this.groupBox_agvInfo = new System.Windows.Forms.GroupBox();
+            this.textBox_agvRack = new System.Windows.Forms.TextBox();
+            this.label21 = new System.Windows.Forms.Label();
+            this.textBox_agvHeading = new System.Windows.Forms.TextBox();
             this.label16 = new System.Windows.Forms.Label();
-            this.textBox_selectedAGVStatus = new System.Windows.Forms.TextBox();
+            this.textBox_agvStatus = new System.Windows.Forms.TextBox();
             this.label15 = new System.Windows.Forms.Label();
-            this.textBox_selectedAGVNode = new System.Windows.Forms.TextBox();
+            this.textBox_agvNode = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
-            this.textBox_selectedAGVName = new System.Windows.Forms.TextBox();
+            this.textBox_agvName = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
-            this.simulationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addAGVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.groupBox_nodeInfo.SuspendLayout();
-            this.groupBox_nodeTypeEditor.SuspendLayout();
             this.groupBox_mapInfo.SuspendLayout();
-            this.groupBox_edgeConstraintsEditor.SuspendLayout();
             this.groupBox_pathPlanning.SuspendLayout();
             this.tableLayoutPanel_main.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_mapViewer)).BeginInit();
             this.panel_infos.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.groupBox_rackInfo.SuspendLayout();
+            this.groupBox_agvInfo.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip
             // 
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
+            this.editToolStripMenuItem,
             this.simulationToolStripMenuItem,
             this.testToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Size = new System.Drawing.Size(1210, 24);
+            this.menuStrip.Size = new System.Drawing.Size(1450, 24);
             this.menuStrip.TabIndex = 1;
             this.menuStrip.Text = "menuStrip1";
             // 
@@ -146,6 +145,62 @@ namespace A_Star_Demo
             this.loadMapToolStripMenuItem.Text = "Load Map";
             this.loadMapToolStripMenuItem.Click += new System.EventHandler(this.loadMapToolStripMenuItem_Click);
             // 
+            // editToolStripMenuItem
+            // 
+            this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.openMapEditorToolStripMenuItem,
+            this.editRacksToolStripMenuItem});
+            this.editToolStripMenuItem.Enabled = false;
+            this.editToolStripMenuItem.Name = "editToolStripMenuItem";
+            this.editToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
+            this.editToolStripMenuItem.Text = "Edit";
+            // 
+            // openMapEditorToolStripMenuItem
+            // 
+            this.openMapEditorToolStripMenuItem.Name = "openMapEditorToolStripMenuItem";
+            this.openMapEditorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openMapEditorToolStripMenuItem.Text = "Open Map Editor";
+            this.openMapEditorToolStripMenuItem.Click += new System.EventHandler(this.editMapToolStripMenuItem_Click);
+            // 
+            // editRacksToolStripMenuItem
+            // 
+            this.editRacksToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addRackToolStripMenuItem,
+            this.deleteRackToolStripMenuItem});
+            this.editRacksToolStripMenuItem.Name = "editRacksToolStripMenuItem";
+            this.editRacksToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.editRacksToolStripMenuItem.Text = "Edit Racks";
+            // 
+            // addRackToolStripMenuItem
+            // 
+            this.addRackToolStripMenuItem.Name = "addRackToolStripMenuItem";
+            this.addRackToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.addRackToolStripMenuItem.Text = "Add Rack";
+            this.addRackToolStripMenuItem.Click += new System.EventHandler(this.addRackToolStripMenuItem_Click);
+            // 
+            // deleteRackToolStripMenuItem
+            // 
+            this.deleteRackToolStripMenuItem.Name = "deleteRackToolStripMenuItem";
+            this.deleteRackToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
+            this.deleteRackToolStripMenuItem.Text = "Delete Rack";
+            this.deleteRackToolStripMenuItem.Click += new System.EventHandler(this.deleteRackToolStripMenuItem_Click);
+            // 
+            // simulationToolStripMenuItem
+            // 
+            this.simulationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.addAGVToolStripMenuItem});
+            this.simulationToolStripMenuItem.Enabled = false;
+            this.simulationToolStripMenuItem.Name = "simulationToolStripMenuItem";
+            this.simulationToolStripMenuItem.Size = new System.Drawing.Size(79, 20);
+            this.simulationToolStripMenuItem.Text = "Simulation";
+            // 
+            // addAGVToolStripMenuItem
+            // 
+            this.addAGVToolStripMenuItem.Name = "addAGVToolStripMenuItem";
+            this.addAGVToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.addAGVToolStripMenuItem.Text = "Add AGV";
+            this.addAGVToolStripMenuItem.Click += new System.EventHandler(this.addAGVToolStripMenuItem_Click);
+            // 
             // testToolStripMenuItem
             // 
             this.testToolStripMenuItem.Name = "testToolStripMenuItem";
@@ -180,7 +235,7 @@ namespace A_Star_Demo
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(24, 54);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(39, 16);
+            this.label2.Size = new System.Drawing.Size(38, 16);
             this.label2.TabIndex = 2;
             this.label2.Text = "Type:";
             // 
@@ -197,62 +252,9 @@ namespace A_Star_Demo
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(14, 25);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(49, 16);
+            this.label1.Size = new System.Drawing.Size(48, 16);
             this.label1.TabIndex = 0;
             this.label1.Text = "Name: ";
-            // 
-            // groupBox_nodeTypeEditor
-            // 
-            this.groupBox_nodeTypeEditor.Controls.Add(this.checkBox_disallowTurning);
-            this.groupBox_nodeTypeEditor.Controls.Add(this.button_startEditingNode);
-            this.groupBox_nodeTypeEditor.Controls.Add(this.comboBox_types);
-            this.groupBox_nodeTypeEditor.Controls.Add(this.label4);
-            this.groupBox_nodeTypeEditor.Enabled = false;
-            this.groupBox_nodeTypeEditor.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.groupBox_nodeTypeEditor.Location = new System.Drawing.Point(3, 365);
-            this.groupBox_nodeTypeEditor.Name = "groupBox_nodeTypeEditor";
-            this.groupBox_nodeTypeEditor.Size = new System.Drawing.Size(181, 116);
-            this.groupBox_nodeTypeEditor.TabIndex = 4;
-            this.groupBox_nodeTypeEditor.TabStop = false;
-            this.groupBox_nodeTypeEditor.Text = "Node Type Editor";
-            // 
-            // checkBox_disallowTurning
-            // 
-            this.checkBox_disallowTurning.AutoSize = true;
-            this.checkBox_disallowTurning.Location = new System.Drawing.Point(33, 52);
-            this.checkBox_disallowTurning.Name = "checkBox_disallowTurning";
-            this.checkBox_disallowTurning.Size = new System.Drawing.Size(120, 20);
-            this.checkBox_disallowTurning.TabIndex = 4;
-            this.checkBox_disallowTurning.Text = "Disallow Turning";
-            this.checkBox_disallowTurning.UseVisualStyleBackColor = true;
-            // 
-            // button_startEditingNode
-            // 
-            this.button_startEditingNode.Location = new System.Drawing.Point(17, 78);
-            this.button_startEditingNode.Name = "button_startEditingNode";
-            this.button_startEditingNode.Size = new System.Drawing.Size(152, 30);
-            this.button_startEditingNode.TabIndex = 3;
-            this.button_startEditingNode.Text = "Strat Editing";
-            this.button_startEditingNode.UseVisualStyleBackColor = true;
-            this.button_startEditingNode.Click += new System.EventHandler(this.button_startEditingNode_Click);
-            // 
-            // comboBox_types
-            // 
-            this.comboBox_types.FormattingEnabled = true;
-            this.comboBox_types.Location = new System.Drawing.Point(69, 22);
-            this.comboBox_types.Name = "comboBox_types";
-            this.comboBox_types.Size = new System.Drawing.Size(100, 24);
-            this.comboBox_types.TabIndex = 1;
-            this.comboBox_types.SelectedIndexChanged += new System.EventHandler(this.comboBox_types_SelectedIndexChanged);
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(24, 25);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(42, 16);
-            this.label4.TabIndex = 0;
-            this.label4.Text = "Type: ";
             // 
             // groupBox_mapInfo
             // 
@@ -283,7 +285,7 @@ namespace A_Star_Demo
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(28, 83);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(35, 16);
+            this.label6.Size = new System.Drawing.Size(34, 16);
             this.label6.TabIndex = 4;
             this.label6.Text = "DIM:";
             // 
@@ -300,7 +302,7 @@ namespace A_Star_Demo
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(30, 25);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(33, 16);
+            this.label3.Size = new System.Drawing.Size(32, 16);
             this.label3.TabIndex = 2;
             this.label3.Text = "S/N:";
             // 
@@ -317,7 +319,7 @@ namespace A_Star_Demo
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(23, 54);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(40, 16);
+            this.label5.Size = new System.Drawing.Size(39, 16);
             this.label5.TabIndex = 0;
             this.label5.Text = "Zone:";
             // 
@@ -326,128 +328,6 @@ namespace A_Star_Demo
             this.timer_mapRefresh.Enabled = true;
             this.timer_mapRefresh.Interval = 41;
             this.timer_mapRefresh.Tick += new System.EventHandler(this.timer_mapRefresh_Tick);
-            // 
-            // groupBox_edgeConstraintsEditor
-            // 
-            this.groupBox_edgeConstraintsEditor.Controls.Add(this.button_deleteLayer);
-            this.groupBox_edgeConstraintsEditor.Controls.Add(this.button_addLayer);
-            this.groupBox_edgeConstraintsEditor.Controls.Add(this.comboBox_constraintLayers);
-            this.groupBox_edgeConstraintsEditor.Controls.Add(this.label9);
-            this.groupBox_edgeConstraintsEditor.Controls.Add(this.comboBox_passingRestrictions);
-            this.groupBox_edgeConstraintsEditor.Controls.Add(this.button_startEditingEdge);
-            this.groupBox_edgeConstraintsEditor.Controls.Add(this.checkBox_showConstraints);
-            this.groupBox_edgeConstraintsEditor.Controls.Add(this.textBox_edgeNode2);
-            this.groupBox_edgeConstraintsEditor.Controls.Add(this.label8);
-            this.groupBox_edgeConstraintsEditor.Controls.Add(this.textBox_edgeNode1);
-            this.groupBox_edgeConstraintsEditor.Controls.Add(this.label7);
-            this.groupBox_edgeConstraintsEditor.Enabled = false;
-            this.groupBox_edgeConstraintsEditor.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.groupBox_edgeConstraintsEditor.Location = new System.Drawing.Point(3, 487);
-            this.groupBox_edgeConstraintsEditor.Name = "groupBox_edgeConstraintsEditor";
-            this.groupBox_edgeConstraintsEditor.Size = new System.Drawing.Size(181, 237);
-            this.groupBox_edgeConstraintsEditor.TabIndex = 6;
-            this.groupBox_edgeConstraintsEditor.TabStop = false;
-            this.groupBox_edgeConstraintsEditor.Text = "Edge Constraints Editor";
-            // 
-            // button_deleteLayer
-            // 
-            this.button_deleteLayer.Location = new System.Drawing.Point(94, 142);
-            this.button_deleteLayer.Name = "button_deleteLayer";
-            this.button_deleteLayer.Size = new System.Drawing.Size(75, 23);
-            this.button_deleteLayer.TabIndex = 18;
-            this.button_deleteLayer.Text = "Delete";
-            this.button_deleteLayer.UseVisualStyleBackColor = true;
-            this.button_deleteLayer.Click += new System.EventHandler(this.button_deleteLayer_Click);
-            // 
-            // button_addLayer
-            // 
-            this.button_addLayer.Location = new System.Drawing.Point(9, 142);
-            this.button_addLayer.Name = "button_addLayer";
-            this.button_addLayer.Size = new System.Drawing.Size(75, 23);
-            this.button_addLayer.TabIndex = 17;
-            this.button_addLayer.Text = "Add";
-            this.button_addLayer.UseVisualStyleBackColor = true;
-            this.button_addLayer.Click += new System.EventHandler(this.button_addLayer_Click);
-            // 
-            // comboBox_constraintLayers
-            // 
-            this.comboBox_constraintLayers.FormattingEnabled = true;
-            this.comboBox_constraintLayers.Location = new System.Drawing.Point(69, 110);
-            this.comboBox_constraintLayers.Name = "comboBox_constraintLayers";
-            this.comboBox_constraintLayers.Size = new System.Drawing.Size(100, 24);
-            this.comboBox_constraintLayers.TabIndex = 16;
-            this.comboBox_constraintLayers.SelectedIndexChanged += new System.EventHandler(this.comboBox_constraintLayers_SelectedIndexChanged);
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(19, 113);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(41, 16);
-            this.label9.TabIndex = 15;
-            this.label9.Text = "Layer:";
-            // 
-            // comboBox_passingRestrictions
-            // 
-            this.comboBox_passingRestrictions.FormattingEnabled = true;
-            this.comboBox_passingRestrictions.Location = new System.Drawing.Point(9, 171);
-            this.comboBox_passingRestrictions.Name = "comboBox_passingRestrictions";
-            this.comboBox_passingRestrictions.Size = new System.Drawing.Size(160, 24);
-            this.comboBox_passingRestrictions.TabIndex = 14;
-            // 
-            // button_startEditingEdge
-            // 
-            this.button_startEditingEdge.Location = new System.Drawing.Point(9, 201);
-            this.button_startEditingEdge.Name = "button_startEditingEdge";
-            this.button_startEditingEdge.Size = new System.Drawing.Size(166, 30);
-            this.button_startEditingEdge.TabIndex = 13;
-            this.button_startEditingEdge.Text = "Strat Editing";
-            this.button_startEditingEdge.UseVisualStyleBackColor = true;
-            this.button_startEditingEdge.Click += new System.EventHandler(this.button_startEditingEdge_Click);
-            // 
-            // checkBox_showConstraints
-            // 
-            this.checkBox_showConstraints.AutoSize = true;
-            this.checkBox_showConstraints.Location = new System.Drawing.Point(9, 26);
-            this.checkBox_showConstraints.Name = "checkBox_showConstraints";
-            this.checkBox_showConstraints.Size = new System.Drawing.Size(171, 20);
-            this.checkBox_showConstraints.TabIndex = 10;
-            this.checkBox_showConstraints.Text = "Show Constraints on Map";
-            this.checkBox_showConstraints.UseVisualStyleBackColor = true;
-            // 
-            // textBox_edgeNode2
-            // 
-            this.textBox_edgeNode2.Location = new System.Drawing.Point(69, 81);
-            this.textBox_edgeNode2.Name = "textBox_edgeNode2";
-            this.textBox_edgeNode2.ReadOnly = true;
-            this.textBox_edgeNode2.Size = new System.Drawing.Size(100, 23);
-            this.textBox_edgeNode2.TabIndex = 5;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(6, 84);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(54, 16);
-            this.label8.TabIndex = 4;
-            this.label8.Text = "Node 2:";
-            // 
-            // textBox_edgeNode1
-            // 
-            this.textBox_edgeNode1.Location = new System.Drawing.Point(69, 52);
-            this.textBox_edgeNode1.Name = "textBox_edgeNode1";
-            this.textBox_edgeNode1.ReadOnly = true;
-            this.textBox_edgeNode1.Size = new System.Drawing.Size(100, 23);
-            this.textBox_edgeNode1.TabIndex = 3;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(6, 55);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(57, 16);
-            this.label7.TabIndex = 2;
-            this.label7.Text = "Node 1: ";
             // 
             // groupBox_pathPlanning
             // 
@@ -461,7 +341,7 @@ namespace A_Star_Demo
             this.groupBox_pathPlanning.Controls.Add(this.label10);
             this.groupBox_pathPlanning.Controls.Add(this.label11);
             this.groupBox_pathPlanning.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.groupBox_pathPlanning.Location = new System.Drawing.Point(190, 6);
+            this.groupBox_pathPlanning.Location = new System.Drawing.Point(190, 3);
             this.groupBox_pathPlanning.Name = "groupBox_pathPlanning";
             this.groupBox_pathPlanning.Size = new System.Drawing.Size(174, 718);
             this.groupBox_pathPlanning.TabIndex = 7;
@@ -492,7 +372,7 @@ namespace A_Star_Demo
             this.label12.AutoSize = true;
             this.label12.Location = new System.Drawing.Point(21, 83);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(41, 16);
+            this.label12.Size = new System.Drawing.Size(40, 16);
             this.label12.TabIndex = 19;
             this.label12.Text = "Layer:";
             // 
@@ -536,7 +416,7 @@ namespace A_Star_Demo
             this.label10.AutoSize = true;
             this.label10.Location = new System.Drawing.Point(6, 54);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(38, 16);
+            this.label10.Size = new System.Drawing.Size(37, 16);
             this.label10.TabIndex = 21;
             this.label10.Text = "Goal:";
             // 
@@ -545,7 +425,7 @@ namespace A_Star_Demo
             this.label11.AutoSize = true;
             this.label11.Location = new System.Drawing.Point(7, 26);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(37, 16);
+            this.label11.Size = new System.Drawing.Size(36, 16);
             this.label11.TabIndex = 19;
             this.label11.Text = "Start:";
             // 
@@ -553,7 +433,7 @@ namespace A_Star_Demo
             // 
             this.tableLayoutPanel_main.ColumnCount = 2;
             this.tableLayoutPanel_main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel_main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 375F));
+            this.tableLayoutPanel_main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel_main.Controls.Add(this.pictureBox_mapViewer, 0, 0);
             this.tableLayoutPanel_main.Controls.Add(this.panel_infos, 1, 0);
             this.tableLayoutPanel_main.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -561,7 +441,7 @@ namespace A_Star_Demo
             this.tableLayoutPanel_main.Name = "tableLayoutPanel_main";
             this.tableLayoutPanel_main.RowCount = 1;
             this.tableLayoutPanel_main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel_main.Size = new System.Drawing.Size(1210, 736);
+            this.tableLayoutPanel_main.Size = new System.Drawing.Size(1450, 736);
             this.tableLayoutPanel_main.TabIndex = 8;
             // 
             // pictureBox_mapViewer
@@ -570,7 +450,7 @@ namespace A_Star_Demo
             this.pictureBox_mapViewer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox_mapViewer.Location = new System.Drawing.Point(3, 3);
             this.pictureBox_mapViewer.Name = "pictureBox_mapViewer";
-            this.pictureBox_mapViewer.Size = new System.Drawing.Size(829, 730);
+            this.pictureBox_mapViewer.Size = new System.Drawing.Size(1068, 730);
             this.pictureBox_mapViewer.TabIndex = 2;
             this.pictureBox_mapViewer.TabStop = false;
             this.pictureBox_mapViewer.SizeChanged += new System.EventHandler(this.pictureBox_mapViewer_SizeChanged);
@@ -581,146 +461,234 @@ namespace A_Star_Demo
             // 
             // panel_infos
             // 
-            this.panel_infos.Controls.Add(this.groupBox1);
+            this.panel_infos.Controls.Add(this.groupBox_rackInfo);
+            this.panel_infos.Controls.Add(this.groupBox_agvInfo);
             this.panel_infos.Controls.Add(this.groupBox_mapInfo);
-            this.panel_infos.Controls.Add(this.groupBox_pathPlanning);
             this.panel_infos.Controls.Add(this.groupBox_nodeInfo);
-            this.panel_infos.Controls.Add(this.groupBox_edgeConstraintsEditor);
-            this.panel_infos.Controls.Add(this.groupBox_nodeTypeEditor);
+            this.panel_infos.Controls.Add(this.groupBox_pathPlanning);
             this.panel_infos.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel_infos.Location = new System.Drawing.Point(838, 3);
+            this.panel_infos.Location = new System.Drawing.Point(1077, 3);
             this.panel_infos.Name = "panel_infos";
-            this.panel_infos.Size = new System.Drawing.Size(369, 730);
+            this.panel_infos.Size = new System.Drawing.Size(370, 730);
             this.panel_infos.TabIndex = 3;
             // 
-            // groupBox1
+            // groupBox_rackInfo
             // 
-            this.groupBox1.Controls.Add(this.textBox_selectedAGVHeading);
-            this.groupBox1.Controls.Add(this.label16);
-            this.groupBox1.Controls.Add(this.textBox_selectedAGVStatus);
-            this.groupBox1.Controls.Add(this.label15);
-            this.groupBox1.Controls.Add(this.textBox_selectedAGVNode);
-            this.groupBox1.Controls.Add(this.label14);
-            this.groupBox1.Controls.Add(this.textBox_selectedAGVName);
-            this.groupBox1.Controls.Add(this.label13);
-            this.groupBox1.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.groupBox1.Location = new System.Drawing.Point(3, 217);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(181, 142);
-            this.groupBox1.TabIndex = 8;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "AGV Information";
+            this.groupBox_rackInfo.Controls.Add(this.textBox_rackHeading);
+            this.groupBox_rackInfo.Controls.Add(this.label17);
+            this.groupBox_rackInfo.Controls.Add(this.textBox_rackHome);
+            this.groupBox_rackInfo.Controls.Add(this.label18);
+            this.groupBox_rackInfo.Controls.Add(this.textBox_rackNode);
+            this.groupBox_rackInfo.Controls.Add(this.label19);
+            this.groupBox_rackInfo.Controls.Add(this.textBox_rackName);
+            this.groupBox_rackInfo.Controls.Add(this.label20);
+            this.groupBox_rackInfo.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.groupBox_rackInfo.Location = new System.Drawing.Point(3, 393);
+            this.groupBox_rackInfo.Name = "groupBox_rackInfo";
+            this.groupBox_rackInfo.Size = new System.Drawing.Size(181, 142);
+            this.groupBox_rackInfo.TabIndex = 9;
+            this.groupBox_rackInfo.TabStop = false;
+            this.groupBox_rackInfo.Text = "Rack Information";
             // 
-            // textBox_selectedAGVHeading
+            // textBox_rackHeading
             // 
-            this.textBox_selectedAGVHeading.Location = new System.Drawing.Point(69, 109);
-            this.textBox_selectedAGVHeading.Name = "textBox_selectedAGVHeading";
-            this.textBox_selectedAGVHeading.ReadOnly = true;
-            this.textBox_selectedAGVHeading.Size = new System.Drawing.Size(100, 23);
-            this.textBox_selectedAGVHeading.TabIndex = 11;
+            this.textBox_rackHeading.Location = new System.Drawing.Point(69, 109);
+            this.textBox_rackHeading.Name = "textBox_rackHeading";
+            this.textBox_rackHeading.ReadOnly = true;
+            this.textBox_rackHeading.Size = new System.Drawing.Size(100, 23);
+            this.textBox_rackHeading.TabIndex = 11;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(6, 112);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(62, 16);
+            this.label17.TabIndex = 10;
+            this.label17.Text = "Heading: ";
+            // 
+            // textBox_rackHome
+            // 
+            this.textBox_rackHome.Location = new System.Drawing.Point(69, 80);
+            this.textBox_rackHome.Name = "textBox_rackHome";
+            this.textBox_rackHome.ReadOnly = true;
+            this.textBox_rackHome.Size = new System.Drawing.Size(100, 23);
+            this.textBox_rackHome.TabIndex = 9;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(14, 83);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(48, 16);
+            this.label18.TabIndex = 8;
+            this.label18.Text = "Home: ";
+            // 
+            // textBox_rackNode
+            // 
+            this.textBox_rackNode.Location = new System.Drawing.Point(69, 51);
+            this.textBox_rackNode.Name = "textBox_rackNode";
+            this.textBox_rackNode.ReadOnly = true;
+            this.textBox_rackNode.Size = new System.Drawing.Size(100, 23);
+            this.textBox_rackNode.TabIndex = 7;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(14, 54);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(46, 16);
+            this.label19.TabIndex = 6;
+            this.label19.Text = "Node: ";
+            // 
+            // textBox_rackName
+            // 
+            this.textBox_rackName.Location = new System.Drawing.Point(69, 22);
+            this.textBox_rackName.Name = "textBox_rackName";
+            this.textBox_rackName.ReadOnly = true;
+            this.textBox_rackName.Size = new System.Drawing.Size(100, 23);
+            this.textBox_rackName.TabIndex = 5;
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(14, 25);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(48, 16);
+            this.label20.TabIndex = 4;
+            this.label20.Text = "Name: ";
+            // 
+            // groupBox_agvInfo
+            // 
+            this.groupBox_agvInfo.Controls.Add(this.textBox_agvRack);
+            this.groupBox_agvInfo.Controls.Add(this.label21);
+            this.groupBox_agvInfo.Controls.Add(this.textBox_agvHeading);
+            this.groupBox_agvInfo.Controls.Add(this.label16);
+            this.groupBox_agvInfo.Controls.Add(this.textBox_agvStatus);
+            this.groupBox_agvInfo.Controls.Add(this.label15);
+            this.groupBox_agvInfo.Controls.Add(this.textBox_agvNode);
+            this.groupBox_agvInfo.Controls.Add(this.label14);
+            this.groupBox_agvInfo.Controls.Add(this.textBox_agvName);
+            this.groupBox_agvInfo.Controls.Add(this.label13);
+            this.groupBox_agvInfo.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.groupBox_agvInfo.Location = new System.Drawing.Point(3, 217);
+            this.groupBox_agvInfo.Name = "groupBox_agvInfo";
+            this.groupBox_agvInfo.Size = new System.Drawing.Size(181, 170);
+            this.groupBox_agvInfo.TabIndex = 8;
+            this.groupBox_agvInfo.TabStop = false;
+            this.groupBox_agvInfo.Text = "AGV Information";
+            // 
+            // textBox_agvRack
+            // 
+            this.textBox_agvRack.Location = new System.Drawing.Point(69, 138);
+            this.textBox_agvRack.Name = "textBox_agvRack";
+            this.textBox_agvRack.ReadOnly = true;
+            this.textBox_agvRack.Size = new System.Drawing.Size(100, 23);
+            this.textBox_agvRack.TabIndex = 13;
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(23, 141);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(40, 16);
+            this.label21.TabIndex = 12;
+            this.label21.Text = "Rack: ";
+            // 
+            // textBox_agvHeading
+            // 
+            this.textBox_agvHeading.Location = new System.Drawing.Point(69, 109);
+            this.textBox_agvHeading.Name = "textBox_agvHeading";
+            this.textBox_agvHeading.ReadOnly = true;
+            this.textBox_agvHeading.Size = new System.Drawing.Size(100, 23);
+            this.textBox_agvHeading.TabIndex = 11;
             // 
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(6, 112);
+            this.label16.Location = new System.Drawing.Point(1, 113);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(63, 16);
+            this.label16.Size = new System.Drawing.Size(62, 16);
             this.label16.TabIndex = 10;
             this.label16.Text = "Heading: ";
             // 
-            // textBox_selectedAGVStatus
+            // textBox_agvStatus
             // 
-            this.textBox_selectedAGVStatus.Location = new System.Drawing.Point(69, 80);
-            this.textBox_selectedAGVStatus.Name = "textBox_selectedAGVStatus";
-            this.textBox_selectedAGVStatus.ReadOnly = true;
-            this.textBox_selectedAGVStatus.Size = new System.Drawing.Size(100, 23);
-            this.textBox_selectedAGVStatus.TabIndex = 9;
+            this.textBox_agvStatus.Location = new System.Drawing.Point(69, 80);
+            this.textBox_agvStatus.Name = "textBox_agvStatus";
+            this.textBox_agvStatus.ReadOnly = true;
+            this.textBox_agvStatus.Size = new System.Drawing.Size(100, 23);
+            this.textBox_agvStatus.TabIndex = 9;
             // 
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(14, 83);
+            this.label15.Location = new System.Drawing.Point(16, 84);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(48, 16);
+            this.label15.Size = new System.Drawing.Size(47, 16);
             this.label15.TabIndex = 8;
             this.label15.Text = "Status: ";
             // 
-            // textBox_selectedAGVNode
+            // textBox_agvNode
             // 
-            this.textBox_selectedAGVNode.Location = new System.Drawing.Point(69, 51);
-            this.textBox_selectedAGVNode.Name = "textBox_selectedAGVNode";
-            this.textBox_selectedAGVNode.ReadOnly = true;
-            this.textBox_selectedAGVNode.Size = new System.Drawing.Size(100, 23);
-            this.textBox_selectedAGVNode.TabIndex = 7;
+            this.textBox_agvNode.Location = new System.Drawing.Point(69, 51);
+            this.textBox_agvNode.Name = "textBox_agvNode";
+            this.textBox_agvNode.ReadOnly = true;
+            this.textBox_agvNode.Size = new System.Drawing.Size(100, 23);
+            this.textBox_agvNode.TabIndex = 7;
             // 
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(14, 54);
+            this.label14.Location = new System.Drawing.Point(17, 54);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(47, 16);
+            this.label14.Size = new System.Drawing.Size(46, 16);
             this.label14.TabIndex = 6;
             this.label14.Text = "Node: ";
             // 
-            // textBox_selectedAGVName
+            // textBox_agvName
             // 
-            this.textBox_selectedAGVName.Location = new System.Drawing.Point(69, 22);
-            this.textBox_selectedAGVName.Name = "textBox_selectedAGVName";
-            this.textBox_selectedAGVName.ReadOnly = true;
-            this.textBox_selectedAGVName.Size = new System.Drawing.Size(100, 23);
-            this.textBox_selectedAGVName.TabIndex = 5;
+            this.textBox_agvName.Location = new System.Drawing.Point(69, 22);
+            this.textBox_agvName.Name = "textBox_agvName";
+            this.textBox_agvName.ReadOnly = true;
+            this.textBox_agvName.Size = new System.Drawing.Size(100, 23);
+            this.textBox_agvName.TabIndex = 5;
             // 
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(14, 25);
+            this.label13.Location = new System.Drawing.Point(15, 25);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(49, 16);
+            this.label13.Size = new System.Drawing.Size(48, 16);
             this.label13.TabIndex = 4;
             this.label13.Text = "Name: ";
-            // 
-            // simulationToolStripMenuItem
-            // 
-            this.simulationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addAGVToolStripMenuItem});
-            this.simulationToolStripMenuItem.Name = "simulationToolStripMenuItem";
-            this.simulationToolStripMenuItem.Size = new System.Drawing.Size(79, 20);
-            this.simulationToolStripMenuItem.Text = "Simulation";
-            // 
-            // addAGVToolStripMenuItem
-            // 
-            this.addAGVToolStripMenuItem.Name = "addAGVToolStripMenuItem";
-            this.addAGVToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.addAGVToolStripMenuItem.Text = "Add AGV";
-            this.addAGVToolStripMenuItem.Click += new System.EventHandler(this.addAGVToolStripMenuItem_Click);
             // 
             // AStarDemo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(1210, 760);
+            this.ClientSize = new System.Drawing.Size(1450, 760);
             this.Controls.Add(this.tableLayoutPanel_main);
             this.Controls.Add(this.menuStrip);
             this.MainMenuStrip = this.menuStrip;
             this.Name = "AStarDemo";
             this.Text = "A* Demo";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AStarDemo_FormClosing);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.groupBox_nodeInfo.ResumeLayout(false);
             this.groupBox_nodeInfo.PerformLayout();
-            this.groupBox_nodeTypeEditor.ResumeLayout(false);
-            this.groupBox_nodeTypeEditor.PerformLayout();
             this.groupBox_mapInfo.ResumeLayout(false);
             this.groupBox_mapInfo.PerformLayout();
-            this.groupBox_edgeConstraintsEditor.ResumeLayout(false);
-            this.groupBox_edgeConstraintsEditor.PerformLayout();
             this.groupBox_pathPlanning.ResumeLayout(false);
             this.groupBox_pathPlanning.PerformLayout();
             this.tableLayoutPanel_main.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_mapViewer)).EndInit();
             this.panel_infos.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.groupBox_rackInfo.ResumeLayout(false);
+            this.groupBox_rackInfo.PerformLayout();
+            this.groupBox_agvInfo.ResumeLayout(false);
+            this.groupBox_agvInfo.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -738,10 +706,6 @@ namespace A_Star_Demo
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBox_selectedNodeType;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.GroupBox groupBox_nodeTypeEditor;
-        private System.Windows.Forms.ComboBox comboBox_types;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button button_startEditingNode;
         private System.Windows.Forms.GroupBox groupBox_mapInfo;
         private System.Windows.Forms.TextBox textBox_mapSN;
         private System.Windows.Forms.Label label3;
@@ -750,18 +714,6 @@ namespace A_Star_Demo
         private System.Windows.Forms.TextBox textBox_mapDIM;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Timer timer_mapRefresh;
-        private System.Windows.Forms.GroupBox groupBox_edgeConstraintsEditor;
-        private System.Windows.Forms.TextBox textBox_edgeNode2;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.TextBox textBox_edgeNode1;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.CheckBox checkBox_showConstraints;
-        private System.Windows.Forms.Button button_startEditingEdge;
-        private System.Windows.Forms.ComboBox comboBox_constraintLayers;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.ComboBox comboBox_passingRestrictions;
-        private System.Windows.Forms.Button button_deleteLayer;
-        private System.Windows.Forms.Button button_addLayer;
         private System.Windows.Forms.GroupBox groupBox_pathPlanning;
         private System.Windows.Forms.TextBox textBox_goalNode;
         private System.Windows.Forms.TextBox textBox_startNode;
@@ -769,24 +721,39 @@ namespace A_Star_Demo
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox textBox_planningPath;
         private System.Windows.Forms.Button button_startPlanning;
-        private System.Windows.Forms.ComboBox comboBox_planningLayer;
+        public  System.Windows.Forms.ComboBox comboBox_planningLayer;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.CheckBox checkBox_disallowTurning;
         private System.Windows.Forms.Button button_ClearPath;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel_main;
         private System.Windows.Forms.Panel panel_infos;
         private System.Windows.Forms.ToolStripMenuItem testToolStripMenuItem;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.TextBox textBox_selectedAGVHeading;
+        private System.Windows.Forms.GroupBox groupBox_agvInfo;
+        private System.Windows.Forms.TextBox textBox_agvHeading;
         private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.TextBox textBox_selectedAGVStatus;
+        private System.Windows.Forms.TextBox textBox_agvStatus;
         private System.Windows.Forms.Label label15;
-        private System.Windows.Forms.TextBox textBox_selectedAGVNode;
+        private System.Windows.Forms.TextBox textBox_agvNode;
         private System.Windows.Forms.Label label14;
-        private System.Windows.Forms.TextBox textBox_selectedAGVName;
+        private System.Windows.Forms.TextBox textBox_agvName;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.ToolStripMenuItem simulationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem addAGVToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openMapEditorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem editRacksToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem addRackToolStripMenuItem;
+        private System.Windows.Forms.GroupBox groupBox_rackInfo;
+        private System.Windows.Forms.TextBox textBox_rackHeading;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.TextBox textBox_rackHome;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.TextBox textBox_rackNode;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.TextBox textBox_rackName;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.TextBox textBox_agvRack;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.ToolStripMenuItem deleteRackToolStripMenuItem;
     }
 }
 

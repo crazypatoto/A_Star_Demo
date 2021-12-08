@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using A_Star_Demo.Models;
 
-namespace A_Star_Demo
+namespace A_Star_Demo.Maps
 {
     public class MapNode
     {

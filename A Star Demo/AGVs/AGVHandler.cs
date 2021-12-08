@@ -9,13 +9,13 @@ namespace A_Star_Demo.AGVs
 {
     public class AGVHandler
     {
-        public List<SimulatedAGV> AGVList { get; private set; }
+        public List<AGV> AGVList { get; private set; }
         public AGVHandler()
         {
-            AGVList = new List<SimulatedAGV>();
+            AGVList = new List<AGV>();
         }
 
-        public SimulatedAGV AddSimulatedAGV(MapNode node, string name = null)
+        public AGV AddSimulatedAGV(MapNode node, string name = null)
         {
             if (node == null) return null;
             int newID = 0;
@@ -23,7 +23,7 @@ namespace A_Star_Demo.AGVs
             {
                 newID = AGVList.Last().ID + 1;
             }
-            AGVList.Add(new SimulatedAGV(newID, name ?? $"AGV{newID.ToString("D3")}", node));
+            AGVList.Add(new SimulatedAGV(newID, name ?? $"AGV{newID:D3}", node));
             return AGVList.Last();
         }
     }

@@ -11,7 +11,9 @@ using System.Diagnostics;
 using System.Reflection;
 using System.IO;
 using A_Star_Demo.Dialogs;
+using A_Star_Demo.Windows;
 using A_Star_Demo.Maps;
+using A_Star_Demo.Models;
 using A_Star_Demo.PathPlanning;
 using A_Star_Demo.AGVs;
 
@@ -19,13 +21,7 @@ namespace A_Star_Demo
 {
     public partial class AStarDemo : Form
     {
-        private Map _currentMap;
         private MapDrawer _mapDrawer;
-        private bool _isEditingType = false;
-        private bool _isEditingEdge = false;
-        private MapNode _selectedNode;
-        private MapNode _selectedEdgeNode1;
-        private MapNode _selectedEdgeNode2;
         private int _planningFlag = 0;
         private MapNode _startNode;
         private MapNode _goalNode;
@@ -33,15 +29,19 @@ namespace A_Star_Demo
         private List<MapNode> _path;
         private Point _prevMouseLocation;
         private AGVHandler _agvHandler;
+        private AGV _selectedAGV;
+        private Rack _selectedRack;
+        private MapEditor _mapEditorForm;
+        public Map CurrentMap { get; private set; }
+        public MapNode SelectedNode { get; private set; }
+        public MapNode SelectedEdgeNode1 { get; set; }
+        public MapNode SelectedEdgeNode2 { get; set; }
 
         public AStarDemo()
         {
             InitializeComponent();
-            comboBox_types.DataSource = Enum.GetValues(typeof(MapNode.Types));
-            comboBox_types.SelectedIndex = 0;
-            comboBox_passingRestrictions.DataSource = Enum.GetValues(typeof(MapEdge.PassingRestrictions));
-            comboBox_types.SelectedIndex = 0;
-            _agvHandler = new AGVHandler();
+            _mapEditorForm = new MapEditor();
+            _mapEditorForm.Tag = this;
         }
 
         #region Menu
@@ -65,7 +65,7 @@ namespace A_Star_Demo
                 dialog.Title = "Save map file";
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    _currentMap.SaveToFile(dialog.FileName);
+                    CurrentMap.SaveToFile(dialog.FileName);
                 }
             }
         }
@@ -85,96 +85,68 @@ namespace A_Star_Demo
         }
         private void addAGVToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (_selectedNode == null)
+            if (SelectedNode == null)
             {
                 MessageBox.Show("Please select a node first!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (_selectedNode.Type == MapNode.Types.Wall)
+            if (SelectedNode.Type == MapNode.Types.Wall)
             {
-                MessageBox.Show("You cannot place an AGV over here!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("You cannot place an AGV here!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (_agvHandler.AGVList.FindAll(agv => agv.Node == _selectedNode).Count > 0)
+            if (_agvHandler.AGVList.FindAll(agv => agv.CurrentNode == SelectedNode).Count > 0)
             {
-                MessageBox.Show("You cannot place an AGV over here!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("There is already an AGV here!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            var selectedAGV = _agvHandler.AddSimulatedAGV(_selectedNode);
-            textBox_selectedAGVName.Text = selectedAGV.Name;
-            textBox_selectedAGVNode.Text = selectedAGV.Node.Name;
-            textBox_selectedAGVStatus.Text = selectedAGV.State.ToString();
-            textBox_selectedAGVHeading.Text = selectedAGV.Heading.ToString();
+            _selectedAGV = _agvHandler.AddSimulatedAGV(SelectedNode);
+        }
+        private void editMapToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _mapEditorForm.Show();
+        }
+        private void addRackToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (SelectedNode == null)
+            {
+                MessageBox.Show("Please select a node first!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            if (SelectedNode.Type != MapNode.Types.Storage)
+            {
+                MessageBox.Show("Rack is only allowed to be placed on a stroge node", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            if (CurrentMap.RackList.FindAll(rack => rack.CurrentNode == SelectedNode).Count > 0)
+            {
+                MessageBox.Show("There is already an Rack here!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            var newRackID = CurrentMap.RackList.LastOrDefault()?.ID + 1 ?? 0;
+            var newRack = new Rack(newRackID, SelectedNode, Rack.RackHeading.Up);
+            CurrentMap.RackList.Add(newRack);
+            _selectedRack = newRack;
+        }
+
+        private void deleteRackToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_selectedRack == null) return;
+            CurrentMap.RackList.RemoveAll(rack => rack.CurrentNode == SelectedNode);
+            _selectedRack = null;
+        }
+        private void testToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (var agv in _agvHandler.AGVList)
+            {
+                agv.Disconnect();
+            }
+            _agvHandler.AGVList.Clear();
         }
         #endregion
 
-        #region UI Control Events
-        private void comboBox_types_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            comboBox_types.BackColor = MapDrawer.NodeTypeColorDict[(MapNode.Types)comboBox_types.SelectedItem];
-        }
-        private void button_startEditingNode_Click(object sender, EventArgs e)
-        {
-            if (_isEditingType)
-            {
-                _isEditingType = false;
-                button_startEditingNode.Text = "Start Editing";
-                button_startEditingEdge.Enabled = true;
-            }
-            else
-            {
-                _isEditingType = true;
-                button_startEditingNode.Text = "Stop";
-                button_startEditingEdge.Enabled = false;
-            }
-        }
-        private void button_startEditingEdge_Click(object sender, EventArgs e)
-        {
-            if (_isEditingEdge)
-            {
-                _isEditingEdge = false;
-                button_startEditingEdge.Text = "Start Editing";
-                button_startEditingNode.Enabled = true;
-                _selectedEdgeNode1 = null;
-                _selectedEdgeNode2 = null;
-            }
-            else
-            {
-                _isEditingEdge = true;
-                button_startEditingEdge.Text = "Stop Editing";
-                button_startEditingNode.Enabled = false;
-            }
-        }
-        private void button_addLayer_Click(object sender, EventArgs e)
-        {
-            var newLayer = new Map.ConstraintLayer(_currentMap, $"Layer {_currentMap.ConstraintLayers.Count}");
-            _currentMap.ConstraintLayers.Add(newLayer);
-            comboBox_constraintLayers.Items.Clear();
-            foreach (var layer in _currentMap.ConstraintLayers)
-            {
-                comboBox_constraintLayers.Items.Add(layer.Name);
-            }
-            comboBox_planningLayer.Items.Clear();
-            foreach (var layer in _currentMap.ConstraintLayers)
-            {
-                comboBox_planningLayer.Items.Add(layer.Name);
-            }
-
-            comboBox_constraintLayers.SelectedIndex = comboBox_constraintLayers.Items.Count - 1;
-        }
-
-        private void button_deleteLayer_Click(object sender, EventArgs e)
-        {
-            if (comboBox_constraintLayers.SelectedIndex == 0) return;
-            _currentMap.ConstraintLayers.RemoveAt(comboBox_constraintLayers.SelectedIndex);
-            comboBox_constraintLayers.Items.Clear();
-            foreach (var layer in _currentMap.ConstraintLayers)
-            {
-                comboBox_constraintLayers.Items.Add(layer.Name);
-            }
-            comboBox_constraintLayers.SelectedIndex = 0;
-        }
-
+        #region UI Control Events      
+                  
         private void button_startPlanning_Click(object sender, EventArgs e)
         {
             if (_planningFlag == 0)
@@ -183,16 +155,11 @@ namespace A_Star_Demo
                 button_startPlanning.Text = "Select start node";
                 _planningFlag++;
             }
-        }
-
-        private void comboBox_constraintLayers_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            comboBox_planningLayer.SelectedIndex = comboBox_constraintLayers.SelectedIndex;
-        }
+        }      
 
         private void comboBox_planningLayer_SelectedIndexChanged(object sender, EventArgs e)
         {
-            comboBox_constraintLayers.SelectedIndex = comboBox_planningLayer.SelectedIndex;
+            _mapEditorForm.comboBox_constraintLayers.SelectedIndex = comboBox_planningLayer.SelectedIndex;
         }
 
         private void button_ClearPath_Click(object sender, EventArgs e)
@@ -257,8 +224,7 @@ namespace A_Star_Demo
         {
             if (_mapDrawer != null)
             {
-                _mapDrawer.Scale += e.Delta / 1200.0f;
-                Debug.WriteLine(_mapDrawer.Scale);
+                _mapDrawer.Scale += e.Delta / 1200.0f;                
             }
         }
 
@@ -270,117 +236,115 @@ namespace A_Star_Demo
 
         private void LoadNewMap(Map newMap)
         {
-            _currentMap = newMap;
-            _mapDrawer = new MapDrawer(ref _currentMap, pictureBox_mapViewer.Size);
-            _pathPlanner = new AStarPlanner(_currentMap);
+            CurrentMap = newMap;
+            _mapDrawer = new MapDrawer(CurrentMap, pictureBox_mapViewer.Size);
+            _pathPlanner = new AStarPlanner(CurrentMap);
+            _agvHandler = new AGVHandler();
+            _mapDrawer.RefererAGVList = _agvHandler.AGVList;
             saveMapToolStripMenuItem.Enabled = true;
-            groupBox_nodeTypeEditor.Enabled = true;
-            groupBox_edgeConstraintsEditor.Enabled = true;
-            _selectedNode = null;
-            _selectedEdgeNode1 = null;
-            _selectedEdgeNode2 = null;
+            editToolStripMenuItem.Enabled = true;
+            simulationToolStripMenuItem.Enabled = true;
+            SelectedNode = null;
+            SelectedEdgeNode1 = null;
+            SelectedEdgeNode2 = null;
+            _selectedAGV = null;
+            _selectedRack = null;
             textBox_selectedNodeName.Clear();
             textBox_selectedNodeType.Clear();
-            textBox_edgeNode1.Clear();
-            textBox_edgeNode2.Clear();
+            _mapEditorForm.textBox_edgeNode1.Clear();
+            _mapEditorForm.textBox_edgeNode2.Clear();
 
-            textBox_mapSN.Text = _currentMap.SerialNumber;
-            textBox_mapZone.Text = _currentMap.ZoneID.ToString();
-            textBox_mapDIM.Text = $"{_currentMap.Width} x {_currentMap.Height}";
-            comboBox_constraintLayers.Items.Clear();
+            textBox_mapSN.Text = CurrentMap.SerialNumber;
+            textBox_mapZone.Text = CurrentMap.ZoneID.ToString();
+            textBox_mapDIM.Text = $"{CurrentMap.Width} x {CurrentMap.Height}";
+            _mapEditorForm.comboBox_constraintLayers.Items.Clear();
             comboBox_planningLayer.Items.Clear();
-            foreach (var layer in _currentMap.ConstraintLayers)
+            foreach (var layer in CurrentMap.ConstraintLayers)
             {
-                comboBox_constraintLayers.Items.Add(layer.Name);
+                _mapEditorForm.comboBox_constraintLayers.Items.Add(layer.Name);
                 comboBox_planningLayer.Items.Add(layer.Name);
             }
-            comboBox_constraintLayers.SelectedIndex = 0;
+            _mapEditorForm.comboBox_constraintLayers.SelectedIndex = 0;
             comboBox_planningLayer.SelectedIndex = 0;
         }
 
         private void NodeSelect(Point mousePosition, MouseButtons mouseButton)
         {
             if (mouseButton != MouseButtons.Left && mouseButton != MouseButtons.Right) return;
-            _selectedNode = _mapDrawer?.GetNodeByPosition(mousePosition.X, mousePosition.Y);
-            if (_selectedNode != null)
+            SelectedNode = _mapDrawer?.GetNodeByPosition(mousePosition.X, mousePosition.Y);
+            if (SelectedNode != null)
             {
                 switch (mouseButton)
                 {
                     case MouseButtons.Left:
-                        textBox_selectedNodeName.Text = _selectedNode.Name;
-                        textBox_selectedNodeType.Text = _selectedNode.Type.ToString();
-                        textBox_selectedNodeType.BackColor = MapDrawer.NodeTypeColorDict[_selectedNode.Type];
-                        var selectedAGV = _agvHandler.AGVList.Find(agv => agv.Node == _selectedNode);
-                        if (selectedAGV != null)
+                        textBox_selectedNodeName.Text = SelectedNode.Name;
+                        textBox_selectedNodeType.Text = SelectedNode.Type.ToString();
+                        textBox_selectedNodeType.BackColor = MapDrawer.NodeTypeColorDict[SelectedNode.Type];
+                        _selectedAGV = _agvHandler.AGVList.Find(agv => agv.CurrentNode == SelectedNode) ?? _selectedAGV;
+                        _selectedRack = CurrentMap.RackList.Find(rack => rack.CurrentNode == SelectedNode) ?? _selectedRack;
+                        if (_mapEditorForm.IsEditingType)
                         {
-                            textBox_selectedAGVName.Text = selectedAGV.Name;
-                            textBox_selectedAGVNode.Text = selectedAGV.Node.Name;
-                            textBox_selectedAGVStatus.Text = selectedAGV.State.ToString();
-                            textBox_selectedAGVHeading.Text = selectedAGV.Heading.ToString();
+                            SelectedNode.Type = (MapNode.Types)_mapEditorForm.comboBox_types.SelectedItem;
+                            SelectedNode.DisallowTurningOnNode = _mapEditorForm.checkBox_disallowTurning.Checked;                            
                         }
-                        if (_isEditingType)
+                        if (_mapEditorForm.IsEditingEdge)
                         {
-                            _selectedNode.Type = (MapNode.Types)comboBox_types.SelectedItem;
-                            _selectedNode.DisallowTurningOnNode = checkBox_disallowTurning.Checked;
-                        }
-                        if (_isEditingEdge)
-                        {
-                            if (_selectedEdgeNode1 == null)
+                            if (SelectedEdgeNode1 == null)
                             {
-                                _selectedEdgeNode1 = _selectedNode;
+                                SelectedEdgeNode1 = SelectedNode;
                             }
                             else
                             {
-                                if (_selectedNode.IsNeighbourNode(_selectedEdgeNode1))
+                                if (SelectedNode.IsNeighbourNode(SelectedEdgeNode1))
                                 {
-                                    _selectedEdgeNode2 = _selectedNode;
+                                    SelectedEdgeNode2 = SelectedNode;
                                 }
                                 else
                                 {
-                                    if (_selectedEdgeNode2 != null)
+                                    if (SelectedEdgeNode2 != null)
                                     {
-                                        if (_selectedNode.IsNeighbourNode(_selectedEdgeNode2))
+                                        if (SelectedNode.IsNeighbourNode(SelectedEdgeNode2))
                                         {
-                                            _selectedEdgeNode1 = _selectedEdgeNode2;
-                                            _selectedEdgeNode2 = _selectedNode;
+                                            SelectedEdgeNode1 = SelectedEdgeNode2;
+                                            SelectedEdgeNode2 = SelectedNode;
                                         }
                                         else
                                         {
-                                            _selectedEdgeNode1 = _selectedNode;
-                                            _selectedEdgeNode2 = null;
+                                            SelectedEdgeNode1 = SelectedNode;
+                                            SelectedEdgeNode2 = null;
                                         }
                                     }
                                     else
                                     {
-                                        _selectedEdgeNode1 = _selectedNode;
+                                        SelectedEdgeNode1 = SelectedNode;
                                     }
                                 }
                             }
 
-                            if (_selectedEdgeNode1 != null && _selectedEdgeNode2 != null)
+                            if (SelectedEdgeNode1 != null && SelectedEdgeNode2 != null)
                             {
-                                var selectedEdge = _currentMap.GetEdgeByNodes(comboBox_constraintLayers.SelectedIndex, _selectedEdgeNode1, _selectedEdgeNode2);
-                                selectedEdge.PassingRestriction = (MapEdge.PassingRestrictions)comboBox_passingRestrictions.SelectedItem;
-                                if (_selectedEdgeNode1.Location.X + _selectedEdgeNode1.Location.Y > _selectedEdgeNode2.Location.X + _selectedEdgeNode2.Location.Y)
+                                var selectedEdge = CurrentMap.GetEdgeByNodes(_mapEditorForm.comboBox_constraintLayers.SelectedIndex, SelectedEdgeNode1, SelectedEdgeNode2);
+                                selectedEdge.PassingRestriction = (MapEdge.PassingRestrictions)_mapEditorForm.comboBox_passingRestrictions.SelectedItem;
+                                if (SelectedEdgeNode1.Location.X + SelectedEdgeNode1.Location.Y > SelectedEdgeNode2.Location.X + SelectedEdgeNode2.Location.Y)
                                 {
                                     selectedEdge.InvertPassingRestrictionDirection();
                                 }
                             }
-                            textBox_edgeNode1.Text = _selectedEdgeNode1?.Name;
-                            textBox_edgeNode2.Text = _selectedEdgeNode2?.Name;
+                            _mapEditorForm.textBox_edgeNode1.Text = SelectedEdgeNode1?.Name;
+                            _mapEditorForm.textBox_edgeNode2.Text = SelectedEdgeNode2?.Name;
                         }
                         if (_planningFlag == 1)
                         {
                             button_startPlanning.Text = "Select goal node";
-                            _startNode = _selectedNode;
+                            _startNode = SelectedNode;
                             textBox_startNode.Text = _startNode.Name;
                             _planningFlag++;
                         }
                         else if (_planningFlag == 2)
                         {
-                            if (_selectedNode != _startNode)
+                            if (SelectedNode != _startNode)
                             {
-                                _goalNode = _selectedNode;
+                                _goalNode = SelectedNode;
                                 button_startPlanning.Text = "Start Planning";
                                 textBox_goalNode.Text = _goalNode.Name;
                                 _planningFlag = 0;
@@ -388,10 +352,10 @@ namespace A_Star_Demo
                                 textBox_planningPath.Clear();
                                 textBox_planningPath.AppendText($"Length = {(_path is null ? -1 : _path.Count)}\r\n");
 
-                                var targetAGV = _agvHandler.AGVList.Find( agv => agv.Node == _startNode);
+                                var targetAGV = _agvHandler.AGVList.Find(agv => agv.CurrentNode == _startNode);
                                 if (targetAGV != null)
                                 {
-                                    targetAGV.AssignNewPath(_path);                                    
+                                    targetAGV.AssignNewPathAndMove(_path);
                                 }
                                 if (_path != null)
                                     foreach (var node in _path)
@@ -403,9 +367,10 @@ namespace A_Star_Demo
                         }
                         break;
                     case MouseButtons.Right:
-                        if (_isEditingType)
+                        if (_mapEditorForm.IsEditingType)
                         {
-                            _selectedNode.Type = MapNode.Types.None;
+                            SelectedNode.Type = MapNode.Types.None;
+                            SelectedNode.DisallowTurningOnNode = false;
                         }
                         break;
                     case MouseButtons.Middle:
@@ -424,30 +389,54 @@ namespace A_Star_Demo
 
         private void timer_mapRefresh_Tick(object sender, EventArgs e)
         {
-            if (_currentMap != null)
+            if (CurrentMap != null)
             {
                 _mapDrawer.DrawNewMap();
-                _mapDrawer.DrawSelectedNode(_selectedNode);
-                _mapDrawer.DrawSelectedEdge(_selectedEdgeNode1, _selectedEdgeNode2);
-                if (checkBox_showConstraints.Checked)
+                _mapDrawer.DrawSelectedNode(SelectedNode);
+                _mapDrawer.DrawSelectedEdge(SelectedEdgeNode1, SelectedEdgeNode2);
+                if (_mapEditorForm.checkBox_showConstraints.Checked)
                 {
-                    _mapDrawer.DrawEdgeConstraints(comboBox_constraintLayers.SelectedIndex);
+                    _mapDrawer.DrawEdgeConstraints(_mapEditorForm.comboBox_constraintLayers.SelectedIndex);
                 }
                 //_mapDrawer.DrawSinglePath(_path);
-                _mapDrawer.DrawAllAGVPath(_agvHandler.AGVList);
-                _mapDrawer.DrawAGVs(_agvHandler.AGVList);
+                _mapDrawer.DrawAllAGVPath();
+                _mapDrawer.DrawAGVs();
+                _mapDrawer.DrawRacks();
                 pictureBox_mapViewer.Image = _mapDrawer.GetMapPicture();
+            }
+            if (_selectedAGV != null)
+            {
+                textBox_agvName.Text = _selectedAGV.Name;
+                textBox_agvNode.Text = _selectedAGV.CurrentNode.Name;
+                textBox_agvStatus.Text = _selectedAGV.State.ToString();
+                textBox_agvHeading.Text = _selectedAGV.Heading.ToString();
+            }
+            else
+            {
+                textBox_agvName.Clear();
+                textBox_agvNode.Clear();
+                textBox_agvStatus.Clear();
+                textBox_agvHeading.Clear();
+            }
+            if (_selectedRack != null)
+            {
+                textBox_rackName.Text = _selectedRack.Name;
+                textBox_rackNode.Text = _selectedRack.CurrentNode.Name;
+                textBox_rackHome.Text = _selectedRack.HomeNode.Name;
+                textBox_rackHeading.Text = _selectedRack.Heading.ToString();
+            }
+            else
+            {
+                textBox_rackName.Clear();
+                textBox_rackNode.Clear();
+                textBox_rackHome.Clear();
+                textBox_rackHeading.Clear();
             }
         }
 
-        private void testToolStripMenuItem_Click(object sender, EventArgs e)
+        private void AStarDemo_FormClosing(object sender, FormClosingEventArgs e)
         {
-
-            foreach (var agv in _agvHandler.AGVList)
-            {
-                agv.Destroy();
-            }
-            _agvHandler.AGVList.Clear();            
+            
         }
     }
 }
