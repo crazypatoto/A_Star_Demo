@@ -25,9 +25,10 @@ namespace A_Star_Demo.AGVs
             Charging,                           // AGV is charging.
             ChargeFinished,                     // AGV has finished charging.
 
-            Disconnected = 100,                 // AGV is disconnected
-            Blocked,                            // AGV is blocked by obstacle or other AGVs
-            UnknownError,                       // AGV encounters unknown error
+            Disconnected = 100,                 // AGV is disconnected.
+            MovingBlocked,                      // AGV is blocked by obstacle or other AGVs while moving.
+            RackRotatingBlocked,                // AGV is blocked by obstacle or other AGVs while rotating rack.
+            UnknownError,                       // AGV encounters unknown error.
         }
 
         public enum AGVHeading : int
@@ -38,6 +39,7 @@ namespace A_Star_Demo.AGVs
             Right = 0
         }
         #endregion
+        public AGVHandler Handler { get; private protected set; }
         public int ID { get; private protected set; }
         public string Name { get; private protected set; }
         public MapNode CurrentNode { get; private protected set; }
@@ -58,9 +60,13 @@ namespace A_Star_Demo.AGVs
                 else if ((int)_heading <= -180) _heading += 180;
             }
         }
-        public List<MapNode> AssignedPath { get; private protected set; }
-
+        public List<MapNode> AssignedPath { get; private protected set; }      
         public abstract void AssignNewPathAndMove(List<MapNode> path);
+        public abstract void PickUpRack(Rack rack);
+        public abstract void DropOffRack();
+
+        public abstract void RotateRack(Rack.RackHeading rackHeading);
+
         public abstract void Disconnect();
         private AGVHeading _heading;
     }

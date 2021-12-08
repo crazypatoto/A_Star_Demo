@@ -48,5 +48,16 @@ namespace A_Star_Demo.Models
             this.HomeNode = homeNode ?? node;
             this.Heading = heading;
         }
+
+        public void MoveTo(MapNode targetNode)
+        {
+            if (targetNode == null) return;
+            this.CurrentNode = targetNode;
+        }
+
+        public void RotateTo(RackHeading heading)
+        {
+            this.Heading = heading;
+        }
     }
 }

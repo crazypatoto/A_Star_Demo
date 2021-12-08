@@ -9,9 +9,11 @@ namespace A_Star_Demo.AGVs
 {
     public class AGVHandler
     {
+        public Map CurrentMap { get; }
         public List<AGV> AGVList { get; private set; }
-        public AGVHandler()
+        public AGVHandler(Map map)
         {
+            this.CurrentMap = map;
             AGVList = new List<AGV>();
         }
 
@@ -23,7 +25,7 @@ namespace A_Star_Demo.AGVs
             {
                 newID = AGVList.Last().ID + 1;
             }
-            AGVList.Add(new SimulatedAGV(newID, name ?? $"AGV{newID:D3}", node));
+            AGVList.Add(new SimulatedAGV(this, newID, name ?? $"AGV{newID:D3}", node));
             return AGVList.Last();
         }
     }

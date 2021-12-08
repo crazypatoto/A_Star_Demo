@@ -20,7 +20,7 @@ namespace A_Star_Demo.Maps
         public MapNode[,] AllNodes { get; private set; }
 
         public List<ConstraintLayer> ConstraintLayers;
-        public List<Rack> RackList;
+        public List<Rack> RackList;        
 
         public Map(byte zoneID, int width, int height)
         {

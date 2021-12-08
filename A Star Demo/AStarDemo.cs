@@ -42,6 +42,8 @@ namespace A_Star_Demo
             InitializeComponent();
             _mapEditorForm = new MapEditor();
             _mapEditorForm.Tag = this;
+            comboBox_rackHeading.DataSource = Enum.GetValues(typeof(Rack.RackHeading));
+            comboBox_rackHeading.SelectedIndex = 0;
         }
 
         #region Menu
@@ -100,7 +102,7 @@ namespace A_Star_Demo
                 MessageBox.Show("There is already an AGV here!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            _selectedAGV = _agvHandler.AddSimulatedAGV(SelectedNode);
+            _selectedAGV = _agvHandler.AddSimulatedAGV(SelectedNode);           
         }
         private void editMapToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -167,6 +169,24 @@ namespace A_Star_Demo
             textBox_planningPath.Clear();
             _path?.Clear();
             _path = null;
+        }
+
+        private void button_pickUpRack_Click(object sender, EventArgs e)
+        {
+            if (_selectedAGV == null) return;
+            _selectedAGV.PickUpRack(_selectedRack);
+        }
+
+        private void button_dropOffRack_Click(object sender, EventArgs e)
+        {
+            if (_selectedAGV == null) return;            
+            _selectedAGV.DropOffRack();
+        }
+
+        private void button_rotateRackTemp_Click(object sender, EventArgs e)
+        {
+            if (_selectedAGV == null) return;
+            _selectedAGV.RotateRack((Rack.RackHeading)comboBox_rackHeading.SelectedItem);
         }
         #endregion
 
@@ -239,7 +259,7 @@ namespace A_Star_Demo
             CurrentMap = newMap;
             _mapDrawer = new MapDrawer(CurrentMap, pictureBox_mapViewer.Size);
             _pathPlanner = new AStarPlanner(CurrentMap);
-            _agvHandler = new AGVHandler();
+            _agvHandler = new AGVHandler(CurrentMap);
             _mapDrawer.RefererAGVList = _agvHandler.AGVList;
             saveMapToolStripMenuItem.Enabled = true;
             editToolStripMenuItem.Enabled = true;
@@ -408,13 +428,15 @@ namespace A_Star_Demo
             {
                 textBox_agvName.Text = _selectedAGV.Name;
                 textBox_agvNode.Text = _selectedAGV.CurrentNode.Name;
+                textBox_agvRack.Text = _selectedAGV.BoundRack?.Name;
                 textBox_agvStatus.Text = _selectedAGV.State.ToString();
-                textBox_agvHeading.Text = _selectedAGV.Heading.ToString();
+                textBox_agvHeading.Text = _selectedAGV.Heading.ToString();                
             }
             else
             {
                 textBox_agvName.Clear();
                 textBox_agvNode.Clear();
+                textBox_agvRack.Clear();
                 textBox_agvStatus.Clear();
                 textBox_agvHeading.Clear();
             }
@@ -432,11 +454,6 @@ namespace A_Star_Demo
                 textBox_rackHome.Clear();
                 textBox_rackHeading.Clear();
             }
-        }
-
-        private void AStarDemo_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            
-        }
+        }      
     }
 }

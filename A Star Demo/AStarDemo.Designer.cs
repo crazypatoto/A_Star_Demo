@@ -69,6 +69,10 @@ namespace A_Star_Demo
             this.tableLayoutPanel_main = new System.Windows.Forms.TableLayoutPanel();
             this.pictureBox_mapViewer = new System.Windows.Forms.PictureBox();
             this.panel_infos = new System.Windows.Forms.Panel();
+            this.comboBox_rackHeading = new System.Windows.Forms.ComboBox();
+            this.button_rotateRackTemp = new System.Windows.Forms.Button();
+            this.button_dropOffRack = new System.Windows.Forms.Button();
+            this.button_pickUpRack = new System.Windows.Forms.Button();
             this.groupBox_rackInfo = new System.Windows.Forms.GroupBox();
             this.textBox_rackHeading = new System.Windows.Forms.TextBox();
             this.label17 = new System.Windows.Forms.Label();
@@ -158,7 +162,7 @@ namespace A_Star_Demo
             // openMapEditorToolStripMenuItem
             // 
             this.openMapEditorToolStripMenuItem.Name = "openMapEditorToolStripMenuItem";
-            this.openMapEditorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openMapEditorToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.openMapEditorToolStripMenuItem.Text = "Open Map Editor";
             this.openMapEditorToolStripMenuItem.Click += new System.EventHandler(this.editMapToolStripMenuItem_Click);
             // 
@@ -168,7 +172,7 @@ namespace A_Star_Demo
             this.addRackToolStripMenuItem,
             this.deleteRackToolStripMenuItem});
             this.editRacksToolStripMenuItem.Name = "editRacksToolStripMenuItem";
-            this.editRacksToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.editRacksToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
             this.editRacksToolStripMenuItem.Text = "Edit Racks";
             // 
             // addRackToolStripMenuItem
@@ -461,6 +465,10 @@ namespace A_Star_Demo
             // 
             // panel_infos
             // 
+            this.panel_infos.Controls.Add(this.comboBox_rackHeading);
+            this.panel_infos.Controls.Add(this.button_rotateRackTemp);
+            this.panel_infos.Controls.Add(this.button_dropOffRack);
+            this.panel_infos.Controls.Add(this.button_pickUpRack);
             this.panel_infos.Controls.Add(this.groupBox_rackInfo);
             this.panel_infos.Controls.Add(this.groupBox_agvInfo);
             this.panel_infos.Controls.Add(this.groupBox_mapInfo);
@@ -471,6 +479,48 @@ namespace A_Star_Demo
             this.panel_infos.Name = "panel_infos";
             this.panel_infos.Size = new System.Drawing.Size(370, 730);
             this.panel_infos.TabIndex = 3;
+            // 
+            // comboBox_rackHeading
+            // 
+            this.comboBox_rackHeading.FormattingEnabled = true;
+            this.comboBox_rackHeading.Location = new System.Drawing.Point(12, 619);
+            this.comboBox_rackHeading.Name = "comboBox_rackHeading";
+            this.comboBox_rackHeading.Size = new System.Drawing.Size(160, 20);
+            this.comboBox_rackHeading.TabIndex = 21;
+            // 
+            // button_rotateRackTemp
+            // 
+            this.button_rotateRackTemp.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.button_rotateRackTemp.Location = new System.Drawing.Point(12, 645);
+            this.button_rotateRackTemp.Name = "button_rotateRackTemp";
+            this.button_rotateRackTemp.Size = new System.Drawing.Size(160, 33);
+            this.button_rotateRackTemp.TabIndex = 12;
+            this.button_rotateRackTemp.Text = "Rotate Rack";
+            this.button_rotateRackTemp.UseVisualStyleBackColor = true;
+            this.button_rotateRackTemp.Click += new System.EventHandler(this.button_rotateRackTemp_Click);
+            // 
+            // button_dropOffRack
+            // 
+            this.button_dropOffRack.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.button_dropOffRack.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.button_dropOffRack.Location = new System.Drawing.Point(12, 580);
+            this.button_dropOffRack.Name = "button_dropOffRack";
+            this.button_dropOffRack.Size = new System.Drawing.Size(160, 33);
+            this.button_dropOffRack.TabIndex = 11;
+            this.button_dropOffRack.Text = "Drop Off Rack";
+            this.button_dropOffRack.UseVisualStyleBackColor = true;
+            this.button_dropOffRack.Click += new System.EventHandler(this.button_dropOffRack_Click);
+            // 
+            // button_pickUpRack
+            // 
+            this.button_pickUpRack.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.button_pickUpRack.Location = new System.Drawing.Point(12, 541);
+            this.button_pickUpRack.Name = "button_pickUpRack";
+            this.button_pickUpRack.Size = new System.Drawing.Size(160, 33);
+            this.button_pickUpRack.TabIndex = 10;
+            this.button_pickUpRack.Text = "Pick Up Rack";
+            this.button_pickUpRack.UseVisualStyleBackColor = true;
+            this.button_pickUpRack.Click += new System.EventHandler(this.button_pickUpRack_Click);
             // 
             // groupBox_rackInfo
             // 
@@ -673,7 +723,6 @@ namespace A_Star_Demo
             this.MainMenuStrip = this.menuStrip;
             this.Name = "AStarDemo";
             this.Text = "A* Demo";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.AStarDemo_FormClosing);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.groupBox_nodeInfo.ResumeLayout(false);
@@ -754,6 +803,10 @@ namespace A_Star_Demo
         private System.Windows.Forms.TextBox textBox_agvRack;
         private System.Windows.Forms.Label label21;
         private System.Windows.Forms.ToolStripMenuItem deleteRackToolStripMenuItem;
+        private System.Windows.Forms.Button button_dropOffRack;
+        private System.Windows.Forms.Button button_pickUpRack;
+        public System.Windows.Forms.ComboBox comboBox_rackHeading;
+        private System.Windows.Forms.Button button_rotateRackTemp;
     }
 }
 
