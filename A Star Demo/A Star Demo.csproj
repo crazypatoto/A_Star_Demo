@@ -74,6 +74,7 @@
     <Compile Include="PathPlanning\AStarPlanner.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tasks\AGVTask.cs" />
     <EmbeddedResource Include="AStarDemo.resx">
       <DependentUpon>AStarDemo.cs</DependentUpon>
     </EmbeddedResource>

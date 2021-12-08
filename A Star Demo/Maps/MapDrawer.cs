@@ -79,6 +79,7 @@ namespace A_Star_Demo.Dialogs
         public void DrawNewMap()
         {
             _mapBMP?.Dispose();
+            GC.Collect();
             _mapBMP = new Bitmap(_drawSize.Width, _drawSize.Height);
 
             using (var graphics = Graphics.FromImage(_mapBMP))
@@ -172,7 +173,7 @@ namespace A_Star_Demo.Dialogs
                                 graphics.DrawLine(pen, (drawX + 0.5f) * _scaledCellSize, (drawY / 2 + 0.5f) * _scaledCellSize, (drawX + 1.5f) * _scaledCellSize, (drawY / 2 + 0.5f) * _scaledCellSize);
                             }
                         }
-                        else                
+                        else
                         {
                             // Draw vertical arrows
                             if (y < 2 * _map.Height - 2)
@@ -223,6 +224,28 @@ namespace A_Star_Demo.Dialogs
                             break;
                     }
                     graphics.DrawImage(agvImage, (agv.Node.Location.X + OffsetX) * _scaledCellSize, (agv.Node.Location.Y + OffsetY) * _scaledCellSize, _scaledCellSize, _scaledCellSize);
+                }
+            }
+        }
+
+        public void DrawAllAGVPath(List<SimulatedAGV> agvList)
+        {
+            using (var graphics = Graphics.FromImage(_mapBMP))
+            {
+                foreach (var agv in agvList)
+                {
+                    Pen pen = new Pen(Color.Green, GridWidth * 1.5f);
+                    if (agv.AssignedPath == null) continue;
+                    if (agv.AssignedPath.Count == 0) continue;
+                    var path = new List<MapNode>(agv.AssignedPath);
+                    pen.Color = Color.FromArgb(100, 0, 255, 0);
+                    graphics.DrawRectangle(pen, (agv.Node.Location.X + OffsetX) * _scaledCellSize, (agv.Node.Location.Y + OffsetY) * _scaledCellSize, _scaledCellSize, _scaledCellSize);
+                    for (int i = 0; i < path.Count; i++)
+                    {
+                        Color interpolatedColor = Color.FromArgb(100, (i + 1) * 255 / path.Count, 255 - (i + 1) * 255 / path.Count, 0);
+                        pen.Color = interpolatedColor;
+                        graphics.DrawRectangle(pen, (path[i].Location.X + OffsetX) * _scaledCellSize, (path[i].Location.Y + OffsetY) * _scaledCellSize, _scaledCellSize, _scaledCellSize);
+                    }
                 }
             }
         }

@@ -79,7 +79,7 @@ namespace A_Star_Demo
                 dialog.Title = "Open map file";
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    LoadNewMap(new Map(dialog.FileName));   
+                    LoadNewMap(new Map(dialog.FileName));
                 }
             }
         }
@@ -95,7 +95,7 @@ namespace A_Star_Demo
                 MessageBox.Show("You cannot place an AGV over here!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if(_agvHandler.AGVList.FindAll(agv => agv.Node == _selectedNode).Count > 0)
+            if (_agvHandler.AGVList.FindAll(agv => agv.Node == _selectedNode).Count > 0)
             {
                 MessageBox.Show("You cannot place an AGV over here!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -103,7 +103,7 @@ namespace A_Star_Demo
             var selectedAGV = _agvHandler.AddSimulatedAGV(_selectedNode);
             textBox_selectedAGVName.Text = selectedAGV.Name;
             textBox_selectedAGVNode.Text = selectedAGV.Node.Name;
-            textBox_selectedAGVStatus.Text = selectedAGV.Status.ToString();
+            textBox_selectedAGVStatus.Text = selectedAGV.State.ToString();
             textBox_selectedAGVHeading.Text = selectedAGV.Heading.ToString();
         }
         #endregion
@@ -283,7 +283,7 @@ namespace A_Star_Demo
             textBox_selectedNodeType.Clear();
             textBox_edgeNode1.Clear();
             textBox_edgeNode2.Clear();
-            
+
             textBox_mapSN.Text = _currentMap.SerialNumber;
             textBox_mapZone.Text = _currentMap.ZoneID.ToString();
             textBox_mapDIM.Text = $"{_currentMap.Width} x {_currentMap.Height}";
@@ -315,9 +315,9 @@ namespace A_Star_Demo
                         {
                             textBox_selectedAGVName.Text = selectedAGV.Name;
                             textBox_selectedAGVNode.Text = selectedAGV.Node.Name;
-                            textBox_selectedAGVStatus.Text = selectedAGV.Status.ToString();
+                            textBox_selectedAGVStatus.Text = selectedAGV.State.ToString();
                             textBox_selectedAGVHeading.Text = selectedAGV.Heading.ToString();
-                        }          
+                        }
                         if (_isEditingType)
                         {
                             _selectedNode.Type = (MapNode.Types)comboBox_types.SelectedItem;
@@ -384,10 +384,15 @@ namespace A_Star_Demo
                                 button_startPlanning.Text = "Start Planning";
                                 textBox_goalNode.Text = _goalNode.Name;
                                 _planningFlag = 0;
-
                                 _path = _pathPlanner.FindPath(_startNode, _goalNode, comboBox_planningLayer.SelectedIndex);
                                 textBox_planningPath.Clear();
                                 textBox_planningPath.AppendText($"Length = {(_path is null ? -1 : _path.Count)}\r\n");
+
+                                var targetAGV = _agvHandler.AGVList.Find( agv => agv.Node == _startNode);
+                                if (targetAGV != null)
+                                {
+                                    targetAGV.AssignNewPath(_path);                                    
+                                }
                                 if (_path != null)
                                     foreach (var node in _path)
                                     {
@@ -428,16 +433,21 @@ namespace A_Star_Demo
                 {
                     _mapDrawer.DrawEdgeConstraints(comboBox_constraintLayers.SelectedIndex);
                 }
-                _mapDrawer.DrawSinglePath(_path);
+                //_mapDrawer.DrawSinglePath(_path);
+                _mapDrawer.DrawAllAGVPath(_agvHandler.AGVList);
                 _mapDrawer.DrawAGVs(_agvHandler.AGVList);
                 pictureBox_mapViewer.Image = _mapDrawer.GetMapPicture();
             }
         }
 
         private void testToolStripMenuItem_Click(object sender, EventArgs e)
-        {            
-        }
+        {
 
-       
+            foreach (var agv in _agvHandler.AGVList)
+            {
+                agv.Destroy();
+            }
+            _agvHandler.AGVList.Clear();            
+        }
     }
 }
