@@ -18,6 +18,7 @@ namespace A_Star_Demo.AGVs
         private Rack.RackHeading? _targetRackHeading = null;
         private Rack _targetRack = null;
         private readonly CancellationTokenSource _cts;
+        private static readonly object _lock = new object();
         public SimulatedAGV(AGVHandler handler, int id, string name, MapNode node)
         {
             this.Handler = handler;
@@ -92,31 +93,34 @@ namespace A_Star_Demo.AGVs
                             _targetAGVHeading = GetNextHeading(this.CurrentNode, nextNode);
                             if (this.Heading == _targetAGVHeading)
                             {
-                                if (this.Handler.AGVList.FindAll(agv => agv.CurrentNode == nextNode).Count == 0)
+                                lock (_lock)
                                 {
-                                    if (this.BoundRack == null)
+                                    if (this.Handler.AGVList.FindAll(agv => agv.CurrentNode == nextNode).Count == 0)
                                     {
-                                        this.CurrentNode = nextNode;
-                                        AssignedPath.RemoveAt(0);
-                                    }
-                                    else
-                                    {
-                                        if (this.Handler.CurrentMap.RackList.FindAll(rack => rack.CurrentNode == nextNode).Count == 0)
+                                        if (this.BoundRack == null)
                                         {
                                             this.CurrentNode = nextNode;
-                                            this.BoundRack.MoveTo(nextNode);
                                             AssignedPath.RemoveAt(0);
                                         }
                                         else
                                         {
-                                            this.State = AGVStates.MovingBlocked;
+                                            if (this.Handler.CurrentMap.RackList.FindAll(rack => rack.CurrentNode == nextNode).Count == 0)
+                                            {
+                                                this.CurrentNode = nextNode;
+                                                this.BoundRack.MoveTo(nextNode);
+                                                AssignedPath.RemoveAt(0);
+                                            }
+                                            else
+                                            {
+                                                this.State = AGVStates.MovingBlocked;
+                                            }
                                         }
                                     }
-                                }
-                                else
-                                {
-                                    this.State = AGVStates.MovingBlocked;
-                                }
+                                    else
+                                    {
+                                        this.State = AGVStates.MovingBlocked;
+                                    }
+                                }                                
                             }
                             else
                             {
