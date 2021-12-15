@@ -93,6 +93,7 @@ namespace A_Star_Demo
             this.label14 = new System.Windows.Forms.Label();
             this.textBox_agvName = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
+            this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.menuStrip.SuspendLayout();
             this.groupBox_nodeInfo.SuspendLayout();
             this.groupBox_mapInfo.SuspendLayout();
@@ -386,7 +387,7 @@ namespace A_Star_Demo
             this.textBox_planningPath.Multiline = true;
             this.textBox_planningPath.Name = "textBox_planningPath";
             this.textBox_planningPath.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox_planningPath.Size = new System.Drawing.Size(160, 524);
+            this.textBox_planningPath.Size = new System.Drawing.Size(160, 514);
             this.textBox_planningPath.TabIndex = 24;
             // 
             // button_startPlanning
@@ -445,7 +446,8 @@ namespace A_Star_Demo
             this.tableLayoutPanel_main.Name = "tableLayoutPanel_main";
             this.tableLayoutPanel_main.RowCount = 1;
             this.tableLayoutPanel_main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel_main.Size = new System.Drawing.Size(1450, 736);
+            this.tableLayoutPanel_main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel_main.Size = new System.Drawing.Size(1450, 714);
             this.tableLayoutPanel_main.TabIndex = 8;
             // 
             // pictureBox_mapViewer
@@ -454,7 +456,7 @@ namespace A_Star_Demo
             this.pictureBox_mapViewer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox_mapViewer.Location = new System.Drawing.Point(3, 3);
             this.pictureBox_mapViewer.Name = "pictureBox_mapViewer";
-            this.pictureBox_mapViewer.Size = new System.Drawing.Size(1068, 730);
+            this.pictureBox_mapViewer.Size = new System.Drawing.Size(1068, 708);
             this.pictureBox_mapViewer.TabIndex = 2;
             this.pictureBox_mapViewer.TabStop = false;
             this.pictureBox_mapViewer.SizeChanged += new System.EventHandler(this.pictureBox_mapViewer_SizeChanged);
@@ -477,7 +479,7 @@ namespace A_Star_Demo
             this.panel_infos.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel_infos.Location = new System.Drawing.Point(1077, 3);
             this.panel_infos.Name = "panel_infos";
-            this.panel_infos.Size = new System.Drawing.Size(370, 730);
+            this.panel_infos.Size = new System.Drawing.Size(370, 708);
             this.panel_infos.TabIndex = 3;
             // 
             // comboBox_rackHeading
@@ -713,6 +715,14 @@ namespace A_Star_Demo
             this.label13.TabIndex = 4;
             this.label13.Text = "Name: ";
             // 
+            // statusStrip
+            // 
+            this.statusStrip.Location = new System.Drawing.Point(0, 738);
+            this.statusStrip.Name = "statusStrip";
+            this.statusStrip.Size = new System.Drawing.Size(1450, 22);
+            this.statusStrip.TabIndex = 9;
+            this.statusStrip.Text = "statusStrip1";
+            // 
             // AStarDemo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -720,6 +730,7 @@ namespace A_Star_Demo
             this.ClientSize = new System.Drawing.Size(1450, 760);
             this.Controls.Add(this.tableLayoutPanel_main);
             this.Controls.Add(this.menuStrip);
+            this.Controls.Add(this.statusStrip);
             this.MainMenuStrip = this.menuStrip;
             this.Name = "AStarDemo";
             this.Text = "A* Demo";
@@ -807,6 +818,7 @@ namespace A_Star_Demo
         private System.Windows.Forms.Button button_pickUpRack;
         public System.Windows.Forms.ComboBox comboBox_rackHeading;
         private System.Windows.Forms.Button button_rotateRackTemp;
+        private System.Windows.Forms.StatusStrip statusStrip;
     }
 }
 

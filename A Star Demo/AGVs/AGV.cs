@@ -16,8 +16,10 @@ namespace A_Star_Demo.AGVs
         {
             Idle = 0,
             Moving,                             // AGV is moving.
-            Rotating,                           // AGV is rotating.
+            WaitingToMove,                      // AGV is waiting to move.
+            Rotating,                           // AGV is rotating.            
             RotatingRack,                       // AGV is rotating rack.
+            WaitingToRotateRack,                // AGV is waiting to rotate rack.
             DockingRack,                        // AGV is docking with rack.
             UnDockingRack,                      // AGV is undocking with rack.
             DockingChargeStation,               // AGV is docking with charging station.
