@@ -61,7 +61,7 @@
     <Compile Include="AStarDemo.Designer.cs">
       <DependentUpon>AStarDemo.cs</DependentUpon>
     </Compile>
-    <Compile Include="Maps\MapDrawer.cs" />
+    <Compile Include="MapDrawer.cs" />
     <Compile Include="Dialogs\NewMapDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -77,6 +77,8 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\AGVTask.cs" />
+    <Compile Include="Tasks\AGVTaskHandler.cs" />
+    <Compile Include="VCSServer.cs" />
     <Compile Include="Windows\MapEditor.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -6,13 +6,11 @@ using System.Threading.Tasks;
 
 namespace A_Star_Demo.Tasks
 {
-    public abstract class AGVTask
+    public class AGVTaskHandler
     {
-        public long TaskStartTimeStamp { get; }
-
-        public AGVTask()
+        public AGVTaskHandler(VCSServer server)
         {
-            TaskStartTimeStamp = DateTimeOffset.Now.ToUnixTimeSeconds();
+
         }
     }
 }

@@ -19,8 +19,7 @@ namespace A_Star_Demo.Maps
         public int Height { get; }
         public MapNode[,] AllNodes { get; private set; }
 
-        public List<ConstraintLayer> ConstraintLayers;
-        public List<Rack> RackList;        
+        public List<ConstraintLayer> ConstraintLayers;       
 
         public Map(byte zoneID, int width, int height)
         {
@@ -40,7 +39,6 @@ namespace A_Star_Demo.Maps
 
             this.ConstraintLayers = new List<ConstraintLayer>();
             this.ConstraintLayers.Add(new ConstraintLayer(this, "Default"));
-            this.RackList = new List<Rack>();
         }
 
         public Map(string path)
@@ -73,7 +71,6 @@ namespace A_Star_Demo.Maps
                         }
                     }
                 }
-                this.RackList = new List<Rack>();
             }
         }
 

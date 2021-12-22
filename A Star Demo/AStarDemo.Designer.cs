@@ -42,6 +42,7 @@ namespace A_Star_Demo
             this.deleteRackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.simulationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addAGVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.taskToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox_nodeInfo = new System.Windows.Forms.GroupBox();
             this.textBox_selectedNodeType = new System.Windows.Forms.TextBox();
@@ -111,6 +112,7 @@ namespace A_Star_Demo
             this.fileToolStripMenuItem,
             this.editToolStripMenuItem,
             this.simulationToolStripMenuItem,
+            this.taskToolStripMenuItem,
             this.testToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
@@ -205,6 +207,13 @@ namespace A_Star_Demo
             this.addAGVToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
             this.addAGVToolStripMenuItem.Text = "Add AGV";
             this.addAGVToolStripMenuItem.Click += new System.EventHandler(this.addAGVToolStripMenuItem_Click);
+            // 
+            // taskToolStripMenuItem
+            // 
+            this.taskToolStripMenuItem.Enabled = false;
+            this.taskToolStripMenuItem.Name = "taskToolStripMenuItem";
+            this.taskToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.taskToolStripMenuItem.Text = "Task";
             // 
             // testToolStripMenuItem
             // 
@@ -330,7 +339,6 @@ namespace A_Star_Demo
             // 
             // timer_mapRefresh
             // 
-            this.timer_mapRefresh.Enabled = true;
             this.timer_mapRefresh.Interval = 41;
             this.timer_mapRefresh.Tick += new System.EventHandler(this.timer_mapRefresh_Tick);
             // 
@@ -446,7 +454,7 @@ namespace A_Star_Demo
             this.tableLayoutPanel_main.Name = "tableLayoutPanel_main";
             this.tableLayoutPanel_main.RowCount = 1;
             this.tableLayoutPanel_main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel_main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel_main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 714F));
             this.tableLayoutPanel_main.Size = new System.Drawing.Size(1450, 714);
             this.tableLayoutPanel_main.TabIndex = 8;
             // 
@@ -721,7 +729,7 @@ namespace A_Star_Demo
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Size = new System.Drawing.Size(1450, 22);
             this.statusStrip.TabIndex = 9;
-            this.statusStrip.Text = "statusStrip1";
+            this.statusStrip.Text = "statusStrip";
             // 
             // AStarDemo
             // 
@@ -819,6 +827,7 @@ namespace A_Star_Demo
         public System.Windows.Forms.ComboBox comboBox_rackHeading;
         private System.Windows.Forms.Button button_rotateRackTemp;
         private System.Windows.Forms.StatusStrip statusStrip;
+        private System.Windows.Forms.ToolStripMenuItem taskToolStripMenuItem;
     }
 }
 

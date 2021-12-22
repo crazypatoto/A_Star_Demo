@@ -9,11 +9,11 @@ namespace A_Star_Demo.AGVs
 {
     public class AGVHandler
     {
-        public Map CurrentMap { get; }
+        public VCSServer VCSServer { get; }
         public List<AGV> AGVList { get; private set; }
-        public AGVHandler(Map map)
+        public AGVHandler(VCSServer server)
         {
-            this.CurrentMap = map;
+            this.VCSServer = server;
             AGVList = new List<AGV>();
         }
 

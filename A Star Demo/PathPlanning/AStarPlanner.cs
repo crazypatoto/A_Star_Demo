@@ -69,9 +69,9 @@ namespace A_Star_Demo.PathPlanning
         private SimplePriorityQueue<AStarNode> _openList;
         private List<AStarNode> _closedList;
 
-        public AStarPlanner(Map map)
+        public AStarPlanner(VCSServer server)
         {
-            _refererMap = map;
+            _refererMap = server.CurrentMap;
         }
 
         private void InitializeAllAStarNodes()

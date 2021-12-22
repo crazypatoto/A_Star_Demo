@@ -10,12 +10,12 @@ using A_Star_Demo.Maps;
 using A_Star_Demo.Models;
 using A_Star_Demo.AGVs;
 
-namespace A_Star_Demo.Maps
+namespace A_Star_Demo
 {
     public class MapDrawer
     {
         private readonly int _minCellSize = 20;
-        private Map _map;
+        private VCSServer _vcsServer;
         private Bitmap _mapBMP;
         private Size _drawSize;
         private int _cellSize;
@@ -26,7 +26,6 @@ namespace A_Star_Demo.Maps
         public int OffsetY { get; set; } = 0;
         public int CellSize { get { return _scaledCellSize; } }
 
-        public List<AGV> RefererAGVList { get; set; }
         public float Scale
         {
             get
@@ -53,7 +52,7 @@ namespace A_Star_Demo.Maps
             set
             {
                 _drawSize = value;
-                _cellSize = Math.Min(DrawSize.Width / _map.Width, DrawSize.Height / _map.Height);
+                _cellSize = Math.Min(DrawSize.Width / _vcsServer.CurrentMap.Width, DrawSize.Height / _vcsServer.CurrentMap.Height);
                 if (_cellSize < _minCellSize) _cellSize = _minCellSize;
                 _scale = (float)_scaledCellSize / _cellSize;
             }
@@ -67,9 +66,9 @@ namespace A_Star_Demo.Maps
             {MapNode.Types.Wall, Color.DarkGray },
         };
 
-        public MapDrawer(Map map, Size drawSize)
+        public MapDrawer(VCSServer server, Size drawSize)
         {
-            _map = map;
+            _vcsServer = server;
             this.DrawSize = drawSize;
             this.Scale = 1.0f;
         }
@@ -86,16 +85,16 @@ namespace A_Star_Demo.Maps
 
             using (var graphics = Graphics.FromImage(_mapBMP))
             {
-                for (int y = 0; y < _map.Height + 1; y++)
+                for (int y = 0; y < _vcsServer.CurrentMap.Height + 1; y++)
                 {
-                    for (int x = 0; x < _map.Width + 1; x++)
+                    for (int x = 0; x < _vcsServer.CurrentMap.Width + 1; x++)
                     {
                         int drawX = x + OffsetX;
                         int drawY = y + OffsetY;
                         if (drawX > _drawSize.Width || drawY > _drawSize.Height) continue;
-                        if (x != _map.Width && y != _map.Height)
+                        if (x != _vcsServer.CurrentMap.Width && y != _vcsServer.CurrentMap.Height)
                         {
-                            var currentNode = _map.AllNodes[y, x];
+                            var currentNode = _vcsServer.CurrentMap.AllNodes[y, x];
                             Brush brush = new SolidBrush(NodeTypeColorDict[currentNode.Type]);
                             // Draw node
                             if (currentNode.Type != MapNode.Types.None)
@@ -110,8 +109,8 @@ namespace A_Star_Demo.Maps
                             }                            
                         }
                         // Draw gird lines
-                        graphics.DrawLine(new Pen(Color.White, GridWidth), OffsetX * _scaledCellSize, drawY * _scaledCellSize, (_map.Width + OffsetX) * _scaledCellSize, drawY * _scaledCellSize);
-                        graphics.DrawLine(new Pen(Color.White, GridWidth), drawX * _scaledCellSize, OffsetY * _scaledCellSize, drawX * _scaledCellSize, (_map.Height + OffsetY) * _scaledCellSize);
+                        graphics.DrawLine(new Pen(Color.White, GridWidth), OffsetX * _scaledCellSize, drawY * _scaledCellSize, (_vcsServer.CurrentMap.Width + OffsetX) * _scaledCellSize, drawY * _scaledCellSize);
+                        graphics.DrawLine(new Pen(Color.White, GridWidth), drawX * _scaledCellSize, OffsetY * _scaledCellSize, drawX * _scaledCellSize, (_vcsServer.CurrentMap.Height + OffsetY) * _scaledCellSize);
                     }
                 }
             }
@@ -153,14 +152,14 @@ namespace A_Star_Demo.Maps
             using (var graphics = Graphics.FromImage(_mapBMP))
             {
                 Pen pen = new Pen(Color.Red, GridWidth * 2);
-                for (int y = 0; y < 2 * _map.Height - 1; y++)
+                for (int y = 0; y < 2 * _vcsServer.CurrentMap.Height - 1; y++)
                 {
-                    for (int x = 0; x < _map.Width; x++)
+                    for (int x = 0; x < _vcsServer.CurrentMap.Width; x++)
                     {
                         int drawX = x + OffsetX;
                         int drawY = y + OffsetY * 2;
                         if (drawX > _drawSize.Width || drawY > _drawSize.Height) continue;
-                        var edgeConstraints = _map.ConstraintLayers[selectedLayerIndex].EdgeConstraints[y, x];
+                        var edgeConstraints = _vcsServer.CurrentMap.ConstraintLayers[selectedLayerIndex].EdgeConstraints[y, x];
                         var edgePermission = (~((byte)edgeConstraints.PassingRestriction)) & 0x03;
                         if (edgePermission == 0) continue;
                         pen.StartCap = LineCap.NoAnchor;
@@ -170,7 +169,7 @@ namespace A_Star_Demo.Maps
                         if (y % 2 == 0)
                         {
                             // Draw horizaontal arrows
-                            if (x < _map.Width - 1)
+                            if (x < _vcsServer.CurrentMap.Width - 1)
                             {
                                 graphics.DrawLine(pen, (drawX + 0.5f) * _scaledCellSize, (drawY / 2 + 0.5f) * _scaledCellSize, (drawX + 1.5f) * _scaledCellSize, (drawY / 2 + 0.5f) * _scaledCellSize);
                             }
@@ -178,7 +177,7 @@ namespace A_Star_Demo.Maps
                         else
                         {
                             // Draw vertical arrows
-                            if (y < 2 * _map.Height - 2)
+                            if (y < 2 * _vcsServer.CurrentMap.Height - 2)
                             {
                                 graphics.DrawLine(pen, (drawX + 0.5f) * _scaledCellSize, (drawY / 2 + 0.5f) * _scaledCellSize, (drawX + 0.5f) * _scaledCellSize, (drawY / 2 + 1.5f) * _scaledCellSize);
                             }
@@ -206,11 +205,11 @@ namespace A_Star_Demo.Maps
 
         public void DrawAGVs()
         {
-            if (RefererAGVList == null) return;
-            if (RefererAGVList.Count == 0) return;
+            if (_vcsServer.AGVHandler.AGVList == null) return;
+            if (_vcsServer.AGVHandler.AGVList.Count == 0) return;
             using (var graphics = Graphics.FromImage(_mapBMP))
             {
-                foreach (var agv in RefererAGVList)
+                foreach (var agv in _vcsServer.AGVHandler.AGVList)
                 {
                     Image agvImage = Properties.Resources.AGV;
                     switch (agv.Heading)
@@ -232,11 +231,11 @@ namespace A_Star_Demo.Maps
 
         public void DrawAllAGVPath()
         {
-            if (RefererAGVList == null) return;
-            if (RefererAGVList.Count == 0) return;
+            if (_vcsServer.AGVHandler.AGVList == null) return;
+            if (_vcsServer.AGVHandler.AGVList.Count == 0) return;
             using (var graphics = Graphics.FromImage(_mapBMP))
             {
-                foreach (var agv in RefererAGVList)
+                foreach (var agv in _vcsServer.AGVHandler.AGVList)
                 {
                     Pen pen = new Pen(Color.Green, GridWidth * 1.5f);
                     if (agv.AssignedPath == null) continue;
@@ -258,7 +257,7 @@ namespace A_Star_Demo.Maps
         {
             using (var graphics = Graphics.FromImage(_mapBMP))
             {
-                foreach (var rack in _map.RackList)
+                foreach (var rack in _vcsServer.RackList)
                 {
                     Image rackImage = null;
                     switch (rack.Heading)
@@ -276,7 +275,7 @@ namespace A_Star_Demo.Maps
                             rackImage = Properties.Resources.Rack_Down;
                             break;
                     }
-                    var agvOnNode = this.RefererAGVList?.Find(agv => agv.CurrentNode == rack.CurrentNode);
+                    var agvOnNode = this._vcsServer.AGVHandler.AGVList?.Find(agv => agv.CurrentNode == rack.CurrentNode);
                     if (agvOnNode != null)
                     {
                         graphics.DrawImage(rackImage, (rack.CurrentNode.Location.X + OffsetX) * _scaledCellSize, (rack.CurrentNode.Location.Y + OffsetY) * _scaledCellSize, _scaledCellSize / 2, _scaledCellSize / 2);
@@ -298,8 +297,8 @@ namespace A_Star_Demo.Maps
             int nodeX = x / _scaledCellSize - OffsetX;
             int nodeY = y / _scaledCellSize - OffsetY;
             if (nodeX < 0 || nodeY < 0) return null;
-            if (nodeX >= _map.Width || nodeY >= _map.Height) return null;
-            return _map.AllNodes[nodeY, nodeX];
+            if (nodeX >= _vcsServer.CurrentMap.Width || nodeY >= _vcsServer.CurrentMap.Height) return null;
+            return _vcsServer.CurrentMap.AllNodes[nodeY, nodeX];
         }
     }
 }
