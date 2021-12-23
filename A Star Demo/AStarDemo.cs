@@ -21,7 +21,7 @@ using A_Star_Demo.Tasks;
 namespace A_Star_Demo
 {
     public partial class AStarDemo : Form
-    {        
+    {
         private MapDrawer _mapDrawer;
         private int _planningFlag = 0;
         private MapNode _startNode;
@@ -31,7 +31,7 @@ namespace A_Star_Demo
         private AGV _selectedAGV;
         private Rack _selectedRack;
         private MapEditor _mapEditorForm;
-        public VCSServer VCSServer { get; private set;}
+        public VCSServer VCSServer { get; private set; }
         public MapNode SelectedNode { get; private set; }
         public MapNode SelectedEdgeNode1 { get; set; }
         public MapNode SelectedEdgeNode2 { get; set; }
@@ -53,7 +53,7 @@ namespace A_Star_Demo
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
                     VCSServer?.Dispose();
-                    VCSServer = new VCSServer(new Map(dialog.MapZoneID, dialog.MapWidth, dialog.MapHeight));                    
+                    VCSServer = new VCSServer(new Map(dialog.MapZoneID, dialog.MapWidth, dialog.MapHeight));
                     UpdateNewMapInfo();
                 }
             }
@@ -83,7 +83,7 @@ namespace A_Star_Demo
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
                     VCSServer?.Dispose();
-                    VCSServer = new VCSServer(new Map(dialog.FileName));                    
+                    VCSServer = new VCSServer(new Map(dialog.FileName));
                     UpdateNewMapInfo();
                 }
             }
@@ -107,7 +107,7 @@ namespace A_Star_Demo
             }
             //_selectedAGV = VCSServer.AGVHandler.AddSimulatedAGV(SelectedNode);           
             VCSServer.AddNewSimulationAGVTemp(SelectedNode);
-            _selectedAGV = VCSServer.AGVHandler.AGVList.Last();            
+            _selectedAGV = VCSServer.AGVHandler.AGVList.Last();
         }
         private void editMapToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -150,16 +150,39 @@ namespace A_Star_Demo
             //{
             //    agv.Disconnect();
             //}
-            //VCSServer.AGVHandler.AGVList.Clear();            
-            if(_selectedAGV != null && SelectedNode != null)
+            //VCSServer.AGVHandler.AGVList.Clear();
+            for (int y = 3; y <= 14; y++)
             {
-                _selectedAGV.TaskHandler.NewAGVMoveTask(SelectedNode);
+                for (int x = 3; x <= 4; x++)
+                {
+                    VCSServer.AddNewRackTemp(VCSServer.CurrentMap.AllNodes[y, x]);
+                }
             }
+            for (int x = 16; x <= 26; x++)
+            {
+                VCSServer.AddNewSimulationAGVTemp(VCSServer.CurrentMap.AllNodes[16, x]);
+            }
+        }
+
+        private void testGoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            for (int i = 0; i < VCSServer.AGVHandler.AGVList.Count; i++)
+            {
+                var agv = VCSServer.AGVHandler.AGVList[i];
+                var rack = VCSServer.RackList[i];
+                agv.TaskHandler.NewAGVMoveTask(rack.CurrentNode);
+                agv.TaskHandler.NewRackPickUpTask(rack);
+                agv.TaskHandler.NewAGVMoveTask(VCSServer.CurrentMap.AllNodes[11,19]);
+                agv.TaskHandler.NewAGVMoveTask(rack.HomeNode);
+                agv.TaskHandler.NewRackDropOffTask();
+                agv.TaskHandler.NewAGVMoveTask(VCSServer.CurrentMap.AllNodes[16, 16 + i]);
+            }
+           
         }
         #endregion
 
         #region UI Control Events      
-                  
+
         private void button_startPlanning_Click(object sender, EventArgs e)
         {
             if (_planningFlag == 0)
@@ -168,7 +191,7 @@ namespace A_Star_Demo
                 button_startPlanning.Text = "Select start node";
                 _planningFlag++;
             }
-        }      
+        }
 
         private void comboBox_planningLayer_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -182,6 +205,13 @@ namespace A_Star_Demo
             _path = null;
         }
 
+        private void button_Go_Click(object sender, EventArgs e)
+        {
+            if (_selectedAGV != null && SelectedNode != null)
+            {
+                _selectedAGV.TaskHandler.NewAGVMoveTask(SelectedNode);
+            }
+        }
         private void button_pickUpRack_Click(object sender, EventArgs e)
         {
             if (_selectedAGV == null) return;
@@ -258,7 +288,7 @@ namespace A_Star_Demo
         {
             if (_mapDrawer != null)
             {
-                _mapDrawer.Scale += e.Delta / 1200.0f;                
+                _mapDrawer.Scale += e.Delta / 1200.0f;
             }
         }
 
@@ -306,13 +336,13 @@ namespace A_Star_Demo
             SelectedNode = _mapDrawer?.GetNodeByPosition(mousePosition.X, mousePosition.Y);
             if (SelectedNode != null)
             {
-                if(VCSServer.AGVNodeQueue[SelectedNode.Location.Y, SelectedNode.Location.X].Count > 0)
+                if (VCSServer.AGVNodeQueue[SelectedNode.Location.Y, SelectedNode.Location.X].Count > 0)
                 {
                     Debug.WriteLine($"AGV Queue = ");
                     foreach (var AGV in VCSServer.AGVNodeQueue[SelectedNode.Location.Y, SelectedNode.Location.X])
                     {
                         Debug.WriteLine($"\t{AGV.Name}");
-                    }                    
+                    }
                 }
                 else
                 {
@@ -329,7 +359,7 @@ namespace A_Star_Demo
                         if (_mapEditorForm.IsEditingType)
                         {
                             SelectedNode.Type = (MapNode.Types)_mapEditorForm.comboBox_types.SelectedItem;
-                            SelectedNode.DisallowTurningOnNode = _mapEditorForm.checkBox_disallowTurning.Checked;                            
+                            SelectedNode.DisallowTurningOnNode = _mapEditorForm.checkBox_disallowTurning.Checked;
                         }
                         if (_mapEditorForm.IsEditingEdge)
                         {
@@ -392,7 +422,7 @@ namespace A_Star_Demo
                                 button_startPlanning.Text = "Start Planning";
                                 textBox_goalNode.Text = _goalNode.Name;
                                 _planningFlag = 0;
-                                _path = VCSServer.PathPlanner.FindPath(_startNode, _goalNode, comboBox_planningLayer.SelectedIndex);
+                                _path = VCSServer.PathPlanner.FindPath(_startNode, _goalNode, comboBox_planningLayer.SelectedIndex == 1, comboBox_planningLayer.SelectedIndex);
                                 textBox_planningPath.Clear();
                                 textBox_planningPath.AppendText($"Length = {(_path is null ? -1 : _path.Count)}\r\n");
 
@@ -447,7 +477,7 @@ namespace A_Star_Demo
                 _mapDrawer.DrawAllAGVPath();
                 _mapDrawer.DrawAGVs();
                 _mapDrawer.DrawRacks();
-                _mapDrawer.DrawOccupancy();
+                //_mapDrawer.DrawOccupancy();
                 pictureBox_mapViewer.Image = _mapDrawer.GetMapPicture();
             }
             if (_selectedAGV != null)
@@ -456,7 +486,7 @@ namespace A_Star_Demo
                 textBox_agvNode.Text = _selectedAGV.CurrentNode.Name;
                 textBox_agvRack.Text = _selectedAGV.BoundRack?.Name;
                 textBox_agvStatus.Text = _selectedAGV.State.ToString();
-                textBox_agvHeading.Text = _selectedAGV.Heading.ToString();                
+                textBox_agvHeading.Text = _selectedAGV.Heading.ToString();
             }
             else
             {
@@ -480,6 +510,7 @@ namespace A_Star_Demo
                 textBox_rackHome.Clear();
                 textBox_rackHeading.Clear();
             }
-        }      
+        }
+      
     }
 }

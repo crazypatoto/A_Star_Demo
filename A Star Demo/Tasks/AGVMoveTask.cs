@@ -22,15 +22,9 @@ namespace A_Star_Demo.Tasks
         public Queue<MapNode> RemainingPath { get; private set; }
         public TaskStatus Status { get; private set; }
         public AGVMoveTask(AGVTaskHandler handler, MapNode destination) : base(handler)
-        {
+        {            
             this.Destination = destination;
-            this.Status = TaskStatus.Initialzied;
-            if (destination == this.AssignedAGV.CurrentNode)
-            {
-                this.Status = TaskStatus.Arrived;
-                this.Finished = true;
-                this.FinishTimeStamp = DateTimeOffset.Now.ToUnixTimeSeconds();
-            }
+            this.Status = TaskStatus.Initialzied;            
         }
         public override void Execute()
         {
@@ -38,9 +32,15 @@ namespace A_Star_Demo.Tasks
             switch (this.Status)
             {
                 case TaskStatus.Initialzied:
+                    if (this.Destination == this.AssignedAGV.CurrentNode)
+                    {
+                        this.Status = TaskStatus.Arrived;
+                        this.Finished = true;
+                        this.FinishTimeStamp = DateTimeOffset.Now.ToUnixTimeSeconds();
+                    }
                     lock (_agvTaskLock)
                     {
-                        this.FullPath = vcsServer.PathPlanner.FindPath(this.AssignedAGV.CurrentNode, this.Destination);
+                        this.FullPath = vcsServer.PathPlanner.FindPath(this.AssignedAGV.CurrentNode, this.Destination, this.AssignedAGV.BoundRack != null, this.AssignedAGV.BoundRack == null ? 0 : 1);
                         if (this.FullPath != null)
                         {
                             for (int i = 1; i < FullPath.Count; i++)
@@ -66,14 +66,14 @@ namespace A_Star_Demo.Tasks
                             this.AssignedAGV.StartNewPath(path);
                             if (this.RemainingPath.Count == 0) this.AssignedAGV.EndPath();
                             this.Status = TaskStatus.AssigningPath;
-                            vcsServer.OccupancyGrid[Destination.Location.Y, Destination.Location.X] |= this.AssignedAGV.BoundRack == null ? (byte)0x01 : (byte)0x03;                            
+                            vcsServer.OccupancyGrid[Destination.Location.Y, Destination.Location.X] |= this.AssignedAGV.BoundRack == null ? (byte)0x01 : (byte)0x03;
                             vcsServer.OccupancyGrid[this.AssignedAGV.CurrentNode.Location.Y, this.AssignedAGV.CurrentNode.Location.X] &= this.AssignedAGV.BoundRack == null ? (byte)0xFE : (byte)0xFC;
                             // Poor performance, must impove                   
                             foreach (var agv in vcsServer.AGVHandler.AGVList)
                             {
                                 if (agv.TaskHandler.CurrentTask == null) continue;
                                 if (!(agv.TaskHandler.CurrentTask is AGVMoveTask)) continue;
-                                if(((AGVMoveTask)agv.TaskHandler.CurrentTask).Destination == this.AssignedAGV.CurrentNode)
+                                if (((AGVMoveTask)agv.TaskHandler.CurrentTask).Destination == this.AssignedAGV.CurrentNode)
                                 {
                                     vcsServer.OccupancyGrid[this.AssignedAGV.CurrentNode.Location.Y, this.AssignedAGV.CurrentNode.Location.X] |= agv.BoundRack == null ? (byte)0x01 : (byte)0x03;
                                 }

@@ -88,7 +88,7 @@ namespace A_Star_Demo.PathPlanning
             }
         }
 
-        public List<MapNode> FindPath(MapNode startMapNode, MapNode goalMapNode, int constraintLayerIndex = 0, HeuristicFormulas heuristicFormula = HeuristicFormulas.Manhattan)
+        public List<MapNode> FindPath(MapNode startMapNode, MapNode goalMapNode, bool carryingRack = false, int constraintLayerIndex = 0, HeuristicFormulas heuristicFormula = HeuristicFormulas.Manhattan)
         {
             Stopwatch stopwatch = Stopwatch.StartNew();
             InitializeAllAStarNodes();
@@ -128,10 +128,14 @@ namespace A_Star_Demo.PathPlanning
                     {
                         if (neighborMapNode != goalMapNode) return;
                     }
-                    if(currentNode.RefererMapNode == startMapNode)
+                    if (carryingRack && (_server.OccupancyGrid[neighborMapNode.Location.Y, neighborMapNode.Location.X] & 0x02) > 0)
                     {
-                        if(_server.AGVNodeQueue[startMapNode.Location.Y, startMapNode.Location.X].Count > 0)
-                        {                            
+                        if (neighborMapNode != goalMapNode) return;
+                    }
+                    if (currentNode.RefererMapNode == startMapNode)
+                    {
+                        if (_server.AGVNodeQueue[startMapNode.Location.Y, startMapNode.Location.X].Count > 0)
+                        {
                             if (_server.AGVNodeQueue[neighborMapNode.Location.Y, neighborMapNode.Location.X].Count > 0)
                             {
                                 var neighborNodeAGV = _server.AGVNodeQueue[neighborMapNode.Location.Y, neighborMapNode.Location.X].Peek();

@@ -95,6 +95,8 @@ namespace A_Star_Demo
             this.textBox_agvName = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
+            this.button_Go = new System.Windows.Forms.Button();
+            this.testGoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.groupBox_nodeInfo.SuspendLayout();
             this.groupBox_mapInfo.SuspendLayout();
@@ -113,7 +115,8 @@ namespace A_Star_Demo
             this.editToolStripMenuItem,
             this.simulationToolStripMenuItem,
             this.taskToolStripMenuItem,
-            this.testToolStripMenuItem});
+            this.testToolStripMenuItem,
+            this.testGoToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Size = new System.Drawing.Size(1450, 24);
@@ -455,7 +458,7 @@ namespace A_Star_Demo
             this.tableLayoutPanel_main.RowCount = 1;
             this.tableLayoutPanel_main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel_main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 714F));
-            this.tableLayoutPanel_main.Size = new System.Drawing.Size(1450, 714);
+            this.tableLayoutPanel_main.Size = new System.Drawing.Size(1450, 733);
             this.tableLayoutPanel_main.TabIndex = 8;
             // 
             // pictureBox_mapViewer
@@ -464,7 +467,7 @@ namespace A_Star_Demo
             this.pictureBox_mapViewer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox_mapViewer.Location = new System.Drawing.Point(3, 3);
             this.pictureBox_mapViewer.Name = "pictureBox_mapViewer";
-            this.pictureBox_mapViewer.Size = new System.Drawing.Size(1068, 708);
+            this.pictureBox_mapViewer.Size = new System.Drawing.Size(1068, 727);
             this.pictureBox_mapViewer.TabIndex = 2;
             this.pictureBox_mapViewer.TabStop = false;
             this.pictureBox_mapViewer.SizeChanged += new System.EventHandler(this.pictureBox_mapViewer_SizeChanged);
@@ -475,6 +478,7 @@ namespace A_Star_Demo
             // 
             // panel_infos
             // 
+            this.panel_infos.Controls.Add(this.button_Go);
             this.panel_infos.Controls.Add(this.comboBox_rackHeading);
             this.panel_infos.Controls.Add(this.button_rotateRackTemp);
             this.panel_infos.Controls.Add(this.button_dropOffRack);
@@ -487,13 +491,13 @@ namespace A_Star_Demo
             this.panel_infos.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel_infos.Location = new System.Drawing.Point(1077, 3);
             this.panel_infos.Name = "panel_infos";
-            this.panel_infos.Size = new System.Drawing.Size(370, 708);
+            this.panel_infos.Size = new System.Drawing.Size(370, 727);
             this.panel_infos.TabIndex = 3;
             // 
             // comboBox_rackHeading
             // 
             this.comboBox_rackHeading.FormattingEnabled = true;
-            this.comboBox_rackHeading.Location = new System.Drawing.Point(12, 619);
+            this.comboBox_rackHeading.Location = new System.Drawing.Point(12, 658);
             this.comboBox_rackHeading.Name = "comboBox_rackHeading";
             this.comboBox_rackHeading.Size = new System.Drawing.Size(160, 20);
             this.comboBox_rackHeading.TabIndex = 21;
@@ -501,7 +505,7 @@ namespace A_Star_Demo
             // button_rotateRackTemp
             // 
             this.button_rotateRackTemp.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.button_rotateRackTemp.Location = new System.Drawing.Point(12, 645);
+            this.button_rotateRackTemp.Location = new System.Drawing.Point(12, 684);
             this.button_rotateRackTemp.Name = "button_rotateRackTemp";
             this.button_rotateRackTemp.Size = new System.Drawing.Size(160, 33);
             this.button_rotateRackTemp.TabIndex = 12;
@@ -513,7 +517,7 @@ namespace A_Star_Demo
             // 
             this.button_dropOffRack.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.button_dropOffRack.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.button_dropOffRack.Location = new System.Drawing.Point(12, 580);
+            this.button_dropOffRack.Location = new System.Drawing.Point(12, 619);
             this.button_dropOffRack.Name = "button_dropOffRack";
             this.button_dropOffRack.Size = new System.Drawing.Size(160, 33);
             this.button_dropOffRack.TabIndex = 11;
@@ -524,7 +528,7 @@ namespace A_Star_Demo
             // button_pickUpRack
             // 
             this.button_pickUpRack.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.button_pickUpRack.Location = new System.Drawing.Point(12, 541);
+            this.button_pickUpRack.Location = new System.Drawing.Point(12, 580);
             this.button_pickUpRack.Name = "button_pickUpRack";
             this.button_pickUpRack.Size = new System.Drawing.Size(160, 33);
             this.button_pickUpRack.TabIndex = 10;
@@ -725,17 +729,35 @@ namespace A_Star_Demo
             // 
             // statusStrip
             // 
-            this.statusStrip.Location = new System.Drawing.Point(0, 738);
+            this.statusStrip.Location = new System.Drawing.Point(0, 757);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Size = new System.Drawing.Size(1450, 22);
             this.statusStrip.TabIndex = 9;
             this.statusStrip.Text = "statusStrip";
             // 
+            // button_Go
+            // 
+            this.button_Go.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.button_Go.Location = new System.Drawing.Point(12, 541);
+            this.button_Go.Name = "button_Go";
+            this.button_Go.Size = new System.Drawing.Size(160, 33);
+            this.button_Go.TabIndex = 22;
+            this.button_Go.Text = "Go";
+            this.button_Go.UseVisualStyleBackColor = true;
+            this.button_Go.Click += new System.EventHandler(this.button_Go_Click);
+            // 
+            // testGoToolStripMenuItem
+            // 
+            this.testGoToolStripMenuItem.Name = "testGoToolStripMenuItem";
+            this.testGoToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
+            this.testGoToolStripMenuItem.Text = "Test Go";
+            this.testGoToolStripMenuItem.Click += new System.EventHandler(this.testGoToolStripMenuItem_Click);
+            // 
             // AStarDemo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(1450, 760);
+            this.ClientSize = new System.Drawing.Size(1450, 779);
             this.Controls.Add(this.tableLayoutPanel_main);
             this.Controls.Add(this.menuStrip);
             this.Controls.Add(this.statusStrip);
@@ -828,6 +850,8 @@ namespace A_Star_Demo
         private System.Windows.Forms.Button button_rotateRackTemp;
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripMenuItem taskToolStripMenuItem;
+        private System.Windows.Forms.Button button_Go;
+        private System.Windows.Forms.ToolStripMenuItem testGoToolStripMenuItem;
     }
 }
 
