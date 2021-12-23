@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using A_Star_Demo.Maps;
 using A_Star_Demo.Models;
+using A_Star_Demo.Tasks;
 
 namespace A_Star_Demo.AGVs
 {
@@ -41,7 +42,8 @@ namespace A_Star_Demo.AGVs
             Right = 0
         }
         #endregion
-        public AGVHandler Handler { get; private protected set; }
+        public AGVHandler Handler { get; }
+        public AGVTaskHandler TaskHandler { get; }
         public int ID { get; private protected set; }
         public string Name { get; private protected set; }
         public MapNode CurrentNode { get; private protected set; }
@@ -63,7 +65,16 @@ namespace A_Star_Demo.AGVs
             }
         }
         public List<MapNode> AssignedPath { get; private protected set; }      
-        public abstract void AssignNewPathAndMove(List<MapNode> path);
+
+        protected AGV (AGVHandler handler)
+        {
+            this.Handler = handler;
+            this.TaskHandler = new AGVTaskHandler(this);
+        }
+        public abstract void StartNewPath(List<MapNode> path, AGVHeading? initialHeading = null);
+        public abstract void AddNodeToPath(MapNode node);
+        public abstract void EndPath();
+
         public abstract void PickUpRack(Rack rack);
         public abstract void DropOffRack();
 

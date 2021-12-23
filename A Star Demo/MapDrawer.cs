@@ -100,13 +100,13 @@ namespace A_Star_Demo
                             if (currentNode.Type != MapNode.Types.None)
                             {
                                 graphics.FillRectangle(brush, drawX * _scaledCellSize, drawY * _scaledCellSize, _scaledCellSize, _scaledCellSize);
-                            }                            
+                            }
                             if (currentNode.DisallowTurningOnNode)
                             {
                                 // Draw X on disallow truning node
                                 graphics.DrawLine(new Pen(Color.Red, 1), drawX * _scaledCellSize, drawY * _scaledCellSize, (drawX + 1) * _scaledCellSize, (drawY + 1) * _scaledCellSize);
                                 graphics.DrawLine(new Pen(Color.Red, 1), (drawX + 1) * _scaledCellSize, drawY * _scaledCellSize, drawX * _scaledCellSize, (drawY + 1) * _scaledCellSize);
-                            }                            
+                            }
                         }
                         // Draw gird lines
                         graphics.DrawLine(new Pen(Color.White, GridWidth), OffsetX * _scaledCellSize, drawY * _scaledCellSize, (_vcsServer.CurrentMap.Width + OffsetX) * _scaledCellSize, drawY * _scaledCellSize);
@@ -275,13 +275,13 @@ namespace A_Star_Demo
                             rackImage = Properties.Resources.Rack_Down;
                             break;
                     }
-                    var agvOnNode = this._vcsServer.AGVHandler.AGVList?.Find(agv => agv.CurrentNode == rack.CurrentNode);
+                    var agvOnNode = _vcsServer.AGVHandler.AGVList?.Find(agv => agv.CurrentNode == rack.CurrentNode);
                     if (agvOnNode != null)
                     {
                         graphics.DrawImage(rackImage, (rack.CurrentNode.Location.X + OffsetX) * _scaledCellSize, (rack.CurrentNode.Location.Y + OffsetY) * _scaledCellSize, _scaledCellSize / 2, _scaledCellSize / 2);
-                        if(agvOnNode.BoundRack == rack)
+                        if (agvOnNode.BoundRack == rack)
                         {
-                            graphics.DrawImage(Properties.Resources.Link,(rack.CurrentNode.Location.X + OffsetX) * _scaledCellSize, (rack.CurrentNode.Location.Y + OffsetY) * _scaledCellSize, _scaledCellSize, _scaledCellSize);
+                            graphics.DrawImage(Properties.Resources.Link, (rack.CurrentNode.Location.X + OffsetX) * _scaledCellSize, (rack.CurrentNode.Location.Y + OffsetY) * _scaledCellSize, _scaledCellSize, _scaledCellSize);
                         }
                     }
                     else
@@ -292,6 +292,19 @@ namespace A_Star_Demo
             }
         }
 
+        public void DrawOccupancy()
+        {
+            using (var graphics = Graphics.FromImage(_mapBMP))
+            {
+                for (int y = 0; y < _vcsServer.CurrentMap.Height; y++)
+                {
+                    for (int x = 0; x < _vcsServer.CurrentMap.Width; x++)
+                    {
+                        graphics.DrawString(_vcsServer.OccupancyGrid[y, x].ToString("D1"), new Font("Arial", 16), new SolidBrush(Color.Black), (x + OffsetX) * _scaledCellSize, (y + OffsetY) * _scaledCellSize);
+                    }
+                }
+            }
+        }
         public MapNode GetNodeByPosition(int x, int y)
         {
             int nodeX = x / _scaledCellSize - OffsetX;

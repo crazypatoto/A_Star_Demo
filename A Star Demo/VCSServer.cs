@@ -11,23 +11,70 @@ using A_Star_Demo.Tasks;
 
 namespace A_Star_Demo
 {
-    public class VCSServer
+    public class VCSServer : IDisposable
     {
+        bool _disposed = false;
         public Map CurrentMap { get; }
-        public AGVTaskHandler TaskHandler { get; }
         public AGVHandler AGVHandler { get; }
         public AStarPlanner PathPlanner { get; }
-        public List<Rack> RackList;
+        public List<Rack> RackList { get; }
+        public byte[,] OccupancyGrid { get; }
+        public Queue<AGV>[,] AGVNodeQueue { get; }
 
-        #region Constructors
+        public bool IsAlive { get; private set; }
+
+
         public VCSServer(Map map)
         {
             CurrentMap = map;
-            TaskHandler = new AGVTaskHandler(this);
             AGVHandler = new AGVHandler(this);
             PathPlanner = new AStarPlanner(this);
             RackList = new List<Rack>();
+            OccupancyGrid = new byte[map.Height, map.Width];
+            AGVNodeQueue = new Queue<AGV>[map.Height, map.Width];
+            for (int y = 0; y < map.Height; y++)
+            {
+                for (int x = 0; x < map.Width; x++)
+                {
+                    OccupancyGrid[y,x] = 0x00;
+                    AGVNodeQueue[y,x] = new Queue<AGV>();                    
+                }
+            }
+            IsAlive = true;
         }
-        #endregion       
+
+        ~VCSServer()
+        {
+            Dispose(false);
+        }
+
+        public void AddNewRackTemp(MapNode targetNode)
+        {
+            var newRackID = this.RackList.LastOrDefault()?.ID + 1 ?? 0;
+            var newRack = new Rack(newRackID, targetNode, Rack.RackHeading.Up);
+            this.RackList.Add(newRack);
+            OccupancyGrid[targetNode.Location.Y, targetNode.Location.X] |= 0x02;
+        }
+        public void AddNewSimulationAGVTemp(MapNode targetNode)
+        {
+            AGVHandler.AddSimulatedAGV(targetNode);
+            OccupancyGrid[targetNode.Location.Y, targetNode.Location.X] |= 0x01;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed) return;
+            if (disposing)
+            {
+                this.IsAlive = false;
+            }
+            _disposed = true;
+        }
     }
 }

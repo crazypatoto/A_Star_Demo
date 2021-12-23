@@ -14,7 +14,7 @@ namespace A_Star_Demo.PathPlanning
         public class AStarNode : IEquatable<AStarNode>
         {
             public MapNode RefererMapNode { get; }
-            public AStarNode ParentNode { get; set; }            
+            public AStarNode ParentNode { get; set; }
             public float F { get { return this.G + this.H; } }
             public float G { get; set; }
             public float H { get; set; }
@@ -23,7 +23,7 @@ namespace A_Star_Demo.PathPlanning
             {
                 this.RefererMapNode = refererNode;
                 this.ParentNode = null;
-                this.G = float.PositiveInfinity;                
+                this.G = float.PositiveInfinity;
             }
 
             public bool Equals(AStarNode other)
@@ -65,6 +65,7 @@ namespace A_Star_Demo.PathPlanning
         public HeuristicFormulas HeuristicFormula { get; private set; }
         public float TurningPenalty { get; set; } = 3;
         private Map _refererMap;
+        private VCSServer _server;
         private AStarNode[,] _allAStarNodes;
         private SimplePriorityQueue<AStarNode> _openList;
         private List<AStarNode> _closedList;
@@ -72,6 +73,7 @@ namespace A_Star_Demo.PathPlanning
         public AStarPlanner(VCSServer server)
         {
             _refererMap = server.CurrentMap;
+            _server = server;
         }
 
         private void InitializeAllAStarNodes()
@@ -122,6 +124,22 @@ namespace A_Star_Demo.PathPlanning
                             return;
                         }
                     }
+                    if ((_server.OccupancyGrid[neighborMapNode.Location.Y, neighborMapNode.Location.X] & 0x01) > 0)
+                    {
+                        if (neighborMapNode != goalMapNode) return;
+                    }
+                    if(currentNode.RefererMapNode == startMapNode)
+                    {
+                        if(_server.AGVNodeQueue[startMapNode.Location.Y, startMapNode.Location.X].Count > 0)
+                        {                            
+                            if (_server.AGVNodeQueue[neighborMapNode.Location.Y, neighborMapNode.Location.X].Count > 0)
+                            {
+                                var neighborNodeAGV = _server.AGVNodeQueue[neighborMapNode.Location.Y, neighborMapNode.Location.X].Peek();
+                                if (_server.AGVNodeQueue[startMapNode.Location.Y, startMapNode.Location.X].FirstOrDefault(agv => agv == neighborNodeAGV) != null)
+                                    return;
+                            }
+                        }
+                    }
 
                     var successorNode = _allAStarNodes[neighborMapNode.Location.Y, neighborMapNode.Location.X];
                     var successorCurrentCost = currentNode.G + 1;                       // Set successor current cost = g(currentNode) + w(currentNode, successorNode) 
@@ -134,14 +152,14 @@ namespace A_Star_Demo.PathPlanning
                         {
                             if (successorNode.RefererMapNode.Location.X != currentNode.RefererMapNode.Location.X)
                             {
-                                successorCurrentCost += TurningPenalty;                                
+                                successorCurrentCost += TurningPenalty;
                             }
                         }
                         else
                         {
                             if (successorNode.RefererMapNode.Location.Y != currentNode.RefererMapNode.Location.Y)
                             {
-                                successorCurrentCost += TurningPenalty;                                
+                                successorCurrentCost += TurningPenalty;
                             }
                         }
                     }
@@ -180,7 +198,7 @@ namespace A_Star_Demo.PathPlanning
                         successorNode.G = successorCurrentCost;                                             // Set successorNode.G = current successor cost                        
                         successorNode.ParentNode = currentNode;                                             // Set successorNode's parent node to currentNode                         
                         _openList.Enqueue(successorNode, successorNode.F);                                  // Put successor node in open list with newly calculated f
-                    }                    
+                    }
                     //Debug.WriteLine($"\tSuccessorNode = {successorNode.RefererMapNode.Name}, {{F,G,H}} = {{{successorNode.F},{successorNode.G},{successorNode.H}}}");
                 });
                 //Debug.WriteLine($"Dequeue {currentNode.RefererMapNode.Name}");

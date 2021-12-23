@@ -16,6 +16,7 @@ using A_Star_Demo.Maps;
 using A_Star_Demo.Models;
 using A_Star_Demo.PathPlanning;
 using A_Star_Demo.AGVs;
+using A_Star_Demo.Tasks;
 
 namespace A_Star_Demo
 {
@@ -51,6 +52,7 @@ namespace A_Star_Demo
             {
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
+                    VCSServer?.Dispose();
                     VCSServer = new VCSServer(new Map(dialog.MapZoneID, dialog.MapWidth, dialog.MapHeight));                    
                     UpdateNewMapInfo();
                 }
@@ -80,6 +82,7 @@ namespace A_Star_Demo
                 dialog.Title = "Open map file";
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
+                    VCSServer?.Dispose();
                     VCSServer = new VCSServer(new Map(dialog.FileName));                    
                     UpdateNewMapInfo();
                 }
@@ -102,7 +105,9 @@ namespace A_Star_Demo
                 MessageBox.Show("There is already an AGV here!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            _selectedAGV = VCSServer.AGVHandler.AddSimulatedAGV(SelectedNode);           
+            //_selectedAGV = VCSServer.AGVHandler.AddSimulatedAGV(SelectedNode);           
+            VCSServer.AddNewSimulationAGVTemp(SelectedNode);
+            _selectedAGV = VCSServer.AGVHandler.AGVList.Last();            
         }
         private void editMapToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -125,10 +130,12 @@ namespace A_Star_Demo
                 MessageBox.Show("There is already an Rack here!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            var newRackID = VCSServer.RackList.LastOrDefault()?.ID + 1 ?? 0;
-            var newRack = new Rack(newRackID, SelectedNode, Rack.RackHeading.Up);
-            VCSServer.RackList.Add(newRack);
-            _selectedRack = newRack;
+            VCSServer.AddNewRackTemp(SelectedNode);
+            _selectedRack = VCSServer.RackList.Last();
+            //var newRackID = VCSServer.RackList.LastOrDefault()?.ID + 1 ?? 0;
+            //var newRack = new Rack(newRackID, SelectedNode, Rack.RackHeading.Up);
+            //VCSServer.RackList.Add(newRack);
+            //_selectedRack = newRack;
         }
 
         private void deleteRackToolStripMenuItem_Click(object sender, EventArgs e)
@@ -139,11 +146,15 @@ namespace A_Star_Demo
         }
         private void testToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            foreach (var agv in VCSServer.AGVHandler.AGVList)
+            //foreach (var agv in VCSServer.AGVHandler.AGVList)
+            //{
+            //    agv.Disconnect();
+            //}
+            //VCSServer.AGVHandler.AGVList.Clear();            
+            if(_selectedAGV != null && SelectedNode != null)
             {
-                agv.Disconnect();
+                _selectedAGV.TaskHandler.NewAGVMoveTask(SelectedNode);
             }
-            VCSServer.AGVHandler.AGVList.Clear();
         }
         #endregion
 
@@ -174,19 +185,22 @@ namespace A_Star_Demo
         private void button_pickUpRack_Click(object sender, EventArgs e)
         {
             if (_selectedAGV == null) return;
-            _selectedAGV.PickUpRack(_selectedRack);
+            //_selectedAGV.PickUpRack(_selectedRack);
+            _selectedAGV.TaskHandler.NewRackPickUpTask(_selectedRack);
         }
 
         private void button_dropOffRack_Click(object sender, EventArgs e)
         {
-            if (_selectedAGV == null) return;            
-            _selectedAGV.DropOffRack();
+            if (_selectedAGV == null) return;
+            _selectedAGV.TaskHandler.NewRackDropOffTask();
+            //_selectedAGV.DropOffRack();
         }
 
         private void button_rotateRackTemp_Click(object sender, EventArgs e)
         {
             if (_selectedAGV == null) return;
-            _selectedAGV.RotateRack((Rack.RackHeading)comboBox_rackHeading.SelectedItem);
+            //_selectedAGV.RotateRack((Rack.RackHeading)comboBox_rackHeading.SelectedItem);
+            _selectedAGV.TaskHandler.NewRackRotateTask((Rack.RackHeading)comboBox_rackHeading.SelectedItem);
         }
         #endregion
 
@@ -292,6 +306,18 @@ namespace A_Star_Demo
             SelectedNode = _mapDrawer?.GetNodeByPosition(mousePosition.X, mousePosition.Y);
             if (SelectedNode != null)
             {
+                if(VCSServer.AGVNodeQueue[SelectedNode.Location.Y, SelectedNode.Location.X].Count > 0)
+                {
+                    Debug.WriteLine($"AGV Queue = ");
+                    foreach (var AGV in VCSServer.AGVNodeQueue[SelectedNode.Location.Y, SelectedNode.Location.X])
+                    {
+                        Debug.WriteLine($"\t{AGV.Name}");
+                    }                    
+                }
+                else
+                {
+                    Debug.WriteLine("Empty!");
+                }
                 switch (mouseButton)
                 {
                     case MouseButtons.Left:
@@ -373,7 +399,8 @@ namespace A_Star_Demo
                                 var targetAGV = VCSServer.AGVHandler.AGVList.Find(agv => agv.CurrentNode == _startNode);
                                 if (targetAGV != null)
                                 {
-                                    targetAGV.AssignNewPathAndMove(_path);
+                                    targetAGV.StartNewPath(_path);
+                                    targetAGV.EndPath();
                                 }
                                 if (_path != null)
                                     foreach (var node in _path)
@@ -420,6 +447,7 @@ namespace A_Star_Demo
                 _mapDrawer.DrawAllAGVPath();
                 _mapDrawer.DrawAGVs();
                 _mapDrawer.DrawRacks();
+                _mapDrawer.DrawOccupancy();
                 pictureBox_mapViewer.Image = _mapDrawer.GetMapPicture();
             }
             if (_selectedAGV != null)

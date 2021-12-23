@@ -17,11 +17,11 @@ namespace A_Star_Demo.AGVs
         private AGVHeading? _targetAGVHeading = null;
         private Rack.RackHeading? _targetRackHeading = null;
         private Rack _targetRack = null;
+        private bool _pathEndFlag = false;
         private readonly CancellationTokenSource _cts;
         private static readonly object _lock = new object();
-        public SimulatedAGV(AGVHandler handler, int id, string name, MapNode node)
+        public SimulatedAGV(AGVHandler handler, int id, string name, MapNode node) : base(handler)
         {
-            this.Handler = handler;
             this.ID = id;
             this.Name = name;
             this.CurrentNode = node;
@@ -31,23 +31,45 @@ namespace A_Star_Demo.AGVs
             Task.Run(() => AGVSimulation(_cts.Token));
         }
 
-        public override void AssignNewPathAndMove(List<MapNode> path)
+        public override void StartNewPath(List<MapNode> path, AGVHeading? initialHeading)
         {
             if (this.State != AGVStates.Idle && this.State != AGVStates.MovingBlocked) return;
             if (path == null) return;
-            if (path.Count <= 1) return;
+            if (path.Count < 1) return;
             if (path.First() != this.CurrentNode) return;
+            _pathEndFlag = false;
             this.AssignedPath = new List<MapNode>(path);
             this.AssignedPath.RemoveAt(0);
-            _targetAGVHeading = GetNextHeading(this.CurrentNode, this.AssignedPath.First());
-            if (this.Heading == _targetAGVHeading)
+            var nextNode = this.AssignedPath.FirstOrDefault();
+            if (nextNode == null)
             {
-                this.State = AGVStates.Moving;
+                this.State = AGVStates.WaitingToMove;
+                if (initialHeading == null) return;
+                if (this.Heading == initialHeading) return;
+                _targetAGVHeading = initialHeading;
+                this.State = AGVStates.Rotating;
             }
             else
             {
-                this.State = AGVStates.Rotating;
+                _targetAGVHeading = GetNextHeading(this.CurrentNode, nextNode);
+                if (this.Heading == _targetAGVHeading)
+                {
+                    this.State = AGVStates.Moving;
+                }
+                else
+                {
+                    this.State = AGVStates.Rotating;
+                }
             }
+        }
+
+        public override void AddNodeToPath(MapNode node)
+        {
+            this.AssignedPath.Add(node);
+        }
+        public override void EndPath()
+        {
+            _pathEndFlag = true;
         }
 
         public override void PickUpRack(Rack rack)
@@ -120,7 +142,7 @@ namespace A_Star_Demo.AGVs
                                     {
                                         this.State = AGVStates.MovingBlocked;
                                     }
-                                }                                
+                                }
                             }
                             else
                             {
@@ -129,7 +151,15 @@ namespace A_Star_Demo.AGVs
                         }
                         else
                         {
-                            this.State = AGVStates.Idle;
+                            if (_pathEndFlag)
+                            {
+                                this.State = AGVStates.Idle;
+                            }
+                            else
+                            {
+                                this.State = AGVStates.WaitingToMove;
+                            }
+
                         }
                         break;
                     case AGVStates.Rotating:
@@ -180,10 +210,15 @@ namespace A_Star_Demo.AGVs
                             this.State = AGVStates.Idle;
                         }
                         else
-                        {                            
+                        {
                             foreach (var neighbor in this.Handler.VCSServer.CurrentMap.GetNeighborNodes(this.CurrentNode))
                             {
                                 if (this.Handler.VCSServer.RackList.FindAll(rack => rack.CurrentNode == neighbor).Count > 0)
+                                {
+                                    this.State = AGVStates.RackRotatingBlocked;
+                                    break;
+                                }
+                                if (this.Handler.AGVList.FindAll(agv => agv.CurrentNode == neighbor).Count > 0)
                                 {
                                     this.State = AGVStates.RackRotatingBlocked;
                                     break;
@@ -199,11 +234,11 @@ namespace A_Star_Demo.AGVs
                                 {
                                     this.BoundRack.RotateTo((Rack.RackHeading)_targetRackHeading);
                                 }
-                            }                           
+                            }
                         }
                         break;
                     case AGVStates.RackRotatingBlocked:
-                        var neighborNodes = this.Handler.VCSServer.CurrentMap.GetNeighborNodes(this.CurrentNode);                      
+                        var neighborNodes = this.Handler.VCSServer.CurrentMap.GetNeighborNodes(this.CurrentNode);
                         foreach (var neighbor in neighborNodes)
                         {
                             if (this.Handler.VCSServer.RackList.FindAll(rack => rack.CurrentNode == neighbor).Count > 0)
@@ -211,8 +246,19 @@ namespace A_Star_Demo.AGVs
                                 this.State = AGVStates.RackRotatingBlocked;
                                 break;
                             }
+                            if (this.Handler.AGVList.FindAll(agv => agv.CurrentNode == neighbor).Count > 0)
+                            {
+                                this.State = AGVStates.RackRotatingBlocked;
+                                break;
+                            }
                             this.State = AGVStates.RotatingRack;
                         }
+                        break;
+                    case AGVStates.WaitingToMove:
+                        if (nextNode != null) this.State = AGVStates.Moving;
+                        else if (_pathEndFlag) this.State = AGVStates.Idle;
+                        break;
+                    case AGVStates.WaitingToRotateRack:
                         break;
                 }
                 await Task.Delay(200);

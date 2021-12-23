@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using A_Star_Demo.Maps;
 using A_Star_Demo.Models;
-
+using A_Star_Demo.AGVs;
 
 namespace A_Star_Demo.Maps
 {
@@ -17,9 +17,10 @@ namespace A_Star_Demo.Maps
         public byte ZoneID { get; private set; }
         public int Width { get; }
         public int Height { get; }
-        public MapNode[,] AllNodes { get; private set; }
+        public MapNode[,] AllNodes { get; }
 
-        public List<ConstraintLayer> ConstraintLayers;       
+        public List<ConstraintLayer> ConstraintLayers;
+        
 
         public Map(byte zoneID, int width, int height)
         {

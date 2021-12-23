@@ -28,5 +28,6 @@ namespace A_Star_Demo.AGVs
             AGVList.Add(new SimulatedAGV(this, newID, name ?? $"AGV{newID:D3}", node));
             return AGVList.Last();
         }
+      
     }
 }
