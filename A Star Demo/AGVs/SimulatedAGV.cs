@@ -187,8 +187,7 @@ namespace A_Star_Demo.AGVs
                                     }
                                 }
                                 else
-                                {
-                                    Debug.Write($"{this.Name}: Moving Blioked! Current assigned path length = {this.AssignedPath.Count}, NextNode = {nextNode.Name}, CurrentNode = {this.CurrentNode.Name}\r\n");
+                                {                                    
                                     this.State = AGVStates.MovingBlocked;
                                 }
                             }
@@ -242,6 +241,7 @@ namespace A_Star_Demo.AGVs
                                 }
                             }
                         }
+                        throw new ApplicationException($"{this.Name} is blocked while moving at {this.CurrentNode.Name}");
                         break;
                     case AGVStates.DockingRack:
                         this.BoundRack = _targetRack;
@@ -301,6 +301,7 @@ namespace A_Star_Demo.AGVs
                             }
                             this.State = AGVStates.RotatingRack;
                         }
+                        throw new ApplicationException($"{this.Name} is blocked while rotating rack at {this.CurrentNode.Name}");
                         break;
                     case AGVStates.WaitingToMove:
                         if (nextNode != null) this.State = AGVStates.Moving;
@@ -309,7 +310,7 @@ namespace A_Star_Demo.AGVs
                     case AGVStates.WaitingToRotateRack:
                         break;
                 }
-                await Task.Delay(1);
+                await Task.Delay(100);
             }
             this.State = AGVStates.Disconnected;
         }
