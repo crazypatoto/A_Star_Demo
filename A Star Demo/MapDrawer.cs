@@ -237,18 +237,21 @@ namespace A_Star_Demo
             {
                 foreach (var agv in _vcsServer.AGVHandler.AGVList)
                 {
-                    Pen pen = new Pen(Color.Green, GridWidth * 1.5f);
-                    if (agv.AssignedPath == null) continue;
-                    if (agv.AssignedPath.Count == 0) continue;
-                    var path = new List<MapNode>(agv.AssignedPath);
-                    pen.Color = Color.FromArgb(100, 0, 255, 0);
-                    graphics.DrawRectangle(pen, (agv.CurrentNode.Location.X + OffsetX) * _scaledCellSize, (agv.CurrentNode.Location.Y + OffsetY) * _scaledCellSize, _scaledCellSize, _scaledCellSize);
-                    for (int i = 0; i < path.Count; i++)
+                    if(agv is SimulatedAGV)
                     {
-                        Color interpolatedColor = Color.FromArgb(100, (i + 1) * 255 / path.Count, 255 - (i + 1) * 255 / path.Count, 0);
-                        pen.Color = interpolatedColor;
-                        graphics.DrawRectangle(pen, (path[i].Location.X + OffsetX) * _scaledCellSize, (path[i].Location.Y + OffsetY) * _scaledCellSize, _scaledCellSize, _scaledCellSize);
-                    }
+                        Pen pen = new Pen(Color.Green, GridWidth * 1.5f);                        
+                        var path = (agv as SimulatedAGV).AssignedPath?.ToList();
+                        if (path == null) continue;
+                        if (path.Count == 0) continue;
+                        pen.Color = Color.FromArgb(100, 0, 255, 0);
+                        graphics.DrawRectangle(pen, (agv.CurrentNode.Location.X + OffsetX) * _scaledCellSize, (agv.CurrentNode.Location.Y + OffsetY) * _scaledCellSize, _scaledCellSize, _scaledCellSize);
+                        for (int i = 0; i < path.Count; i++)
+                        {
+                            Color interpolatedColor = Color.FromArgb(100, (i + 1) * 255 / path.Count, 255 - (i + 1) * 255 / path.Count, 0);
+                            pen.Color = interpolatedColor;
+                            graphics.DrawRectangle(pen, (path[i].Location.X + OffsetX) * _scaledCellSize, (path[i].Location.Y + OffsetY) * _scaledCellSize, _scaledCellSize, _scaledCellSize);
+                        }
+                    }                    
                 }
             }
         }

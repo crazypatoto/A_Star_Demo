@@ -170,7 +170,7 @@ namespace A_Star_Demo
             {
                 var agv = VCSServer.AGVHandler.AGVList[i];
                 var rack = VCSServer.RackList[i];
-                agv.TaskHandler.NewAGVMoveTask(rack.CurrentNode);
+                agv.TaskHandler.NewAGVMoveTask(rack.HomeNode);
                 agv.TaskHandler.NewRackPickUpTask(rack);
                 agv.TaskHandler.NewAGVMoveTask(VCSServer.CurrentMap.AllNodes[11,19]);
                 agv.TaskHandler.NewAGVMoveTask(rack.HomeNode);
@@ -477,7 +477,7 @@ namespace A_Star_Demo
                 _mapDrawer.DrawAllAGVPath();
                 _mapDrawer.DrawAGVs();
                 _mapDrawer.DrawRacks();
-                //_mapDrawer.DrawOccupancy();
+                _mapDrawer.DrawOccupancy();
                 pictureBox_mapViewer.Image = _mapDrawer.GetMapPicture();
             }
             if (_selectedAGV != null)

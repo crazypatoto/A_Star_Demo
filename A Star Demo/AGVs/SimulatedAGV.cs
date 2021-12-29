@@ -14,12 +14,30 @@ namespace A_Star_Demo.AGVs
 {
     public class SimulatedAGV : AGV
     {
+        private ReaderWriterLockSlim _pathLock = new ReaderWriterLockSlim();
+        private List<MapNode> _path;
+        public List<MapNode> AssignedPath
+        {
+            get
+            {
+                _pathLock.EnterReadLock();
+                try
+                {
+                    return _path;
+                }
+                finally
+                {
+                    _pathLock.ExitReadLock();
+                }
+            }
+        }
+
+        public override MapNode CurrentNode { get; private protected set; }
         private AGVHeading? _targetAGVHeading = null;
         private Rack.RackHeading? _targetRackHeading = null;
         private Rack _targetRack = null;
         private bool _pathEndFlag = false;
         private readonly CancellationTokenSource _cts;
-        private static readonly object _lock = new object();
         public SimulatedAGV(AGVHandler handler, int id, string name, MapNode node) : base(handler)
         {
             this.ID = id;
@@ -38,9 +56,17 @@ namespace A_Star_Demo.AGVs
             if (path.Count < 1) return;
             if (path.First() != this.CurrentNode) return;
             _pathEndFlag = false;
-            this.AssignedPath = new List<MapNode>(path);
-            this.AssignedPath.RemoveAt(0);
-            var nextNode = this.AssignedPath.FirstOrDefault();
+            _pathLock.EnterWriteLock();
+            try
+            {
+                _path = new List<MapNode>(path);
+                _path.RemoveAt(0);
+            }
+            finally
+            {
+                _pathLock.ExitWriteLock();
+            }
+            var nextNode = _path.FirstOrDefault();
             if (nextNode == null)
             {
                 this.State = AGVStates.WaitingToMove;
@@ -65,7 +91,15 @@ namespace A_Star_Demo.AGVs
 
         public override void AddNodeToPath(MapNode node)
         {
-            this.AssignedPath.Add(node);
+            _pathLock.EnterWriteLock();
+            try
+            {
+                _path.Add(node);
+            }
+            finally
+            {
+                _pathLock.ExitWriteLock();
+            }
         }
         public override void EndPath()
         {
@@ -115,33 +149,47 @@ namespace A_Star_Demo.AGVs
                             _targetAGVHeading = GetNextHeading(this.CurrentNode, nextNode);
                             if (this.Heading == _targetAGVHeading)
                             {
-                                lock (_lock)
+                                if (this.Handler.AGVList.FindAll(agv => agv.CurrentNode == nextNode).Count == 0)
                                 {
-                                    if (this.Handler.AGVList.FindAll(agv => agv.CurrentNode == nextNode).Count == 0)
+                                    if (this.BoundRack == null)
                                     {
-                                        if (this.BoundRack == null)
+                                        this.CurrentNode = nextNode;
+                                        _pathLock.EnterWriteLock();
+                                        try
                                         {
-                                            this.CurrentNode = nextNode;
-                                            AssignedPath.RemoveAt(0);
+                                            _path.RemoveAt(0);
                                         }
-                                        else
+                                        finally
                                         {
-                                            if (this.Handler.VCSServer.RackList.FindAll(rack => rack.CurrentNode == nextNode).Count == 0)
-                                            {
-                                                this.CurrentNode = nextNode;
-                                                this.BoundRack.MoveTo(nextNode);
-                                                AssignedPath.RemoveAt(0);
-                                            }
-                                            else
-                                            {
-                                                this.State = AGVStates.MovingBlocked;
-                                            }
+                                            _pathLock.ExitWriteLock();
                                         }
                                     }
                                     else
                                     {
-                                        this.State = AGVStates.MovingBlocked;
+                                        if (this.Handler.VCSServer.RackList.FindAll(rack => rack.CurrentNode == nextNode).Count == 0)
+                                        {
+                                            this.CurrentNode = nextNode;
+                                            this.BoundRack.MoveTo(nextNode);
+                                            _pathLock.EnterWriteLock();
+                                            try
+                                            {
+                                                _path.RemoveAt(0);
+                                            }
+                                            finally
+                                            {
+                                                _pathLock.ExitWriteLock();
+                                            }
+                                        }
+                                        else
+                                        {
+                                            this.State = AGVStates.MovingBlocked;
+                                        }
                                     }
+                                }
+                                else
+                                {
+                                    Debug.Write($"{this.Name}: Moving Blioked! Current assigned path length = {this.AssignedPath.Count}, NextNode = {nextNode.Name}, CurrentNode = {this.CurrentNode.Name}\r\n");
+                                    this.State = AGVStates.MovingBlocked;
                                 }
                             }
                             else
@@ -261,7 +309,7 @@ namespace A_Star_Demo.AGVs
                     case AGVStates.WaitingToRotateRack:
                         break;
                 }
-                await Task.Delay(200);
+                await Task.Delay(1);
             }
             this.State = AGVStates.Disconnected;
         }

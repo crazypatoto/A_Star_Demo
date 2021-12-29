@@ -44,7 +44,7 @@ namespace A_Star_Demo.Tasks
             TaskQueue.Enqueue(new RackRotateTask(this, targetHeading));
         }
 
-        public void TaskHandleThread()
+        private void TaskHandleThread()
         {
             while (true)
             {

@@ -29,9 +29,7 @@ namespace A_Star_Demo.Tasks
             {
                 if (this.TargetRack.CurrentNode != this.AssignedAGV.CurrentNode)
                 {
-                    this.Finished = true;
-                    this.FinishTimeStamp = DateTimeOffset.Now.ToUnixTimeSeconds();
-                    return;
+                    throw new ApplicationException("Taget rack isn't in current location!");
                 }
                 this.AssignedAGV.PickUpRack(TargetRack);
             }

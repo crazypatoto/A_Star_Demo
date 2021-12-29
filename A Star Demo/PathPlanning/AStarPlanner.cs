@@ -138,7 +138,7 @@ namespace A_Star_Demo.PathPlanning
                         {
                             if (_server.AGVNodeQueue[neighborMapNode.Location.Y, neighborMapNode.Location.X].Count > 0)
                             {
-                                var neighborNodeAGV = _server.AGVNodeQueue[neighborMapNode.Location.Y, neighborMapNode.Location.X].Peek();
+                                var neighborNodeAGV = _server.AGVNodeQueue[neighborMapNode.Location.Y, neighborMapNode.Location.X].First();
                                 if (_server.AGVNodeQueue[startMapNode.Location.Y, startMapNode.Location.X].FirstOrDefault(agv => agv == neighborNodeAGV) != null)
                                     return;
                             }

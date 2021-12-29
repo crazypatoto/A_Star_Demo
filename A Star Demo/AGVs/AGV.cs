@@ -9,7 +9,7 @@ using A_Star_Demo.Tasks;
 
 namespace A_Star_Demo.AGVs
 {
-    public abstract class AGV
+    public abstract class AGV : IEquatable<AGV>
     {
         #region Enums
         [Flags]
@@ -46,7 +46,7 @@ namespace A_Star_Demo.AGVs
         public AGVTaskHandler TaskHandler { get; }
         public int ID { get; private protected set; }
         public string Name { get; private protected set; }
-        public MapNode CurrentNode { get; private protected set; }
+        public abstract MapNode CurrentNode { get; private protected set; }
         public Rack BoundRack { get; private protected set; }
         public AGVStates State { get; private protected set; }
 
@@ -64,8 +64,7 @@ namespace A_Star_Demo.AGVs
                 else if ((int)_heading <= -180) _heading += 180;
             }
         }
-        public List<MapNode> AssignedPath { get; private protected set; }      
-
+           
         protected AGV (AGVHandler handler)
         {
             this.Handler = handler;
@@ -79,8 +78,37 @@ namespace A_Star_Demo.AGVs
         public abstract void DropOffRack();
 
         public abstract void RotateRack(Rack.RackHeading rackHeading);
-
         public abstract void Disconnect();
         private AGVHeading _heading;
+
+        public bool Equals(AGV other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return string.Equals(this.Name, other.Name);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((AGV)obj);
+        }
+
+        public static bool operator ==(AGV left, AGV right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(AGV left, AGV right)
+        {
+            return !Equals(left, right);
+        }
+
+        public override int GetHashCode()
+        {
+            return (this.Name != null ? this.Name.GetHashCode() : 0);
+        }
     }
 }

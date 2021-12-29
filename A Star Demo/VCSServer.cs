@@ -19,7 +19,7 @@ namespace A_Star_Demo
         public AStarPlanner PathPlanner { get; }
         public List<Rack> RackList { get; }
         public byte[,] OccupancyGrid { get; }
-        public Queue<AGV>[,] AGVNodeQueue { get; }
+        public LinkedList<AGV>[,] AGVNodeQueue { get; }
 
         public bool IsAlive { get; private set; }
 
@@ -31,13 +31,13 @@ namespace A_Star_Demo
             PathPlanner = new AStarPlanner(this);
             RackList = new List<Rack>();
             OccupancyGrid = new byte[map.Height, map.Width];
-            AGVNodeQueue = new Queue<AGV>[map.Height, map.Width];
+            AGVNodeQueue = new LinkedList<AGV>[map.Height, map.Width];
             for (int y = 0; y < map.Height; y++)
             {
                 for (int x = 0; x < map.Width; x++)
                 {
                     OccupancyGrid[y,x] = 0x00;
-                    AGVNodeQueue[y,x] = new Queue<AGV>();                    
+                    AGVNodeQueue[y,x] = new LinkedList<AGV>();                    
                 }
             }
             IsAlive = true;
