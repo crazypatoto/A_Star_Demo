@@ -172,12 +172,169 @@ namespace A_Star_Demo
                 var rack = VCSServer.RackList[i];
                 agv.TaskHandler.NewAGVMoveTask(rack.HomeNode);
                 agv.TaskHandler.NewRackPickUpTask(rack);
-                agv.TaskHandler.NewAGVMoveTask(VCSServer.CurrentMap.AllNodes[11,19]);
+                agv.TaskHandler.NewAGVMoveTask(VCSServer.CurrentMap.AllNodes[11, 19]);
+                agv.TaskHandler.NewRackDropOffTask();
+
+                agv.TaskHandler.NewAGVMoveTask(VCSServer.CurrentMap.AllNodes[16, 16 + i]);
+
+                agv.TaskHandler.NewAGVMoveTask(VCSServer.CurrentMap.AllNodes[11, 19]);
+                agv.TaskHandler.NewRackPickUpTask(rack);
                 agv.TaskHandler.NewAGVMoveTask(rack.HomeNode);
                 agv.TaskHandler.NewRackDropOffTask();
+
                 agv.TaskHandler.NewAGVMoveTask(VCSServer.CurrentMap.AllNodes[16, 16 + i]);
             }
-           
+
+        }
+
+        private void deadlockToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            //List<LinkedList<AGV>> agvQueueList = new List<LinkedList<AGV>>();
+            //for (int y = 0; y < VCSServer.CurrentMap.Height; y++)
+            //{
+            //    for (int x = 0; x < VCSServer.CurrentMap.Width; x++)
+            //    {
+            //        agvQueueList.Add(VCSServer.AGVNodeQueue[y, x]);
+            //    }
+            //}
+            //agvQueueList = agvQueueList.OrderByDescending(agvList => agvList.Count).ToList();
+
+            //foreach (var agvQueue in agvQueueList)
+            //{
+            //    if (agvQueue.Count > 1)
+            //    {
+            //        foreach (var agv in agvQueue)
+            //        {
+            //            Debug.Write($"{agv.Name} ->");
+            //        }
+            //        Debug.WriteLine("");
+            //    }
+            //}
+
+            //LinkedList<AGV> pendingAGVList = new LinkedList<AGV>();
+            //foreach (var agv in agvQueueList[0])
+            //{
+            //    pendingAGVList.AddLast(agv);
+            //}
+            //for (int k = 1; k < agvQueueList.Count; k++)
+            //{
+            //    if (agvQueueList[k].Count < 2) continue;
+            //    var i = pendingAGVList.First;
+            //    var j = agvQueueList[k].First;
+
+            //    while(i.Value != j.Value)
+            //    {
+            //        i = i.Next;
+            //        if (i == null) break;
+            //    }
+
+            //    if (i != null)
+            //    {
+            //        while (i.Value == j.Value)
+            //        {
+            //            if (i.Next == null || j.Next == null) break;
+            //            i = i.Next;
+            //            j = j.Next;                       
+            //        }
+            //        if (j != null)
+            //        {
+            //            while (j.Next != null)
+            //            {
+            //                var target = pendingAGVList.Find(j.Next.Value);
+            //                if (target != null)
+            //                {
+            //                    int targetIndex = pendingAGVList.TakeWhile(agv =>agv != j.Next.Value).Count();
+            //                    int iIndex = pendingAGVList.TakeWhile(agv => agv != i.Value).Count();
+            //                    if(targetIndex < iIndex)
+            //                    {
+            //                        Debug.WriteLine("!!!!! Deadlock detected");
+            //                    }
+            //                    break;
+            //                }
+            //                else
+            //                {
+            //                    pendingAGVList.AddAfter(i, j.Next.Value);
+            //                    i = i.Next;
+            //                    j = j.Next;
+            //                }                            
+            //            }
+            //        }
+            //    }
+            //    else
+            //    {
+            //        i = pendingAGVList.Last;
+            //        while (j.Next != null)
+            //        {
+            //            if (pendingAGVList.Contains(j.Next.Value)) break;
+            //            pendingAGVList.AddAfter(i, j.Next.Value);
+            //            i = i.Next;
+            //            j = j.Next;
+            //        }
+            //    }
+
+            //}
+
+            //foreach (var item in pendingAGVList)
+            //{
+            //    Debug.Write($"{item.Name} -> ");
+            //}
+            //Debug.Write($"\r\n");
+
+            LinkedList<AGV>[] adjacencyList = new LinkedList<AGV>[VCSServer.AGVHandler.AGVList.Count];
+            for (int i = 0; i < adjacencyList.Length; i++)
+            {
+                adjacencyList[i] = new LinkedList<AGV>();
+            }
+            foreach (var agvNodeQueue in VCSServer.AGVNodeQueue)
+            {
+                if (agvNodeQueue.Count < 2) continue;
+                var current = agvNodeQueue.First;
+                while (current != null)
+                {
+                    if (current.Next != null)
+                    {
+                        if (!adjacencyList[current.Value.ID].Contains(current.Next.Value))
+                        {
+                            adjacencyList[current.Value.ID].AddLast(current.Next.Value);
+                        }
+                    }
+                    current = current.Next;
+                }
+            }
+
+            bool[] visited = new bool[VCSServer.AGVHandler.AGVList.Count];
+            bool[] recStack = new bool[VCSServer.AGVHandler.AGVList.Count];
+
+            for (int i = 0; i < VCSServer.AGVHandler.AGVList.Count; i++)
+                if (isCyclicUtil(i))
+                {
+                    Debug.WriteLine($"Deadlock at {i}");
+                    break;
+                }
+                    
+            bool isCyclicUtil(int id)
+            {
+                // Mark the current node as visited and 
+                // part of recursion stack 
+                if (recStack[id])
+                    return true;
+
+                if (visited[id])
+                    return false;
+
+                visited[id] = true;
+
+                recStack[id] = true;
+
+                foreach (var agv in adjacencyList[id])
+                    if (isCyclicUtil(agv.ID))
+                        return true;
+
+                recStack[id] = false;
+
+                return false;
+            }
         }
         #endregion
 
@@ -477,7 +634,7 @@ namespace A_Star_Demo
                 _mapDrawer.DrawAllAGVPath();
                 _mapDrawer.DrawAGVs();
                 _mapDrawer.DrawRacks();
-                _mapDrawer.DrawOccupancy();
+                //_mapDrawer.DrawOccupancy();
                 pictureBox_mapViewer.Image = _mapDrawer.GetMapPicture();
             }
             if (_selectedAGV != null)
@@ -511,6 +668,6 @@ namespace A_Star_Demo
                 textBox_rackHeading.Clear();
             }
         }
-      
+
     }
 }

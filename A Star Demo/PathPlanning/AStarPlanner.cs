@@ -144,6 +144,10 @@ namespace A_Star_Demo.PathPlanning
                             }
                         }
                     }
+                    //if (_server.AGVHandler.AGVList.FindAll(agv => agv.CurrentNode == neighborMapNode && agv.State == AGVs.AGV.AGVStates.WaitingToMove).Count > 0)
+                    //{
+                    //    return;
+                    //}
 
                     var successorNode = _allAStarNodes[neighborMapNode.Location.Y, neighborMapNode.Location.X];
                     var successorCurrentCost = currentNode.G + 1;                       // Set successor current cost = g(currentNode) + w(currentNode, successorNode) 
@@ -167,6 +171,8 @@ namespace A_Star_Demo.PathPlanning
                             }
                         }
                     }
+
+                    successorCurrentCost += _server.AGVNodeQueue[neighborMapNode.Location.Y, neighborMapNode.Location.X].Count;
 
                     // Add extra cost if successorNode has neighbors that type isn't None.
                     //foreach (var node in _refererMap.GetNeighborNodes(successorNode.RefererMapNode))

@@ -44,6 +44,7 @@ namespace A_Star_Demo
             this.addAGVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.taskToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.testGoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox_nodeInfo = new System.Windows.Forms.GroupBox();
             this.textBox_selectedNodeType = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -70,6 +71,7 @@ namespace A_Star_Demo
             this.tableLayoutPanel_main = new System.Windows.Forms.TableLayoutPanel();
             this.pictureBox_mapViewer = new System.Windows.Forms.PictureBox();
             this.panel_infos = new System.Windows.Forms.Panel();
+            this.button_Go = new System.Windows.Forms.Button();
             this.comboBox_rackHeading = new System.Windows.Forms.ComboBox();
             this.button_rotateRackTemp = new System.Windows.Forms.Button();
             this.button_dropOffRack = new System.Windows.Forms.Button();
@@ -95,8 +97,7 @@ namespace A_Star_Demo
             this.textBox_agvName = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
-            this.button_Go = new System.Windows.Forms.Button();
-            this.testGoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deadlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.groupBox_nodeInfo.SuspendLayout();
             this.groupBox_mapInfo.SuspendLayout();
@@ -116,7 +117,8 @@ namespace A_Star_Demo
             this.simulationToolStripMenuItem,
             this.taskToolStripMenuItem,
             this.testToolStripMenuItem,
-            this.testGoToolStripMenuItem});
+            this.testGoToolStripMenuItem,
+            this.deadlockToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Size = new System.Drawing.Size(1450, 24);
@@ -224,6 +226,13 @@ namespace A_Star_Demo
             this.testToolStripMenuItem.Size = new System.Drawing.Size(42, 20);
             this.testToolStripMenuItem.Text = "Test";
             this.testToolStripMenuItem.Click += new System.EventHandler(this.testToolStripMenuItem_Click);
+            // 
+            // testGoToolStripMenuItem
+            // 
+            this.testGoToolStripMenuItem.Name = "testGoToolStripMenuItem";
+            this.testGoToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
+            this.testGoToolStripMenuItem.Text = "Test Go";
+            this.testGoToolStripMenuItem.Click += new System.EventHandler(this.testGoToolStripMenuItem_Click);
             // 
             // groupBox_nodeInfo
             // 
@@ -457,7 +466,7 @@ namespace A_Star_Demo
             this.tableLayoutPanel_main.Name = "tableLayoutPanel_main";
             this.tableLayoutPanel_main.RowCount = 1;
             this.tableLayoutPanel_main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel_main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 714F));
+            this.tableLayoutPanel_main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 733F));
             this.tableLayoutPanel_main.Size = new System.Drawing.Size(1450, 733);
             this.tableLayoutPanel_main.TabIndex = 8;
             // 
@@ -493,6 +502,17 @@ namespace A_Star_Demo
             this.panel_infos.Name = "panel_infos";
             this.panel_infos.Size = new System.Drawing.Size(370, 727);
             this.panel_infos.TabIndex = 3;
+            // 
+            // button_Go
+            // 
+            this.button_Go.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.button_Go.Location = new System.Drawing.Point(12, 541);
+            this.button_Go.Name = "button_Go";
+            this.button_Go.Size = new System.Drawing.Size(160, 33);
+            this.button_Go.TabIndex = 22;
+            this.button_Go.Text = "Go";
+            this.button_Go.UseVisualStyleBackColor = true;
+            this.button_Go.Click += new System.EventHandler(this.button_Go_Click);
             // 
             // comboBox_rackHeading
             // 
@@ -735,23 +755,12 @@ namespace A_Star_Demo
             this.statusStrip.TabIndex = 9;
             this.statusStrip.Text = "statusStrip";
             // 
-            // button_Go
+            // deadlockToolStripMenuItem
             // 
-            this.button_Go.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.button_Go.Location = new System.Drawing.Point(12, 541);
-            this.button_Go.Name = "button_Go";
-            this.button_Go.Size = new System.Drawing.Size(160, 33);
-            this.button_Go.TabIndex = 22;
-            this.button_Go.Text = "Go";
-            this.button_Go.UseVisualStyleBackColor = true;
-            this.button_Go.Click += new System.EventHandler(this.button_Go_Click);
-            // 
-            // testGoToolStripMenuItem
-            // 
-            this.testGoToolStripMenuItem.Name = "testGoToolStripMenuItem";
-            this.testGoToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
-            this.testGoToolStripMenuItem.Text = "Test Go";
-            this.testGoToolStripMenuItem.Click += new System.EventHandler(this.testGoToolStripMenuItem_Click);
+            this.deadlockToolStripMenuItem.Name = "deadlockToolStripMenuItem";
+            this.deadlockToolStripMenuItem.Size = new System.Drawing.Size(73, 20);
+            this.deadlockToolStripMenuItem.Text = "Deadlock";
+            this.deadlockToolStripMenuItem.Click += new System.EventHandler(this.deadlockToolStripMenuItem_Click);
             // 
             // AStarDemo
             // 
@@ -852,6 +861,7 @@ namespace A_Star_Demo
         private System.Windows.Forms.ToolStripMenuItem taskToolStripMenuItem;
         private System.Windows.Forms.Button button_Go;
         private System.Windows.Forms.ToolStripMenuItem testGoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem deadlockToolStripMenuItem;
     }
 }
 

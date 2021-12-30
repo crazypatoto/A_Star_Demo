@@ -225,6 +225,7 @@ namespace A_Star_Demo
                             break;
                     }
                     graphics.DrawImage(agvImage, (agv.CurrentNode.Location.X + OffsetX) * _scaledCellSize, (agv.CurrentNode.Location.Y + OffsetY) * _scaledCellSize, _scaledCellSize, _scaledCellSize);
+                    graphics.DrawString(agv.ID.ToString(), new Font("Arial", 16), new SolidBrush(Color.DeepSkyBlue), (agv.CurrentNode.Location.X + OffsetX ) * _scaledCellSize + 16, (agv.CurrentNode.Location.Y + OffsetY) * _scaledCellSize + 16);
                 }
             }
         }

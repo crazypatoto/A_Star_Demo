@@ -27,9 +27,7 @@ namespace A_Star_Demo.Tasks
             {
                 if (this.AssignedAGV.BoundRack == null)
                 {
-                    this.Finished = true;
-                    this.FinishTimeStamp = DateTimeOffset.Now.ToUnixTimeSeconds();
-                    return;
+                    throw new ApplicationException("No rack to drop!");
                 }
                 this.AssignedAGV.DropOffRack();
             }
