@@ -16,14 +16,17 @@ namespace A_Star_Demo.Tasks
         public AGVTask CurrentTask { get; private set; }
         public Queue<AGVTask> TaskQueue { get; }
         public List<AGVTask> FinishedTaskList { get; }
+        private readonly CancellationTokenSource _cts;
         public AGVTaskHandler(AGV agv)
         {
             this.AGV = agv;
             this.TaskQueue = new Queue<AGVTask>();
             this.FinishedTaskList = new List<AGVTask>();
-            var t = new Thread(TaskHandleThread);
-            t.IsBackground = true;
-            t.Start();
+            _cts = new CancellationTokenSource();
+            Task.Run(TaskHandling);
+            //var t = new Thread(TaskHandling);
+            //t.IsBackground = true;
+            //t.Start();
         }
 
         public void NewAGVMoveTask(MapNode destination)
@@ -44,9 +47,14 @@ namespace A_Star_Demo.Tasks
             TaskQueue.Enqueue(new RackRotateTask(this, targetHeading));
         }
 
-        private void TaskHandleThread()
+        public void Abort()
         {
-            while (true)
+            _cts.Cancel();
+        }
+
+        private async void TaskHandling()
+        {
+            while (!_cts.IsCancellationRequested)
             {
                 if (this.CurrentTask == null)
                 {
@@ -63,9 +71,9 @@ namespace A_Star_Demo.Tasks
                     {
                         this.CurrentTask.Execute();
                     }
-                }                
-                Thread.Sleep(10);
+                }
+                await Task.Delay(10);
             }
-        }        
+        }
     }
 }

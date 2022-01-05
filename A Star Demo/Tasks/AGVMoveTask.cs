@@ -57,7 +57,7 @@ namespace A_Star_Demo.Tasks
                                     {
                                         vcsServer.AGVNodeQueue[node.Location.Y, node.Location.X].AddFirst(this.AssignedAGV);
                                     }
-                                }
+                                }                              
                                 else
                                 {
                                     vcsServer.AGVNodeQueue[node.Location.Y, node.Location.X].AddLast(this.AssignedAGV);
@@ -92,7 +92,7 @@ namespace A_Star_Demo.Tasks
                         if (this.RemainingPath.Count > 0)
                         {
                             var nextNode = RemainingPath.Peek();
-                            var nextAGVNodeQueue = vcsServer.AGVNodeQueue[nextNode.Location.Y, nextNode.Location.X];                            
+                            var nextAGVNodeQueue = vcsServer.AGVNodeQueue[nextNode.Location.Y, nextNode.Location.X];
 
                             if (this.AssignedAGV.BoundRack == null)
                             {
@@ -101,18 +101,18 @@ namespace A_Star_Demo.Tasks
                                     this.AssignedAGV.AddNodeToPath(this.RemainingPath.Dequeue());
                                     //System.Diagnostics.Debug.WriteLineIf(vcsServer.IsDeadlockExist(), "Dead Lock!!!");
                                 }
-                                else if((vcsServer.OccupancyGrid[nextNode.Location.Y, nextNode.Location.X] & 0x02) > 0)
+                                else if ((vcsServer.OccupancyGrid[nextNode.Location.Y, nextNode.Location.X] & 0x02) > 0)
                                 {
                                     var firstAGVWithoutRack = nextAGVNodeQueue.FirstOrDefault(agv => agv.BoundRack == null);
-                                    if(firstAGVWithoutRack == this.AssignedAGV)
+                                    if (firstAGVWithoutRack == this.AssignedAGV)
                                     {
-                                        this.AssignedAGV.AddNodeToPath(this.RemainingPath.Dequeue());                                        
+                                        this.AssignedAGV.AddNodeToPath(this.RemainingPath.Dequeue());
                                         nextAGVNodeQueue.Remove(firstAGVWithoutRack);
                                         nextAGVNodeQueue.AddFirst(firstAGVWithoutRack);
                                     }
                                     else
                                     {
-                                       // System.Diagnostics.Debug.WriteLineIf(vcsServer.IsDeadlockExist(), "Dead Lock!!!");
+                                        // System.Diagnostics.Debug.WriteLineIf(vcsServer.IsDeadlockExist(), "Dead Lock!!!");
                                     }
                                 }
                             }
@@ -130,7 +130,7 @@ namespace A_Star_Demo.Tasks
                             }
                             if (this.RemainingPath.Count == 0) this.AssignedAGV.EndPath();
                         }
-                      
+
 
                         var currentIndex = this.FullPath.FindIndex(node => node == AGVCurrentNode);
                         for (int i = _lastDequeuedNodeIndex + 1; i < currentIndex; i++)
@@ -166,6 +166,6 @@ namespace A_Star_Demo.Tasks
             //    System.Threading.Thread.Sleep(1000);
             //}
         }
-       
+
     }
 }

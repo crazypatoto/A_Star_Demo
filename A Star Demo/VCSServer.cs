@@ -9,12 +9,13 @@ using A_Star_Demo.Maps;
 using A_Star_Demo.Models;
 using A_Star_Demo.PathPlanning;
 using A_Star_Demo.Tasks;
+using System.Threading;
 
 namespace A_Star_Demo
 {
     public class VCSServer : IDisposable
     {
-        bool _disposed = false;
+        private bool _disposed = false;        
         public Map CurrentMap { get; }
         public AGVHandler AGVHandler { get; }
         public AStarPlanner PathPlanner { get; }
@@ -27,10 +28,10 @@ namespace A_Star_Demo
 
         public VCSServer(Map map)
         {
-            CurrentMap = map;
-            AGVHandler = new AGVHandler(this);
-            PathPlanner = new AStarPlanner(this);
-            RackList = new List<Rack>();
+            this.CurrentMap = map;
+            this.AGVHandler = new AGVHandler(this);
+            this.PathPlanner = new AStarPlanner(this);
+            this.RackList = new List<Rack>();
             OccupancyGrid = new byte[map.Height, map.Width];
             AGVNodeQueue = new LinkedList<AGV>[map.Height, map.Width];
             for (int y = 0; y < map.Height; y++)
@@ -60,63 +61,7 @@ namespace A_Star_Demo
         {
             AGVHandler.AddSimulatedAGV(targetNode);
             OccupancyGrid[targetNode.Location.Y, targetNode.Location.X] |= 0x01;
-        }
-
-        public bool IsDeadlockExist()
-        {            
-            LinkedList<AGV>[] adjacencyList = new LinkedList<AGV>[this.AGVHandler.AGVList.Count];
-            for (int i = 0; i < adjacencyList.Length; i++)
-            {
-                adjacencyList[i] = new LinkedList<AGV>();
-            }
-            foreach (var agvNodeQueue in this.AGVNodeQueue)
-            {
-                if (agvNodeQueue.Count < 2) continue;
-                var current = agvNodeQueue.First;
-                while (current != null)
-                {
-                    if (current.Next != null)
-                    {
-                        if (!adjacencyList[current.Value.ID].Contains(current.Next.Value))
-                        {
-                            adjacencyList[current.Value.ID].AddLast(current.Next.Value);
-                        }
-                    }
-                    current = current.Next;
-                }
-            }
-
-            bool[] visited = new bool[this.AGVHandler.AGVList.Count];
-            bool[] recStack = new bool[this.AGVHandler.AGVList.Count];
-
-            for (int i = 0; i < this.AGVHandler.AGVList.Count; i++)
-                if (isCyclicUtil(i))
-                    return true;
-
-            bool isCyclicUtil(int id)
-            {
-                // Mark the current node as visited and 
-                // part of recursion stack 
-                if (recStack[id])
-                    return true;
-
-                if (visited[id])
-                    return false;
-
-                visited[id] = true;
-
-                recStack[id] = true;
-
-                foreach (var agv in adjacencyList[id])
-                    if (isCyclicUtil(agv.ID))
-                        return true;
-
-                recStack[id] = false;
-
-                return false;
-            }
-            return false;
-        }
+        }      
 
         public void Dispose()
         {
@@ -129,7 +74,8 @@ namespace A_Star_Demo
             if (_disposed) return;
             if (disposing)
             {
-                this.IsAlive = false;
+                this.AGVHandler.Abort();
+                this.IsAlive = false;                
             }
             _disposed = true;
         }

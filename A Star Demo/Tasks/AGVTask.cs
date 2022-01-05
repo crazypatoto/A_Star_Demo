@@ -12,7 +12,7 @@ namespace A_Star_Demo.Tasks
 {
     public abstract class AGVTask
     {
-        protected static readonly object _agvTaskLock = new object();
+        public static readonly object _agvTaskLock = new object();
         public AGVTaskHandler Handler { get; }
         public AGV AssignedAGV { get; }
         public long StartTimeStamp { get; }

@@ -109,6 +109,10 @@ namespace A_Star_Demo
             VCSServer.AddNewSimulationAGVTemp(SelectedNode);
             _selectedAGV = VCSServer.AGVHandler.AGVList.Last();
         }
+
+        private void deleteAGVToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+        }
         private void editMapToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _mapEditorForm.Show();
@@ -166,7 +170,7 @@ namespace A_Star_Demo
 
         private void testGoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < VCSServer.AGVHandler.AGVList.Count; i++)
+            for (int i = VCSServer.AGVHandler.AGVList.Count - 1; i >= 0; i--)
             {
                 var agv = VCSServer.AGVHandler.AGVList[i];
                 var rack = VCSServer.RackList[i];
@@ -189,153 +193,133 @@ namespace A_Star_Demo
 
         private void deadlockToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
-            //List<LinkedList<AGV>> agvQueueList = new List<LinkedList<AGV>>();
-            //for (int y = 0; y < VCSServer.CurrentMap.Height; y++)
-            //{
-            //    for (int x = 0; x < VCSServer.CurrentMap.Width; x++)
-            //    {
-            //        agvQueueList.Add(VCSServer.AGVNodeQueue[y, x]);
-            //    }
-            //}
-            //agvQueueList = agvQueueList.OrderByDescending(agvList => agvList.Count).ToList();
-
-            //foreach (var agvQueue in agvQueueList)
-            //{
-            //    if (agvQueue.Count > 1)
-            //    {
-            //        foreach (var agv in agvQueue)
-            //        {
-            //            Debug.Write($"{agv.Name} ->");
-            //        }
-            //        Debug.WriteLine("");
-            //    }
-            //}
-
-            //LinkedList<AGV> pendingAGVList = new LinkedList<AGV>();
-            //foreach (var agv in agvQueueList[0])
-            //{
-            //    pendingAGVList.AddLast(agv);
-            //}
-            //for (int k = 1; k < agvQueueList.Count; k++)
-            //{
-            //    if (agvQueueList[k].Count < 2) continue;
-            //    var i = pendingAGVList.First;
-            //    var j = agvQueueList[k].First;
-
-            //    while(i.Value != j.Value)
-            //    {
-            //        i = i.Next;
-            //        if (i == null) break;
-            //    }
-
-            //    if (i != null)
-            //    {
-            //        while (i.Value == j.Value)
-            //        {
-            //            if (i.Next == null || j.Next == null) break;
-            //            i = i.Next;
-            //            j = j.Next;                       
-            //        }
-            //        if (j != null)
-            //        {
-            //            while (j.Next != null)
-            //            {
-            //                var target = pendingAGVList.Find(j.Next.Value);
-            //                if (target != null)
-            //                {
-            //                    int targetIndex = pendingAGVList.TakeWhile(agv =>agv != j.Next.Value).Count();
-            //                    int iIndex = pendingAGVList.TakeWhile(agv => agv != i.Value).Count();
-            //                    if(targetIndex < iIndex)
-            //                    {
-            //                        Debug.WriteLine("!!!!! Deadlock detected");
-            //                    }
-            //                    break;
-            //                }
-            //                else
-            //                {
-            //                    pendingAGVList.AddAfter(i, j.Next.Value);
-            //                    i = i.Next;
-            //                    j = j.Next;
-            //                }                            
-            //            }
-            //        }
-            //    }
-            //    else
-            //    {
-            //        i = pendingAGVList.Last;
-            //        while (j.Next != null)
-            //        {
-            //            if (pendingAGVList.Contains(j.Next.Value)) break;
-            //            pendingAGVList.AddAfter(i, j.Next.Value);
-            //            i = i.Next;
-            //            j = j.Next;
-            //        }
-            //    }
-
-            //}
-
-            //foreach (var item in pendingAGVList)
-            //{
-            //    Debug.Write($"{item.Name} -> ");
-            //}
-            //Debug.Write($"\r\n");
-
-            LinkedList<AGV>[] adjacencyList = new LinkedList<AGV>[VCSServer.AGVHandler.AGVList.Count];
-            for (int i = 0; i < adjacencyList.Length; i++)
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            List<LinkedList<AGV>> waitList = new List<LinkedList<AGV>>();
+            lock (AGVTask._agvTaskLock)
             {
-                adjacencyList[i] = new LinkedList<AGV>();
-            }
-            foreach (var agvNodeQueue in VCSServer.AGVNodeQueue)
-            {
-                if (agvNodeQueue.Count < 2) continue;
-                var current = agvNodeQueue.First;
-                while (current != null)
+                foreach (var agv in VCSServer.AGVHandler.AGVList)
                 {
-                    if (current.Next != null)
+                    if (agv.TaskHandler.CurrentTask is AGVMoveTask)
                     {
-                        if (!adjacencyList[current.Value.ID].Contains(current.Next.Value))
+                        if (agv.State == AGV.AGVStates.WaitingToMove)
                         {
-                            adjacencyList[current.Value.ID].AddLast(current.Next.Value);
+                            var nextNode = (agv.TaskHandler.CurrentTask as AGVMoveTask).RemainingPath.FirstOrDefault();                
+                            if (nextNode != null)
+                            {
+                                var nextAGVNodeQueue = VCSServer.AGVNodeQueue[nextNode.Location.Y, nextNode.Location.X];
+                                var nextAGV = nextAGVNodeQueue.First.Value;
+                                if (agv == nextAGV)
+                                {
+                                    var realNextAGV = nextAGVNodeQueue.FirstOrDefault((targetAGV) =>
+                                    {
+                                        if (!(targetAGV.TaskHandler.TaskQueue.FirstOrDefault() is RackPickUpTask)) return false;
+                                        if ((targetAGV.TaskHandler.TaskQueue.FirstOrDefault() as RackPickUpTask).TargetRack.CurrentNode != nextNode) return false;
+                                        return true;
+                                    });
+                                    nextAGV = realNextAGV;
+                                }
+                                if (nextAGV != null)
+                                {
+                                    var newLinkedList = new LinkedList<AGV>();
+                                    newLinkedList.AddLast(agv);
+                                    newLinkedList.AddLast(nextAGV);
+                                    waitList.Add(newLinkedList);
+                                }
+                            }                                               
                         }
                     }
-                    current = current.Next;
+                }
+                foreach (var agvQueue in waitList)
+                {
+                    if (agvQueue.Count > 1)
+                    {
+                        foreach (var agv in agvQueue)
+                        {
+                            Debug.Write($"{agv.Name} ->");
+                        }
+                        Debug.WriteLine("");
+                    }
                 }
             }
-
-            bool[] visited = new bool[VCSServer.AGVHandler.AGVList.Count];
-            bool[] recStack = new bool[VCSServer.AGVHandler.AGVList.Count];
-
-            for (int i = 0; i < VCSServer.AGVHandler.AGVList.Count; i++)
-                if (isCyclicUtil(i))
-                {
-                    Debug.WriteLine($"Deadlock at {i}");
-                    break;
-                }
-                    
-            bool isCyclicUtil(int id)
+            List<AGVTreeNode> graph = new List<AGVTreeNode>();
+            foreach (var list in waitList)
             {
-                // Mark the current node as visited and 
-                // part of recursion stack 
-                if (recStack[id])
-                    return true;
+                var currentNode = graph.Find(node => node.Value == list.First.Value);
+                if (currentNode == null)
+                {
+                    currentNode = new AGVTreeNode(list.First.Value);
+                    graph.Add(currentNode);
+                }
+                var targetNode = graph.Find(node => node.Value == list.Last.Value);
+                if (targetNode == null)
+                {
+                    targetNode = new AGVTreeNode(list.Last.Value);
+                    graph.Add(targetNode);
+                }
+                currentNode.Next = targetNode;
+            }
 
-                if (visited[id])
-                    return false;
+            DFS(graph);
+            Debug.WriteLine($"DeadLock detection took {sw.ElapsedMilliseconds}ms");
+        }
 
-                visited[id] = true;
+        void DFS(List<AGVTreeNode> graph)
+        {
+            int time = 0;
+            foreach (var node in graph)
+            {
+                node.Color = 0;
+            }
 
-                recStack[id] = true;
-
-                foreach (var agv in adjacencyList[id])
-                    if (isCyclicUtil(agv.ID))
-                        return true;
-
-                recStack[id] = false;
-
-                return false;
+            foreach (var node in graph)
+            {
+                if (node.Color == 0)
+                {
+                    DFSVisit(node, ref time);
+                }
             }
         }
+
+        void DFSVisit(AGVTreeNode node, ref int time)
+        {
+            time++;
+            node.Color = 1;
+            node.StartTime = time;
+            var childNode = node.Next;
+            if (childNode != null)
+            {
+                if (childNode.Color == 0)
+                {
+                    DFSVisit(childNode, ref time);
+                }
+                else if (childNode.Color == 1)
+                {
+                    Debug.WriteLine($"Back Edge Found! {node.Value.ID} -> {childNode.Value.ID}");
+                }
+            }
+            node.Color = 2;
+            node.FinishTime = time;
+        }
+
+
+        class AGVTreeNode
+        {
+            public AGV Value { get; }
+            public int Color { get; set; }  // white = 0, gray = 1, black = 2
+            public int StartTime { get; set; }
+            public int FinishTime { get; set; }
+            public AGVTreeNode Next { get; set; }
+
+            public AGVTreeNode(AGV value)
+            {
+                this.Value = value;
+                this.Color = 0;
+                this.StartTime = 0;
+                this.FinishTime = 0;
+            }
+        }
+
         #endregion
 
         #region UI Control Events      

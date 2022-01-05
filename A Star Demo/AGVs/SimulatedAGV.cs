@@ -46,7 +46,10 @@ namespace A_Star_Demo.AGVs
             this.State = AGVStates.Idle;
             this.Heading = AGVHeading.Right;
             _cts = new CancellationTokenSource();
-            Task.Run(() => AGVSimulation(_cts.Token));
+            Task.Run(AGVSimulation);
+            //var t = new Thread(() => { AGVSimulation(_cts.Token); });
+            //t.IsBackground = true;
+            //t.Start();
         }
 
         public override void StartNewPath(List<MapNode> path, AGVHeading? initialHeading)
@@ -132,11 +135,13 @@ namespace A_Star_Demo.AGVs
         public override void Disconnect()
         {
             _cts.Cancel();
+            this.TaskHandler.Abort();
+            this.State = AGVStates.Disconnected;
         }
 
-        private async void AGVSimulation(CancellationToken cancellationToken)
+        private async void AGVSimulation()
         {
-            while (!cancellationToken.IsCancellationRequested)
+            while (!_cts.Token.IsCancellationRequested)
             {
                 var nextNode = AssignedPath?.FirstOrDefault();
                 switch (this.State)
@@ -187,7 +192,7 @@ namespace A_Star_Demo.AGVs
                                     }
                                 }
                                 else
-                                {                                    
+                                {
                                     this.State = AGVStates.MovingBlocked;
                                 }
                             }
@@ -310,9 +315,8 @@ namespace A_Star_Demo.AGVs
                     case AGVStates.WaitingToRotateRack:
                         break;
                 }
-                await Task.Delay(100);
+                await Task.Delay(200);
             }
-            this.State = AGVStates.Disconnected;
         }
         private AGVHeading GetNextHeading(MapNode currentNode, MapNode nextNode)
         {

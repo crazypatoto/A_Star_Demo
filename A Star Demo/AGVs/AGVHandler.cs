@@ -3,18 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
+using System.Diagnostics;
 using A_Star_Demo.Maps;
+using A_Star_Demo.Tasks;
 
 namespace A_Star_Demo.AGVs
 {
     public class AGVHandler
     {
+        private readonly CancellationTokenSource _cts;
         public VCSServer VCSServer { get; }
         public List<AGV> AGVList { get; private set; }
         public AGVHandler(VCSServer server)
         {
             this.VCSServer = server;
             AGVList = new List<AGV>();
+            _cts = new CancellationTokenSource();
+            Task.Run(AGVHandling);
         }
 
         public AGV AddSimulatedAGV(MapNode node, string name = null)
@@ -29,15 +35,22 @@ namespace A_Star_Demo.AGVs
             return AGVList.Last();
         }
 
-        private void AGVMovementHandlingThread()
+        public void Abort()
         {
-            while (true)
+            _cts.Cancel();
+            foreach (var agv in this.AGVList)
             {
-                foreach (var agv in AGVList)
-                {
-
-                }
+                agv.Disconnect();
             }
-        }      
+        }
+
+        private async void AGVHandling()
+        {
+            while (!_cts.IsCancellationRequested)
+            {
+                //DetectDeadLock();
+                await Task.Delay(100);
+            }
+        }             
     }
 }

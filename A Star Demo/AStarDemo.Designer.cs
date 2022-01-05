@@ -45,6 +45,7 @@ namespace A_Star_Demo
             this.taskToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testGoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deadlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox_nodeInfo = new System.Windows.Forms.GroupBox();
             this.textBox_selectedNodeType = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -97,7 +98,7 @@ namespace A_Star_Demo
             this.textBox_agvName = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
-            this.deadlockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteAGVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip.SuspendLayout();
             this.groupBox_nodeInfo.SuspendLayout();
             this.groupBox_mapInfo.SuspendLayout();
@@ -200,7 +201,8 @@ namespace A_Star_Demo
             // simulationToolStripMenuItem
             // 
             this.simulationToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.addAGVToolStripMenuItem});
+            this.addAGVToolStripMenuItem,
+            this.deleteAGVToolStripMenuItem});
             this.simulationToolStripMenuItem.Enabled = false;
             this.simulationToolStripMenuItem.Name = "simulationToolStripMenuItem";
             this.simulationToolStripMenuItem.Size = new System.Drawing.Size(79, 20);
@@ -209,7 +211,7 @@ namespace A_Star_Demo
             // addAGVToolStripMenuItem
             // 
             this.addAGVToolStripMenuItem.Name = "addAGVToolStripMenuItem";
-            this.addAGVToolStripMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.addAGVToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.addAGVToolStripMenuItem.Text = "Add AGV";
             this.addAGVToolStripMenuItem.Click += new System.EventHandler(this.addAGVToolStripMenuItem_Click);
             // 
@@ -233,6 +235,13 @@ namespace A_Star_Demo
             this.testGoToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
             this.testGoToolStripMenuItem.Text = "Test Go";
             this.testGoToolStripMenuItem.Click += new System.EventHandler(this.testGoToolStripMenuItem_Click);
+            // 
+            // deadlockToolStripMenuItem
+            // 
+            this.deadlockToolStripMenuItem.Name = "deadlockToolStripMenuItem";
+            this.deadlockToolStripMenuItem.Size = new System.Drawing.Size(73, 20);
+            this.deadlockToolStripMenuItem.Text = "Deadlock";
+            this.deadlockToolStripMenuItem.Click += new System.EventHandler(this.deadlockToolStripMenuItem_Click);
             // 
             // groupBox_nodeInfo
             // 
@@ -755,12 +764,12 @@ namespace A_Star_Demo
             this.statusStrip.TabIndex = 9;
             this.statusStrip.Text = "statusStrip";
             // 
-            // deadlockToolStripMenuItem
+            // deleteAGVToolStripMenuItem
             // 
-            this.deadlockToolStripMenuItem.Name = "deadlockToolStripMenuItem";
-            this.deadlockToolStripMenuItem.Size = new System.Drawing.Size(73, 20);
-            this.deadlockToolStripMenuItem.Text = "Deadlock";
-            this.deadlockToolStripMenuItem.Click += new System.EventHandler(this.deadlockToolStripMenuItem_Click);
+            this.deleteAGVToolStripMenuItem.Name = "deleteAGVToolStripMenuItem";
+            this.deleteAGVToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.deleteAGVToolStripMenuItem.Text = "Delete AGV";
+            this.deleteAGVToolStripMenuItem.Click += new System.EventHandler(this.deleteAGVToolStripMenuItem_Click);
             // 
             // AStarDemo
             // 
@@ -862,6 +871,7 @@ namespace A_Star_Demo
         private System.Windows.Forms.Button button_Go;
         private System.Windows.Forms.ToolStripMenuItem testGoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deadlockToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem deleteAGVToolStripMenuItem;
     }
 }
 

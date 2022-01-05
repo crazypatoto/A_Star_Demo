@@ -107,9 +107,10 @@ namespace A_Star_Demo.PathPlanning
                 //Debug.WriteLine($"CurrentNode = {currentNode.RefererMapNode.Name}, {{F,G,H}} = {{{currentNode.F},{currentNode.G},{currentNode.H}}}");
                 if (currentNode.RefererMapNode == goalMapNode) break;                           // End if currentNode == goalNode (A* path found!)                                
 
+                // Go thorough all successor nodes
                 Parallel.ForEach(_refererMap.GetNeighborNodes(currentNode.RefererMapNode), neighborMapNode =>
                 {
-                    if (neighborMapNode == currentNode.ParentNode?.RefererMapNode) return;
+                    if (neighborMapNode == currentNode.ParentNode?.RefererMapNode) return;  
                     if (currentNode.RefererMapNode.Location.X + currentNode.RefererMapNode.Location.Y < neighborMapNode.Location.X + neighborMapNode.Location.Y)
                     {
                         if ((_refererMap.GetEdgeByNodes(constraintLayerIndex, currentNode.RefererMapNode, neighborMapNode).PassingRestriction & MapEdge.PassingRestrictions.NoLeaving) > 0)
@@ -124,11 +125,11 @@ namespace A_Star_Demo.PathPlanning
                             return;
                         }
                     }
-                    if ((_server.OccupancyGrid[neighborMapNode.Location.Y, neighborMapNode.Location.X] & 0x01) > 0)
+                    if ((_server.OccupancyGrid[neighborMapNode.Location.Y, neighborMapNode.Location.X] & 0x01) > 0) // Skip node if is occupied by AGV
                     {
                         if (neighborMapNode != goalMapNode) return;
                     }
-                    if (carryingRack && (_server.OccupancyGrid[neighborMapNode.Location.Y, neighborMapNode.Location.X] & 0x02) > 0)
+                    if (carryingRack && (_server.OccupancyGrid[neighborMapNode.Location.Y, neighborMapNode.Location.X] & 0x02) > 0) //Skip node if is occupied by Rack
                     {
                         if (neighborMapNode != goalMapNode) return;
                     }
@@ -144,6 +145,20 @@ namespace A_Star_Demo.PathPlanning
                             }
                         }
                     }
+
+
+                    // Avoid nodes if there is an AGV waiting on it and dose not have the same destination
+                    if(neighborMapNode != goalMapNode)
+                    {
+                        var agvWaitingOnNode = _server.AGVHandler.AGVList.FirstOrDefault(agv => agv.CurrentNode == neighborMapNode && agv.State == AGVs.AGV.AGVStates.WaitingToMove);
+                        if (agvWaitingOnNode != null)
+                        {
+                            if ((agvWaitingOnNode.TaskHandler.CurrentTask as A_Star_Demo.Tasks.AGVMoveTask).Destination != goalMapNode)
+                                return;
+                        }
+                    }
+                  
+                    // Avoid all nodes if there is an AGV waiting on it
                     //if (_server.AGVHandler.AGVList.FindAll(agv => agv.CurrentNode == neighborMapNode && agv.State == AGVs.AGV.AGVStates.WaitingToMove).Count > 0)
                     //{
                     //    return;
@@ -172,6 +187,7 @@ namespace A_Star_Demo.PathPlanning
                         }
                     }
 
+                    // Add extra cost to avoid traffics
                     successorCurrentCost += _server.AGVNodeQueue[neighborMapNode.Location.Y, neighborMapNode.Location.X].Count;
 
                     // Add extra cost if successorNode has neighbors that type isn't None.
@@ -229,7 +245,7 @@ namespace A_Star_Demo.PathPlanning
                 //Debug.WriteLine($"Path Node =  {currentNode.RefererMapNode.Name}");
                 currentNode = currentNode.ParentNode;
             }
-            Debug.WriteLine($"Path Found! Took {stopwatch.ElapsedMilliseconds}ms");
+            //Debug.WriteLine($"Path Found! Took {stopwatch.ElapsedMilliseconds}ms");
             return path;
         }
 
