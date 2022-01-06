@@ -41,7 +41,7 @@
             this.textBox_edgeNode1 = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.groupBox_nodeTypeEditor = new System.Windows.Forms.GroupBox();
-            this.checkBox_disallowTurning = new System.Windows.Forms.CheckBox();
+            this.checkBox_disallowWaitingOnNode = new System.Windows.Forms.CheckBox();
             this.button_startEditingNode = new System.Windows.Forms.Button();
             this.comboBox_types = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -172,7 +172,7 @@
             // 
             // groupBox_nodeTypeEditor
             // 
-            this.groupBox_nodeTypeEditor.Controls.Add(this.checkBox_disallowTurning);
+            this.groupBox_nodeTypeEditor.Controls.Add(this.checkBox_disallowWaitingOnNode);
             this.groupBox_nodeTypeEditor.Controls.Add(this.button_startEditingNode);
             this.groupBox_nodeTypeEditor.Controls.Add(this.comboBox_types);
             this.groupBox_nodeTypeEditor.Controls.Add(this.label4);
@@ -184,15 +184,15 @@
             this.groupBox_nodeTypeEditor.TabStop = false;
             this.groupBox_nodeTypeEditor.Text = "Node Type Editor";
             // 
-            // checkBox_disallowTurning
+            // checkBox_disallowWaitingOnNode
             // 
-            this.checkBox_disallowTurning.AutoSize = true;
-            this.checkBox_disallowTurning.Location = new System.Drawing.Point(33, 52);
-            this.checkBox_disallowTurning.Name = "checkBox_disallowTurning";
-            this.checkBox_disallowTurning.Size = new System.Drawing.Size(119, 20);
-            this.checkBox_disallowTurning.TabIndex = 4;
-            this.checkBox_disallowTurning.Text = "Disallow Turning";
-            this.checkBox_disallowTurning.UseVisualStyleBackColor = true;
+            this.checkBox_disallowWaitingOnNode.AutoSize = true;
+            this.checkBox_disallowWaitingOnNode.Location = new System.Drawing.Point(33, 52);
+            this.checkBox_disallowWaitingOnNode.Name = "checkBox_disallowWaitingOnNode";
+            this.checkBox_disallowWaitingOnNode.Size = new System.Drawing.Size(140, 20);
+            this.checkBox_disallowWaitingOnNode.TabIndex = 4;
+            this.checkBox_disallowWaitingOnNode.Text = "Disallow Waiting On";
+            this.checkBox_disallowWaitingOnNode.UseVisualStyleBackColor = true;           
             // 
             // button_startEditingNode
             // 
@@ -235,7 +235,7 @@
             this.Name = "MapEditor";
             this.Text = "MapEditor";
             this.TopMost = true;
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MapEditor_FormClosing);            
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MapEditor_FormClosing);
             this.groupBox_edgeConstraintsEditor.ResumeLayout(false);
             this.groupBox_edgeConstraintsEditor.PerformLayout();
             this.groupBox_nodeTypeEditor.ResumeLayout(false);
@@ -259,7 +259,7 @@
         public System.Windows.Forms.TextBox textBox_edgeNode1;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.GroupBox groupBox_nodeTypeEditor;
-        public System.Windows.Forms.CheckBox checkBox_disallowTurning;
+        public System.Windows.Forms.CheckBox checkBox_disallowWaitingOnNode;
         private System.Windows.Forms.Button button_startEditingNode;
         public System.Windows.Forms.ComboBox comboBox_types;
         private System.Windows.Forms.Label label4;

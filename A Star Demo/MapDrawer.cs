@@ -62,7 +62,8 @@ namespace A_Star_Demo
             {MapNode.Types.None, Color.White },
             {MapNode.Types.Storage, Color.Orange },
             {MapNode.Types.ChargingStation, Color.Yellow },
-            {MapNode.Types.WorkStation, Color.LightBlue},
+            {MapNode.Types.WorkStationArea, Color.LightBlue},
+            {MapNode.Types.WorkStation, Color.DeepSkyBlue},
             {MapNode.Types.Wall, Color.DarkGray },
         };
 
@@ -101,11 +102,11 @@ namespace A_Star_Demo
                             {
                                 graphics.FillRectangle(brush, drawX * _scaledCellSize, drawY * _scaledCellSize, _scaledCellSize, _scaledCellSize);
                             }
-                            if (currentNode.DisallowTurningOnNode)
+                            if (currentNode.DisallowWaitingOnNode)
                             {
                                 // Draw X on disallow truning node
-                                graphics.DrawLine(new Pen(Color.Red, 1), drawX * _scaledCellSize, drawY * _scaledCellSize, (drawX + 1) * _scaledCellSize, (drawY + 1) * _scaledCellSize);
-                                graphics.DrawLine(new Pen(Color.Red, 1), (drawX + 1) * _scaledCellSize, drawY * _scaledCellSize, drawX * _scaledCellSize, (drawY + 1) * _scaledCellSize);
+                                graphics.DrawLine(new Pen(Color.DarkGray, 1), drawX * _scaledCellSize, drawY * _scaledCellSize, (drawX + 1) * _scaledCellSize, (drawY + 1) * _scaledCellSize);
+                                graphics.DrawLine(new Pen(Color.DarkGray, 1), (drawX + 1) * _scaledCellSize, drawY * _scaledCellSize, drawX * _scaledCellSize, (drawY + 1) * _scaledCellSize);
                             }
                         }
                         // Draw gird lines

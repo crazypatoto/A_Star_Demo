@@ -315,7 +315,7 @@ namespace A_Star_Demo.AGVs
                     case AGVStates.WaitingToRotateRack:
                         break;
                 }
-                await Task.Delay(200);
+                await Task.Delay(50);
             }
         }
         private AGVHeading GetNextHeading(MapNode currentNode, MapNode nextNode)

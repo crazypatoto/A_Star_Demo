@@ -57,7 +57,7 @@ namespace A_Star_Demo.Tasks
                                     {
                                         vcsServer.AGVNodeQueue[node.Location.Y, node.Location.X].AddFirst(this.AssignedAGV);
                                     }
-                                }                              
+                                }
                                 else
                                 {
                                     vcsServer.AGVNodeQueue[node.Location.Y, node.Location.X].AddLast(this.AssignedAGV);
@@ -91,43 +91,111 @@ namespace A_Star_Demo.Tasks
 
                         if (this.RemainingPath.Count > 0)
                         {
-                            var nextNode = RemainingPath.Peek();
-                            var nextAGVNodeQueue = vcsServer.AGVNodeQueue[nextNode.Location.Y, nextNode.Location.X];
-
-                            if (this.AssignedAGV.BoundRack == null)
+                            int nextGoalIndex = 0;
+                            var nextGoalNode = this.RemainingPath.ElementAt(nextGoalIndex);
+                            // Find next node that allows AGV wainting on
+                            while (nextGoalNode.DisallowWaitingOnNode == true)
                             {
-                                if (nextAGVNodeQueue.FirstOrDefault() == this.AssignedAGV)
+                                if (nextGoalIndex >= this.RemainingPath.Count - 1)
                                 {
-                                    this.AssignedAGV.AddNodeToPath(this.RemainingPath.Dequeue());
-                                    //System.Diagnostics.Debug.WriteLineIf(vcsServer.IsDeadlockExist(), "Dead Lock!!!");
+                                    break;
                                 }
-                                else if ((vcsServer.OccupancyGrid[nextNode.Location.Y, nextNode.Location.X] & 0x02) > 0)
-                                {
-                                    var firstAGVWithoutRack = nextAGVNodeQueue.FirstOrDefault(agv => agv.BoundRack == null);
-                                    if (firstAGVWithoutRack == this.AssignedAGV)
-                                    {
-                                        this.AssignedAGV.AddNodeToPath(this.RemainingPath.Dequeue());
-                                        nextAGVNodeQueue.Remove(firstAGVWithoutRack);
-                                        nextAGVNodeQueue.AddFirst(firstAGVWithoutRack);
-                                    }
-                                    else
-                                    {
-                                        // System.Diagnostics.Debug.WriteLineIf(vcsServer.IsDeadlockExist(), "Dead Lock!!!");
-                                    }
-                                }
+                                nextGoalIndex++;
+                                nextGoalNode = this.RemainingPath.ElementAt(nextGoalIndex);
                             }
-                            else
+
+                            int testIndex = 0;
+                            var testNode = this.RemainingPath.ElementAt(testIndex);                           
+                            while (true)
                             {
-                                // Slow but works, could be optimized in the future.
-                                if (nextAGVNodeQueue.FirstOrDefault() == this.AssignedAGV && vcsServer.RackList.FirstOrDefault(rack => rack.CurrentNode == nextNode) == null)
+                                bool testFlag = false;
+                                var testAGVNodeQueue = vcsServer.AGVNodeQueue[testNode.Location.Y, testNode.Location.X];
+                                if (this.AssignedAGV.BoundRack == null)
                                 {
-                                    this.AssignedAGV.AddNodeToPath(this.RemainingPath.Dequeue());
+                                    if (testAGVNodeQueue.FirstOrDefault() == this.AssignedAGV)
+                                    {
+                                        testFlag = true;
+                                    }
+                                    else if ((vcsServer.OccupancyGrid[testNode.Location.Y, testNode.Location.X] & 0x02) > 0)
+                                    {
+                                        var firstAGVWithoutRack = testAGVNodeQueue.FirstOrDefault(agv => agv.BoundRack == null);
+                                        if (firstAGVWithoutRack == this.AssignedAGV)
+                                        {
+                                            testFlag = true;
+                                            testAGVNodeQueue.Remove(firstAGVWithoutRack);
+                                            testAGVNodeQueue.AddFirst(firstAGVWithoutRack);
+                                        }
+                                    }
                                 }
                                 else
                                 {
-                                    //System.Diagnostics.Debug.WriteLineIf(vcsServer.IsDeadlockExist(), "Dead Lock!!!");
+                                    // Slow but works, could be optimized in the future.
+                                    if (testAGVNodeQueue.FirstOrDefault() == this.AssignedAGV && vcsServer.RackList.FirstOrDefault(rack => rack.CurrentNode == testNode) == null)
+                                    {
+                                        testFlag = true;
+                                    }
+                                }
+                                if (testFlag == false)
+                                {
+                                    testIndex = -1;
+                                    break;
+                                }
+                                if(testIndex + 1 <= nextGoalIndex)
+                                {
+                                    testIndex++;
+                                    testNode = this.RemainingPath.ElementAt(testIndex);
+                                }
+                                else
+                                {
+                                    break;
+                                }                               
+                            }                            
+
+                            if (testIndex == nextGoalIndex)
+                            {
+                                for (int i = 0; i <= nextGoalIndex; i++)
+                                {
+                                    this.AssignedAGV.AddNodeToPath(this.RemainingPath.Dequeue());
                                 }
                             }
+
+                            //var nextNode = RemainingPath.Peek();
+                            //var nextAGVNodeQueue = vcsServer.AGVNodeQueue[nextNode.Location.Y, nextNode.Location.X];
+
+                            //if (this.AssignedAGV.BoundRack == null)
+                            //{
+                            //    if (nextAGVNodeQueue.FirstOrDefault() == this.AssignedAGV)
+                            //    {
+                            //        this.AssignedAGV.AddNodeToPath(this.RemainingPath.Dequeue());
+                            //        //System.Diagnostics.Debug.WriteLineIf(vcsServer.IsDeadlockExist(), "Dead Lock!!!");
+                            //    }
+                            //    else if ((vcsServer.OccupancyGrid[nextNode.Location.Y, nextNode.Location.X] & 0x02) > 0)
+                            //    {
+                            //        var firstAGVWithoutRack = nextAGVNodeQueue.FirstOrDefault(agv => agv.BoundRack == null);
+                            //        if (firstAGVWithoutRack == this.AssignedAGV)
+                            //        {
+                            //            this.AssignedAGV.AddNodeToPath(this.RemainingPath.Dequeue());
+                            //            nextAGVNodeQueue.Remove(firstAGVWithoutRack);
+                            //            nextAGVNodeQueue.AddFirst(firstAGVWithoutRack);
+                            //        }
+                            //        else
+                            //        {
+                            //            // System.Diagnostics.Debug.WriteLineIf(vcsServer.IsDeadlockExist(), "Dead Lock!!!");
+                            //        }
+                            //    }
+                            //}
+                            //else
+                            //{
+                            //    // Slow but works, could be optimized in the future.
+                            //    if (nextAGVNodeQueue.FirstOrDefault() == this.AssignedAGV && vcsServer.RackList.FirstOrDefault(rack => rack.CurrentNode == nextNode) == null)
+                            //    {
+                            //        this.AssignedAGV.AddNodeToPath(this.RemainingPath.Dequeue());
+                            //    }
+                            //    else
+                            //    {
+                            //        //System.Diagnostics.Debug.WriteLineIf(vcsServer.IsDeadlockExist(), "Dead Lock!!!");
+                            //    }
+                            //}
                             if (this.RemainingPath.Count == 0) this.AssignedAGV.EndPath();
                         }
 

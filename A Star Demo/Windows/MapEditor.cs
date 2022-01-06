@@ -110,6 +110,6 @@ namespace A_Star_Demo.Windows
                 button_startEditingEdge.Text = "Stop Editing";
                 button_startEditingNode.Enabled = false;
             }
-        }     
+        }      
     }
 }

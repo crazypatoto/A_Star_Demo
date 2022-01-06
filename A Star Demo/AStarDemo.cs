@@ -500,7 +500,7 @@ namespace A_Star_Demo
                         if (_mapEditorForm.IsEditingType)
                         {
                             SelectedNode.Type = (MapNode.Types)_mapEditorForm.comboBox_types.SelectedItem;
-                            SelectedNode.DisallowTurningOnNode = _mapEditorForm.checkBox_disallowTurning.Checked;
+                            SelectedNode.DisallowWaitingOnNode = _mapEditorForm.checkBox_disallowWaitingOnNode.Checked;
                         }
                         if (_mapEditorForm.IsEditingEdge)
                         {
@@ -586,7 +586,7 @@ namespace A_Star_Demo
                         if (_mapEditorForm.IsEditingType)
                         {
                             SelectedNode.Type = MapNode.Types.None;
-                            SelectedNode.DisallowTurningOnNode = false;
+                            SelectedNode.DisallowWaitingOnNode = false;
                         }
                         break;
                     case MouseButtons.Middle:

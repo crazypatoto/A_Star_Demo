@@ -65,6 +65,10 @@ namespace A_Star_Demo.Tasks
                     if (this.CurrentTask.Finished)
                     {
                         this.FinishedTaskList.Add(this.CurrentTask);
+                        if(this.FinishedTaskList.Count > 10)
+                        {
+                            this.FinishedTaskList.RemoveAt(0);
+                        }
                         this.CurrentTask = null;
                     }
                     else

@@ -15,11 +15,12 @@ namespace A_Star_Demo.Maps
         /// </summary>
         public enum Types : byte
         {
-            None,
+            None = 0x00,
             ChargingStation,
-            WorkStation,
+            WorkStationArea,       
             Storage,
             Wall,
+            WorkStation,
         }
 
         #endregion
@@ -47,7 +48,7 @@ namespace A_Star_Demo.Maps
         /// <summary>
         /// Disallow turning actions on current node.
         /// </summary>
-        public bool DisallowTurningOnNode { get; set; } = false;
+        public bool DisallowWaitingOnNode { get; set; } = false;
 
         /// <summary>
         /// Node name in format of ZoneID-X-Y (00-000-000).
@@ -70,7 +71,7 @@ namespace A_Star_Demo.Maps
             ZoneID = byteArray[index + 0];
             Location = new Location(BitConverter.ToInt32(byteArray, index + 1), BitConverter.ToInt32(byteArray, index + 5));
             Type = (Types)byteArray[index + 9];
-            DisallowTurningOnNode = Convert.ToBoolean(byteArray[index + 10]);
+            DisallowWaitingOnNode = Convert.ToBoolean(byteArray[index + 10]);
         }
         #endregion
 
@@ -86,7 +87,7 @@ namespace A_Star_Demo.Maps
             Array.Copy(BitConverter.GetBytes(Location.X), 0, byteArray, 1, 4);
             Array.Copy(BitConverter.GetBytes(Location.Y), 0, byteArray, 5, 4);
             byteArray[9] = (byte)Type;
-            byteArray[10] = Convert.ToByte(DisallowTurningOnNode);
+            byteArray[10] = Convert.ToByte(DisallowWaitingOnNode);
             return byteArray;
         }
 
