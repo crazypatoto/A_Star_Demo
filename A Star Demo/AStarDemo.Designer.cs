@@ -42,6 +42,7 @@ namespace A_Star_Demo
             this.deleteRackToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.simulationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addAGVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteAGVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.taskToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testGoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -98,7 +99,7 @@ namespace A_Star_Demo
             this.textBox_agvName = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
-            this.deleteAGVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.button_sendRackTo = new System.Windows.Forms.Button();
             this.menuStrip.SuspendLayout();
             this.groupBox_nodeInfo.SuspendLayout();
             this.groupBox_mapInfo.SuspendLayout();
@@ -211,9 +212,16 @@ namespace A_Star_Demo
             // addAGVToolStripMenuItem
             // 
             this.addAGVToolStripMenuItem.Name = "addAGVToolStripMenuItem";
-            this.addAGVToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.addAGVToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
             this.addAGVToolStripMenuItem.Text = "Add AGV";
             this.addAGVToolStripMenuItem.Click += new System.EventHandler(this.addAGVToolStripMenuItem_Click);
+            // 
+            // deleteAGVToolStripMenuItem
+            // 
+            this.deleteAGVToolStripMenuItem.Name = "deleteAGVToolStripMenuItem";
+            this.deleteAGVToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.deleteAGVToolStripMenuItem.Text = "Delete AGV";
+            this.deleteAGVToolStripMenuItem.Click += new System.EventHandler(this.deleteAGVToolStripMenuItem_Click);
             // 
             // taskToolStripMenuItem
             // 
@@ -377,7 +385,7 @@ namespace A_Star_Demo
             this.groupBox_pathPlanning.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.groupBox_pathPlanning.Location = new System.Drawing.Point(190, 3);
             this.groupBox_pathPlanning.Name = "groupBox_pathPlanning";
-            this.groupBox_pathPlanning.Size = new System.Drawing.Size(174, 718);
+            this.groupBox_pathPlanning.Size = new System.Drawing.Size(174, 753);
             this.groupBox_pathPlanning.TabIndex = 7;
             this.groupBox_pathPlanning.TabStop = false;
             this.groupBox_pathPlanning.Text = "Path Planning";
@@ -416,7 +424,7 @@ namespace A_Star_Demo
             this.textBox_planningPath.Multiline = true;
             this.textBox_planningPath.Name = "textBox_planningPath";
             this.textBox_planningPath.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox_planningPath.Size = new System.Drawing.Size(160, 514);
+            this.textBox_planningPath.Size = new System.Drawing.Size(160, 559);
             this.textBox_planningPath.TabIndex = 24;
             // 
             // button_startPlanning
@@ -476,7 +484,7 @@ namespace A_Star_Demo
             this.tableLayoutPanel_main.RowCount = 1;
             this.tableLayoutPanel_main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel_main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 733F));
-            this.tableLayoutPanel_main.Size = new System.Drawing.Size(1450, 733);
+            this.tableLayoutPanel_main.Size = new System.Drawing.Size(1450, 772);
             this.tableLayoutPanel_main.TabIndex = 8;
             // 
             // pictureBox_mapViewer
@@ -485,7 +493,7 @@ namespace A_Star_Demo
             this.pictureBox_mapViewer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pictureBox_mapViewer.Location = new System.Drawing.Point(3, 3);
             this.pictureBox_mapViewer.Name = "pictureBox_mapViewer";
-            this.pictureBox_mapViewer.Size = new System.Drawing.Size(1068, 727);
+            this.pictureBox_mapViewer.Size = new System.Drawing.Size(1068, 766);
             this.pictureBox_mapViewer.TabIndex = 2;
             this.pictureBox_mapViewer.TabStop = false;
             this.pictureBox_mapViewer.SizeChanged += new System.EventHandler(this.pictureBox_mapViewer_SizeChanged);
@@ -496,6 +504,7 @@ namespace A_Star_Demo
             // 
             // panel_infos
             // 
+            this.panel_infos.Controls.Add(this.button_sendRackTo);
             this.panel_infos.Controls.Add(this.button_Go);
             this.panel_infos.Controls.Add(this.comboBox_rackHeading);
             this.panel_infos.Controls.Add(this.button_rotateRackTemp);
@@ -509,7 +518,7 @@ namespace A_Star_Demo
             this.panel_infos.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel_infos.Location = new System.Drawing.Point(1077, 3);
             this.panel_infos.Name = "panel_infos";
-            this.panel_infos.Size = new System.Drawing.Size(370, 727);
+            this.panel_infos.Size = new System.Drawing.Size(370, 766);
             this.panel_infos.TabIndex = 3;
             // 
             // button_Go
@@ -758,24 +767,28 @@ namespace A_Star_Demo
             // 
             // statusStrip
             // 
-            this.statusStrip.Location = new System.Drawing.Point(0, 757);
+            this.statusStrip.Location = new System.Drawing.Point(0, 796);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Size = new System.Drawing.Size(1450, 22);
             this.statusStrip.TabIndex = 9;
             this.statusStrip.Text = "statusStrip";
             // 
-            // deleteAGVToolStripMenuItem
+            // button_sendRackTo
             // 
-            this.deleteAGVToolStripMenuItem.Name = "deleteAGVToolStripMenuItem";
-            this.deleteAGVToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.deleteAGVToolStripMenuItem.Text = "Delete AGV";
-            this.deleteAGVToolStripMenuItem.Click += new System.EventHandler(this.deleteAGVToolStripMenuItem_Click);
+            this.button_sendRackTo.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.button_sendRackTo.Location = new System.Drawing.Point(12, 723);
+            this.button_sendRackTo.Name = "button_sendRackTo";
+            this.button_sendRackTo.Size = new System.Drawing.Size(160, 33);
+            this.button_sendRackTo.TabIndex = 23;
+            this.button_sendRackTo.Text = "Send Rack To";
+            this.button_sendRackTo.UseVisualStyleBackColor = true;
+            this.button_sendRackTo.Click += new System.EventHandler(this.button_sendRackTo_Click);
             // 
             // AStarDemo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(1450, 779);
+            this.ClientSize = new System.Drawing.Size(1450, 818);
             this.Controls.Add(this.tableLayoutPanel_main);
             this.Controls.Add(this.menuStrip);
             this.Controls.Add(this.statusStrip);
@@ -872,6 +885,7 @@ namespace A_Star_Demo
         private System.Windows.Forms.ToolStripMenuItem testGoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deadlockToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteAGVToolStripMenuItem;
+        private System.Windows.Forms.Button button_sendRackTo;
     }
 }
 

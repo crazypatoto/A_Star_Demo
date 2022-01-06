@@ -374,6 +374,13 @@ namespace A_Star_Demo
             //_selectedAGV.RotateRack((Rack.RackHeading)comboBox_rackHeading.SelectedItem);
             _selectedAGV.TaskHandler.NewRackRotateTask((Rack.RackHeading)comboBox_rackHeading.SelectedItem);
         }
+
+        private void button_sendRackTo_Click(object sender, EventArgs e)
+        {
+            if (_selectedRack == null) return;
+            if (this.SelectedNode == null) return;
+            VCSServer.SendRackTo(this.SelectedNode, _selectedRack, (Rack.RackHeading)comboBox_rackHeading.SelectedItem);
+        }
         #endregion
 
         #region PictureBox events
@@ -654,5 +661,6 @@ namespace A_Star_Demo
             }
         }
 
+        
     }
 }

@@ -15,7 +15,7 @@ namespace A_Star_Demo
 {
     public class VCSServer : IDisposable
     {
-        private bool _disposed = false;        
+        private bool _disposed = false;
         public Map CurrentMap { get; }
         public AGVHandler AGVHandler { get; }
         public AStarPlanner PathPlanner { get; }
@@ -61,7 +61,32 @@ namespace A_Star_Demo
         {
             AGVHandler.AddSimulatedAGV(targetNode);
             OccupancyGrid[targetNode.Location.Y, targetNode.Location.X] |= 0x01;
-        }      
+        }
+        public void SendRackTo(MapNode tagetNode, Rack targetRack, Rack.RackHeading rackHeading)
+        {
+            AGV selectedAGV = null;
+            int minPathLength = int.MaxValue;
+            foreach (var agv in this.AGVHandler.AGVList)
+            {
+                if (agv.State != AGV.AGVStates.Idle) continue;
+                var path = this.PathPlanner.FindPath(targetRack.CurrentNode, agv.CurrentNode);
+                if (path == null) continue;
+                var length = path.Count();
+                if (length < minPathLength)
+                {
+                    minPathLength = length;
+                    selectedAGV = agv;
+                }
+            }
+            if (selectedAGV != null)
+            {
+                selectedAGV.TaskHandler.NewAGVMoveTask(targetRack.CurrentNode);
+                selectedAGV.TaskHandler.NewRackPickUpTask(targetRack);
+                selectedAGV.TaskHandler.NewAGVMoveTask(tagetNode);
+                selectedAGV.TaskHandler.NewRackRotateTask(rackHeading);
+                selectedAGV.TaskHandler.NewRackDropOffTask();
+            }
+        }
 
         public void Dispose()
         {
@@ -75,7 +100,7 @@ namespace A_Star_Demo
             if (disposing)
             {
                 this.AGVHandler.Abort();
-                this.IsAlive = false;                
+                this.IsAlive = false;
             }
             _disposed = true;
         }
