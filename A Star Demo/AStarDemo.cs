@@ -177,6 +177,7 @@ namespace A_Star_Demo
                 agv.TaskHandler.NewAGVMoveTask(rack.HomeNode);
                 agv.TaskHandler.NewRackPickUpTask(rack);
                 agv.TaskHandler.NewAGVMoveTask(VCSServer.CurrentMap.AllNodes[11, 19]);
+                agv.TaskHandler.NewRackRotateTask(rack.Heading + 90);
                 agv.TaskHandler.NewRackDropOffTask();
 
                 agv.TaskHandler.NewAGVMoveTask(VCSServer.CurrentMap.AllNodes[16, 16 + i]);

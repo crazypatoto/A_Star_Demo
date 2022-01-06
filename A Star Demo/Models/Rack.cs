@@ -34,8 +34,8 @@ namespace A_Star_Demo.Models
             {
                 _heading = value;
                 _heading = (RackHeading)((int)_heading % 360);
-                if ((int)_heading > 180) _heading -= 180;
-                else if ((int)_heading <= -180) _heading += 180;
+                if ((int)_heading > 180) _heading -= 360;
+                else if ((int)_heading <= -180) _heading += 360;
             }
         }
         private RackHeading _heading;

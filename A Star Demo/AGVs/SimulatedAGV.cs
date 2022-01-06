@@ -126,11 +126,17 @@ namespace A_Star_Demo.AGVs
         }
         public override void RotateRack(Rack.RackHeading rackHeading)
         {
-            if (this.State != AGVStates.Idle) return;
+            if (this.State != AGVStates.Idle && this.State != AGVStates.WaitingToRotateRack) return;
             if (this.BoundRack == null) return;
             if (this.BoundRack.Heading == rackHeading) return;
             _targetRackHeading = rackHeading;
             this.State = AGVStates.RotatingRack;
+        }
+        public override void WaitToRotateRack()
+        {
+            if (this.State != AGVStates.Idle) return;
+            if (this.BoundRack == null) return;
+            this.State = AGVStates.WaitingToRotateRack;
         }
         public override void Disconnect()
         {

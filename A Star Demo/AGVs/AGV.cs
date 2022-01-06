@@ -78,6 +78,8 @@ namespace A_Star_Demo.AGVs
         public abstract void DropOffRack();
 
         public abstract void RotateRack(Rack.RackHeading rackHeading);
+
+        public abstract void WaitToRotateRack();
         public abstract void Disconnect();
         private AGVHeading _heading;
 
