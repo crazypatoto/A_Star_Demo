@@ -177,7 +177,7 @@ namespace A_Star_Demo.AGVs
                                     }
                                     else
                                     {
-                                        if (this.Handler.VCSServer.RackList.FindAll(rack => rack.CurrentNode == nextNode).Count == 0)
+                                        if (this.Handler.VCS.RackList.FindAll(rack => rack.CurrentNode == nextNode).Count == 0)
                                         {
                                             this.CurrentNode = nextNode;
                                             this.BoundRack.MoveTo(nextNode);
@@ -246,7 +246,7 @@ namespace A_Star_Demo.AGVs
                             }
                             else
                             {
-                                if (this.Handler.VCSServer.RackList.FindAll(rack => rack.CurrentNode == nextNode).Count == 0)
+                                if (this.Handler.VCS.RackList.FindAll(rack => rack.CurrentNode == nextNode).Count == 0)
                                 {
                                     this.State = AGVStates.Moving;
                                 }
@@ -270,9 +270,9 @@ namespace A_Star_Demo.AGVs
                         }
                         else
                         {
-                            foreach (var neighbor in this.Handler.VCSServer.CurrentMap.GetNeighborNodes(this.CurrentNode))
+                            foreach (var neighbor in this.Handler.VCS.CurrentMap.GetNeighborNodes(this.CurrentNode))
                             {
-                                if (this.Handler.VCSServer.RackList.FindAll(rack => rack.CurrentNode == neighbor).Count > 0)
+                                if (this.Handler.VCS.RackList.FindAll(rack => rack.CurrentNode == neighbor).Count > 0)
                                 {
                                     this.State = AGVStates.RackRotatingBlocked;
                                     break;
@@ -297,10 +297,10 @@ namespace A_Star_Demo.AGVs
                         }
                         break;
                     case AGVStates.RackRotatingBlocked:
-                        var neighborNodes = this.Handler.VCSServer.CurrentMap.GetNeighborNodes(this.CurrentNode);
+                        var neighborNodes = this.Handler.VCS.CurrentMap.GetNeighborNodes(this.CurrentNode);
                         foreach (var neighbor in neighborNodes)
                         {
-                            if (this.Handler.VCSServer.RackList.FindAll(rack => rack.CurrentNode == neighbor).Count > 0)
+                            if (this.Handler.VCS.RackList.FindAll(rack => rack.CurrentNode == neighbor).Count > 0)
                             {
                                 this.State = AGVStates.RackRotatingBlocked;
                                 break;

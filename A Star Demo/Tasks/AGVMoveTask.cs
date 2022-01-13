@@ -32,7 +32,7 @@ namespace A_Star_Demo.Tasks
             //bool pathNotFound = false;
             lock (_agvTaskLock)
             {
-                var vcsServer = AssignedAGV.Handler.VCSServer;
+                var vcs = AssignedAGV.Handler.VCS;
                 var AGVCurrentNode = this.AssignedAGV.CurrentNode;
                 switch (this.Status)
                 {
@@ -45,7 +45,7 @@ namespace A_Star_Demo.Tasks
                             break;
                         }
 
-                        this.FullPath = vcsServer.PathPlanner.FindPath(AGVCurrentNode, this.Destination, this.AssignedAGV.BoundRack != null, this.AssignedAGV.BoundRack == null ? 0 : 1);
+                        this.FullPath = vcs.PathPlanner.FindPath(AGVCurrentNode, this.Destination, this.AssignedAGV.BoundRack != null, this.AssignedAGV.BoundRack == null ? 0 : 1);
                         if (this.FullPath != null)
                         {
                             for (int i = 0; i < FullPath.Count; i++)
@@ -53,29 +53,29 @@ namespace A_Star_Demo.Tasks
                                 var node = this.FullPath[i];
                                 if (i == 0)
                                 {
-                                    if (vcsServer.AGVNodeQueue[node.Location.Y, node.Location.X].FirstOrDefault() != this.AssignedAGV)
+                                    if (vcs.AGVNodeQueue[node.Location.Y, node.Location.X].FirstOrDefault() != this.AssignedAGV)
                                     {
-                                        vcsServer.AGVNodeQueue[node.Location.Y, node.Location.X].AddFirst(this.AssignedAGV);
+                                        vcs.AGVNodeQueue[node.Location.Y, node.Location.X].AddFirst(this.AssignedAGV);
                                     }
                                 }
                                 else
                                 {
-                                    vcsServer.AGVNodeQueue[node.Location.Y, node.Location.X].AddLast(this.AssignedAGV);
+                                    vcs.AGVNodeQueue[node.Location.Y, node.Location.X].AddLast(this.AssignedAGV);
                                 }
                             }
                             this.RemainingPath = new Queue<MapNode>(this.FullPath);
                             this.AssignedAGV.StartNewPath(new List<MapNode>() { RemainingPath.Dequeue() });
-                            vcsServer.OccupancyGrid[Destination.Location.Y, Destination.Location.X] |= this.AssignedAGV.BoundRack == null ? (byte)0x01 : (byte)0x03;
-                            vcsServer.OccupancyGrid[AGVCurrentNode.Location.Y, AGVCurrentNode.Location.X] &= this.AssignedAGV.BoundRack == null ? (byte)0xFE : (byte)0xFC;
+                            vcs.OccupancyGrid[Destination.Location.Y, Destination.Location.X] |= this.AssignedAGV.BoundRack == null ? (byte)0x01 : (byte)0x03;
+                            vcs.OccupancyGrid[AGVCurrentNode.Location.Y, AGVCurrentNode.Location.X] &= this.AssignedAGV.BoundRack == null ? (byte)0xFE : (byte)0xFC;
 
                             // Poor performance, must impove                   
-                            foreach (var agv in vcsServer.AGVHandler.AGVList)
+                            foreach (var agv in vcs.AGVHandler.AGVList)
                             {
                                 if (agv.TaskHandler.CurrentTask == null) continue;
                                 if (!(agv.TaskHandler.CurrentTask is AGVMoveTask)) continue;
                                 if (((AGVMoveTask)agv.TaskHandler.CurrentTask).Destination == AGVCurrentNode)
                                 {
-                                    vcsServer.OccupancyGrid[AGVCurrentNode.Location.Y, AGVCurrentNode.Location.X] |= agv.BoundRack == null ? (byte)0x01 : (byte)0x03;
+                                    vcs.OccupancyGrid[AGVCurrentNode.Location.Y, AGVCurrentNode.Location.X] |= agv.BoundRack == null ? (byte)0x01 : (byte)0x03;
                                 }
                             }
                             this.Status = TaskStatus.AssigningPath;
@@ -109,14 +109,14 @@ namespace A_Star_Demo.Tasks
                             while (true)
                             {
                                 bool testFlag = false;
-                                var testAGVNodeQueue = vcsServer.AGVNodeQueue[testNode.Location.Y, testNode.Location.X];
+                                var testAGVNodeQueue = vcs.AGVNodeQueue[testNode.Location.Y, testNode.Location.X];
                                 if (this.AssignedAGV.BoundRack == null)
                                 {
                                     if (testAGVNodeQueue.FirstOrDefault() == this.AssignedAGV)
                                     {
                                         testFlag = true;
                                     }
-                                    else if ((vcsServer.OccupancyGrid[testNode.Location.Y, testNode.Location.X] & 0x02) > 0)
+                                    else if ((vcs.OccupancyGrid[testNode.Location.Y, testNode.Location.X] & 0x02) > 0)
                                     {
                                         var firstAGVWithoutRack = testAGVNodeQueue.FirstOrDefault(agv => agv.BoundRack == null);
                                         if (firstAGVWithoutRack == this.AssignedAGV)
@@ -130,7 +130,7 @@ namespace A_Star_Demo.Tasks
                                 else
                                 {
                                     // Slow but works, could be optimized in the future.
-                                    if (testAGVNodeQueue.FirstOrDefault() == this.AssignedAGV && vcsServer.RackList.FirstOrDefault(rack => rack.CurrentNode == testNode) == null)
+                                    if (testAGVNodeQueue.FirstOrDefault() == this.AssignedAGV && vcs.RackList.FirstOrDefault(rack => rack.CurrentNode == testNode) == null)
                                     {
                                         testFlag = true;
                                     }
@@ -160,7 +160,8 @@ namespace A_Star_Demo.Tasks
                             }
 
                             //var nextNode = RemainingPath.Peek();
-                            //var nextAGVNodeQueue = vcsServer.AGVNodeQueue[nextNode.Location.Y, nextNode.Location.X];
+                            //var nextAGVNodeQueue =
+                            //.AGVNodeQueue[nextNode.Location.Y, nextNode.Location.X];
 
                             //if (this.AssignedAGV.BoundRack == null)
                             //{
@@ -204,7 +205,7 @@ namespace A_Star_Demo.Tasks
                         for (int i = _lastDequeuedNodeIndex + 1; i < currentIndex; i++)
                         {
                             var passedNode = this.FullPath[i];
-                            var targetAGVNodeQueue = vcsServer.AGVNodeQueue[passedNode.Location.Y, passedNode.Location.X];
+                            var targetAGVNodeQueue = vcs.AGVNodeQueue[passedNode.Location.Y, passedNode.Location.X];
                             if (targetAGVNodeQueue.Count > 0)
                             {
                                 if (targetAGVNodeQueue.First() == this.AssignedAGV)
@@ -222,7 +223,7 @@ namespace A_Star_Demo.Tasks
                         if (AGVCurrentNode == this.Destination)
                         {
                             //vcsServer.AGVNodeQueue[this.Destination.Location.Y, this.Destination.Location.X].RemoveFirst();
-                            vcsServer.OccupancyGrid[Destination.Location.Y, Destination.Location.X] |= this.AssignedAGV.BoundRack == null ? (byte)0x01 : (byte)0x03;
+                            vcs.OccupancyGrid[Destination.Location.Y, Destination.Location.X] |= this.AssignedAGV.BoundRack == null ? (byte)0x01 : (byte)0x03;
                             this.Finished = true;
                             this.FinishTimeStamp = DateTimeOffset.Now.ToUnixTimeSeconds();
                         }

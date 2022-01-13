@@ -65,12 +65,12 @@ namespace A_Star_Demo.PathPlanning
         public HeuristicFormulas HeuristicFormula { get; private set; }
         public float TurningPenalty { get; set; } = 3;
         private Map _refererMap;
-        private VCSServer _server;
+        private VCS _server;
         private AStarNode[,] _allAStarNodes;
         private SimplePriorityQueue<AStarNode> _openList;
         private List<AStarNode> _closedList;
 
-        public AStarPlanner(VCSServer server)
+        public AStarPlanner(VCS server)
         {
             _refererMap = server.CurrentMap;
             _server = server;

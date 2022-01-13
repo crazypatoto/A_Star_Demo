@@ -66,15 +66,15 @@ namespace A_Star_Demo.Windows
 
         private void button_addLayer_Click(object sender, EventArgs e)
         {
-            var newLayer = new Map.ConstraintLayer((this.Tag as AStarDemo).VCSServer.CurrentMap, $"Layer {(this.Tag as AStarDemo).VCSServer.CurrentMap.ConstraintLayers.Count}");
-            (this.Tag as AStarDemo).VCSServer.CurrentMap.ConstraintLayers.Add(newLayer);
+            var newLayer = new Map.ConstraintLayer((this.Tag as AStarDemo).VCS.CurrentMap, $"Layer {(this.Tag as AStarDemo).VCS.CurrentMap.ConstraintLayers.Count}");
+            (this.Tag as AStarDemo).VCS.CurrentMap.ConstraintLayers.Add(newLayer);
             comboBox_constraintLayers.Items.Clear();
-            foreach (var layer in (this.Tag as AStarDemo).VCSServer.CurrentMap.ConstraintLayers)
+            foreach (var layer in (this.Tag as AStarDemo).VCS.CurrentMap.ConstraintLayers)
             {
                 comboBox_constraintLayers.Items.Add(layer.Name);
             }
             (this.Tag as AStarDemo).comboBox_planningLayer.Items.Clear();
-            foreach (var layer in (this.Tag as AStarDemo).VCSServer.CurrentMap.ConstraintLayers)
+            foreach (var layer in (this.Tag as AStarDemo).VCS.CurrentMap.ConstraintLayers)
             {
                 (this.Tag as AStarDemo).comboBox_planningLayer.Items.Add(layer.Name);
             }
@@ -85,9 +85,9 @@ namespace A_Star_Demo.Windows
         private void button_deleteLayer_Click(object sender, EventArgs e)
         {
             if (comboBox_constraintLayers.SelectedIndex == 0) return;
-            (this.Tag as AStarDemo).VCSServer.CurrentMap.ConstraintLayers.RemoveAt(comboBox_constraintLayers.SelectedIndex);
+            (this.Tag as AStarDemo).VCS.CurrentMap.ConstraintLayers.RemoveAt(comboBox_constraintLayers.SelectedIndex);
             comboBox_constraintLayers.Items.Clear();
-            foreach (var layer in (this.Tag as AStarDemo).VCSServer.CurrentMap.ConstraintLayers)
+            foreach (var layer in (this.Tag as AStarDemo).VCS.CurrentMap.ConstraintLayers)
             {
                 comboBox_constraintLayers.Items.Add(layer.Name);
             }

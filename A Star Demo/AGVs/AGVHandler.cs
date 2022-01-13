@@ -13,11 +13,11 @@ namespace A_Star_Demo.AGVs
     public class AGVHandler
     {
         private readonly CancellationTokenSource _cts;
-        public VCSServer VCSServer { get; }
+        public VCS VCS { get; }
         public List<AGV> AGVList { get; private set; }
-        public AGVHandler(VCSServer server)
+        public AGVHandler(VCS vcs)
         {
-            this.VCSServer = server;
+            this.VCS = vcs;
             AGVList = new List<AGV>();
             _cts = new CancellationTokenSource();
             Task.Run(AGVHandling);

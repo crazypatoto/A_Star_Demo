@@ -31,7 +31,7 @@ namespace A_Star_Demo
         private AGV _selectedAGV;
         private Rack _selectedRack;
         private MapEditor _mapEditorForm;
-        public VCSServer VCSServer { get; private set; }
+        public VCS VCS { get; private set; }
         public MapNode SelectedNode { get; private set; }
         public MapNode SelectedEdgeNode1 { get; set; }
         public MapNode SelectedEdgeNode2 { get; set; }
@@ -52,8 +52,8 @@ namespace A_Star_Demo
             {
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    VCSServer?.Dispose();
-                    VCSServer = new VCSServer(new Map(dialog.MapZoneID, dialog.MapWidth, dialog.MapHeight));
+                    VCS?.Dispose();
+                    VCS = new VCS(new Map(dialog.MapZoneID, dialog.MapWidth, dialog.MapHeight));
                     UpdateNewMapInfo();
                 }
             }
@@ -68,7 +68,7 @@ namespace A_Star_Demo
                 dialog.Title = "Save map file";
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    VCSServer.CurrentMap.SaveToFile(dialog.FileName);
+                    VCS.CurrentMap.SaveToFile(dialog.FileName);
                 }
             }
         }
@@ -82,8 +82,8 @@ namespace A_Star_Demo
                 dialog.Title = "Open map file";
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    VCSServer?.Dispose();
-                    VCSServer = new VCSServer(new Map(dialog.FileName));
+                    VCS?.Dispose();
+                    VCS = new VCS(new Map(dialog.FileName));
                     UpdateNewMapInfo();
                 }
             }
@@ -100,14 +100,14 @@ namespace A_Star_Demo
                 MessageBox.Show("You cannot place an AGV here!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (VCSServer.AGVHandler.AGVList.FindAll(agv => agv.CurrentNode == SelectedNode).Count > 0)
+            if (VCS.AGVHandler.AGVList.FindAll(agv => agv.CurrentNode == SelectedNode).Count > 0)
             {
                 MessageBox.Show("There is already an AGV here!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             //_selectedAGV = VCSServer.AGVHandler.AddSimulatedAGV(SelectedNode);           
-            VCSServer.AddNewSimulationAGVTemp(SelectedNode);
-            _selectedAGV = VCSServer.AGVHandler.AGVList.Last();
+            VCS.AddNewSimulationAGVTemp(SelectedNode);
+            _selectedAGV = VCS.AGVHandler.AGVList.Last();
         }
 
         private void deleteAGVToolStripMenuItem_Click(object sender, EventArgs e)
@@ -129,13 +129,13 @@ namespace A_Star_Demo
                 MessageBox.Show("Rack is only allowed to be placed on a stroge node", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (VCSServer.RackList.FindAll(rack => rack.CurrentNode == SelectedNode).Count > 0)
+            if (VCS.RackList.FindAll(rack => rack.CurrentNode == SelectedNode).Count > 0)
             {
                 MessageBox.Show("There is already an Rack here!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            VCSServer.AddNewRackTemp(SelectedNode);
-            _selectedRack = VCSServer.RackList.Last();
+            VCS.AddNewRackTemp(SelectedNode);
+            _selectedRack = VCS.RackList.Last();
             //var newRackID = VCSServer.RackList.LastOrDefault()?.ID + 1 ?? 0;
             //var newRack = new Rack(newRackID, SelectedNode, Rack.RackHeading.Up);
             //VCSServer.RackList.Add(newRack);
@@ -145,7 +145,7 @@ namespace A_Star_Demo
         private void deleteRackToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (_selectedRack == null) return;
-            VCSServer.RackList.RemoveAll(rack => rack.CurrentNode == SelectedNode);
+            VCS.RackList.RemoveAll(rack => rack.CurrentNode == SelectedNode);
             _selectedRack = null;
         }
         private void testToolStripMenuItem_Click(object sender, EventArgs e)
@@ -159,35 +159,35 @@ namespace A_Star_Demo
             {
                 for (int x = 3; x <= 4; x++)
                 {
-                    VCSServer.AddNewRackTemp(VCSServer.CurrentMap.AllNodes[y, x]);
+                    VCS.AddNewRackTemp(VCS.CurrentMap.AllNodes[y, x]);
                 }
             }
             for (int x = 16; x <= 26; x++)
             {
-                VCSServer.AddNewSimulationAGVTemp(VCSServer.CurrentMap.AllNodes[16, x]);
+                VCS.AddNewSimulationAGVTemp(VCS.CurrentMap.AllNodes[16, x]);
             }
         }
 
         private void testGoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            for (int i = VCSServer.AGVHandler.AGVList.Count - 1; i >= 0; i--)
+            for (int i = VCS.AGVHandler.AGVList.Count - 1; i >= 0; i--)
             {
-                var agv = VCSServer.AGVHandler.AGVList[i];
-                var rack = VCSServer.RackList[i];
+                var agv = VCS.AGVHandler.AGVList[i];
+                var rack = VCS.RackList[i];
                 agv.TaskHandler.NewAGVMoveTask(rack.HomeNode);
                 agv.TaskHandler.NewRackPickUpTask(rack);
-                agv.TaskHandler.NewAGVMoveTask(VCSServer.CurrentMap.AllNodes[11, 19]);
+                agv.TaskHandler.NewAGVMoveTask(VCS.CurrentMap.AllNodes[11, 19]);
                 agv.TaskHandler.NewRackRotateTask(rack.Heading + 90);
                 agv.TaskHandler.NewRackDropOffTask();
 
-                agv.TaskHandler.NewAGVMoveTask(VCSServer.CurrentMap.AllNodes[16, 16 + i]);
+                agv.TaskHandler.NewAGVMoveTask(VCS.CurrentMap.AllNodes[16, 16 + i]);
 
-                agv.TaskHandler.NewAGVMoveTask(VCSServer.CurrentMap.AllNodes[11, 19]);
+                agv.TaskHandler.NewAGVMoveTask(VCS.CurrentMap.AllNodes[11, 19]);
                 agv.TaskHandler.NewRackPickUpTask(rack);
                 agv.TaskHandler.NewAGVMoveTask(rack.HomeNode);
                 agv.TaskHandler.NewRackDropOffTask();
 
-                agv.TaskHandler.NewAGVMoveTask(VCSServer.CurrentMap.AllNodes[16, 16 + i]);
+                agv.TaskHandler.NewAGVMoveTask(VCS.CurrentMap.AllNodes[16, 16 + i]);
             }
 
         }
@@ -199,7 +199,7 @@ namespace A_Star_Demo
             List<LinkedList<AGV>> waitList = new List<LinkedList<AGV>>();
             lock (AGVTask._agvTaskLock)
             {
-                foreach (var agv in VCSServer.AGVHandler.AGVList)
+                foreach (var agv in VCS.AGVHandler.AGVList)
                 {
                     if (agv.TaskHandler.CurrentTask is AGVMoveTask)
                     {
@@ -208,7 +208,7 @@ namespace A_Star_Demo
                             var nextNode = (agv.TaskHandler.CurrentTask as AGVMoveTask).RemainingPath.FirstOrDefault();                
                             if (nextNode != null)
                             {
-                                var nextAGVNodeQueue = VCSServer.AGVNodeQueue[nextNode.Location.Y, nextNode.Location.X];
+                                var nextAGVNodeQueue = VCS.AGVNodeQueue[nextNode.Location.Y, nextNode.Location.X];
                                 var nextAGV = nextAGVNodeQueue.First.Value;
                                 if (agv == nextAGV)
                                 {
@@ -379,7 +379,7 @@ namespace A_Star_Demo
         {
             if (_selectedRack == null) return;
             if (this.SelectedNode == null) return;
-            VCSServer.SendRackTo(this.SelectedNode, _selectedRack, (Rack.RackHeading)comboBox_rackHeading.SelectedItem);
+            VCS.SendRackTo(this.SelectedNode, _selectedRack, (Rack.RackHeading)comboBox_rackHeading.SelectedItem);
         }
         #endregion
 
@@ -449,7 +449,7 @@ namespace A_Star_Demo
 
         private void UpdateNewMapInfo()
         {
-            _mapDrawer = new MapDrawer(VCSServer, pictureBox_mapViewer.Size);
+            _mapDrawer = new MapDrawer(VCS, pictureBox_mapViewer.Size);
             timer_mapRefresh.Enabled = true;
             saveMapToolStripMenuItem.Enabled = true;
             editToolStripMenuItem.Enabled = true;
@@ -465,12 +465,12 @@ namespace A_Star_Demo
             _mapEditorForm.textBox_edgeNode1.Clear();
             _mapEditorForm.textBox_edgeNode2.Clear();
 
-            textBox_mapSN.Text = VCSServer.CurrentMap.SerialNumber;
-            textBox_mapZone.Text = VCSServer.CurrentMap.ZoneID.ToString();
-            textBox_mapDIM.Text = $"{VCSServer.CurrentMap.Width} x {VCSServer.CurrentMap.Height}";
+            textBox_mapSN.Text = VCS.CurrentMap.SerialNumber;
+            textBox_mapZone.Text = VCS.CurrentMap.ZoneID.ToString();
+            textBox_mapDIM.Text = $"{VCS.CurrentMap.Width} x {VCS.CurrentMap.Height}";
             _mapEditorForm.comboBox_constraintLayers.Items.Clear();
             comboBox_planningLayer.Items.Clear();
-            foreach (var layer in VCSServer.CurrentMap.ConstraintLayers)
+            foreach (var layer in VCS.CurrentMap.ConstraintLayers)
             {
                 _mapEditorForm.comboBox_constraintLayers.Items.Add(layer.Name);
                 comboBox_planningLayer.Items.Add(layer.Name);
@@ -485,10 +485,10 @@ namespace A_Star_Demo
             SelectedNode = _mapDrawer?.GetNodeByPosition(mousePosition.X, mousePosition.Y);
             if (SelectedNode != null)
             {
-                if (VCSServer.AGVNodeQueue[SelectedNode.Location.Y, SelectedNode.Location.X].Count > 0)
+                if (VCS.AGVNodeQueue[SelectedNode.Location.Y, SelectedNode.Location.X].Count > 0)
                 {
                     Debug.WriteLine($"AGV Queue = ");
-                    foreach (var AGV in VCSServer.AGVNodeQueue[SelectedNode.Location.Y, SelectedNode.Location.X])
+                    foreach (var AGV in VCS.AGVNodeQueue[SelectedNode.Location.Y, SelectedNode.Location.X])
                     {
                         Debug.WriteLine($"\t{AGV.Name}");
                     }
@@ -503,8 +503,8 @@ namespace A_Star_Demo
                         textBox_selectedNodeName.Text = SelectedNode.Name;
                         textBox_selectedNodeType.Text = SelectedNode.Type.ToString();
                         textBox_selectedNodeType.BackColor = MapDrawer.NodeTypeColorDict[SelectedNode.Type];
-                        _selectedAGV = VCSServer.AGVHandler.AGVList.Find(agv => agv.CurrentNode == SelectedNode) ?? _selectedAGV;
-                        _selectedRack = VCSServer.RackList.Find(rack => rack.CurrentNode == SelectedNode) ?? _selectedRack;
+                        _selectedAGV = VCS.AGVHandler.AGVList.Find(agv => agv.CurrentNode == SelectedNode) ?? _selectedAGV;
+                        _selectedRack = VCS.RackList.Find(rack => rack.CurrentNode == SelectedNode) ?? _selectedRack;
                         if (_mapEditorForm.IsEditingType)
                         {
                             SelectedNode.Type = (MapNode.Types)_mapEditorForm.comboBox_types.SelectedItem;
@@ -546,7 +546,7 @@ namespace A_Star_Demo
 
                             if (SelectedEdgeNode1 != null && SelectedEdgeNode2 != null)
                             {
-                                var selectedEdge = VCSServer.CurrentMap.GetEdgeByNodes(_mapEditorForm.comboBox_constraintLayers.SelectedIndex, SelectedEdgeNode1, SelectedEdgeNode2);
+                                var selectedEdge = VCS.CurrentMap.GetEdgeByNodes(_mapEditorForm.comboBox_constraintLayers.SelectedIndex, SelectedEdgeNode1, SelectedEdgeNode2);
                                 selectedEdge.PassingRestriction = (MapEdge.PassingRestrictions)_mapEditorForm.comboBox_passingRestrictions.SelectedItem;
                                 if (SelectedEdgeNode1.Location.X + SelectedEdgeNode1.Location.Y > SelectedEdgeNode2.Location.X + SelectedEdgeNode2.Location.Y)
                                 {
@@ -571,11 +571,11 @@ namespace A_Star_Demo
                                 button_startPlanning.Text = "Start Planning";
                                 textBox_goalNode.Text = _goalNode.Name;
                                 _planningFlag = 0;
-                                _path = VCSServer.PathPlanner.FindPath(_startNode, _goalNode, comboBox_planningLayer.SelectedIndex == 1, comboBox_planningLayer.SelectedIndex);
+                                _path = VCS.PathPlanner.FindPath(_startNode, _goalNode, comboBox_planningLayer.SelectedIndex == 1, comboBox_planningLayer.SelectedIndex);
                                 textBox_planningPath.Clear();
                                 textBox_planningPath.AppendText($"Length = {(_path is null ? -1 : _path.Count)}\r\n");
 
-                                var targetAGV = VCSServer.AGVHandler.AGVList.Find(agv => agv.CurrentNode == _startNode);
+                                var targetAGV = VCS.AGVHandler.AGVList.Find(agv => agv.CurrentNode == _startNode);
                                 if (targetAGV != null)
                                 {
                                     targetAGV.StartNewPath(_path);
@@ -613,7 +613,7 @@ namespace A_Star_Demo
 
         private void timer_mapRefresh_Tick(object sender, EventArgs e)
         {
-            if (VCSServer.CurrentMap != null)
+            if (VCS.CurrentMap != null)
             {
                 _mapDrawer.DrawNewMap();
                 _mapDrawer.DrawSelectedNode(SelectedNode);

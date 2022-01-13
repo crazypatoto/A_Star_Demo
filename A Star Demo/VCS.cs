@@ -13,7 +13,7 @@ using System.Threading;
 
 namespace A_Star_Demo
 {
-    public class VCSServer : IDisposable
+    public class VCS : IDisposable
     {
         private bool _disposed = false;
         public Map CurrentMap { get; }
@@ -26,7 +26,7 @@ namespace A_Star_Demo
         public bool IsAlive { get; private set; }
 
 
-        public VCSServer(Map map)
+        public VCS(Map map)
         {
             this.CurrentMap = map;
             this.AGVHandler = new AGVHandler(this);
@@ -45,7 +45,7 @@ namespace A_Star_Demo
             IsAlive = true;
         }
 
-        ~VCSServer()
+        ~VCS()
         {
             Dispose(false);
         }

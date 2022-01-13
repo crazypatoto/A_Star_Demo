@@ -32,9 +32,9 @@ namespace A_Star_Demo.Tasks
         {
             lock (AGVTask._agvTaskLock)
             {
-                var vcsServer = this.AssignedAGV.Handler.VCSServer;
+                var vcs = this.AssignedAGV.Handler.VCS;
                 var currentNode = this.AssignedAGV.CurrentNode;
-                var neighborNodes = vcsServer.CurrentMap.GetNeighborNodes(currentNode);
+                var neighborNodes = vcs.CurrentMap.GetNeighborNodes(currentNode);
                 bool readyToRotate = true;
 
                 switch (this.Status)
@@ -54,7 +54,7 @@ namespace A_Star_Demo.Tasks
                         }                       
                         foreach (var neighborNode in neighborNodes)
                         {
-                            var agvNodeQueue = vcsServer.AGVNodeQueue[neighborNode.Location.Y, neighborNode.Location.X];
+                            var agvNodeQueue = vcs.AGVNodeQueue[neighborNode.Location.Y, neighborNode.Location.X];
                             if(agvNodeQueue.Count > 0)
                             {                                
                                 var targetAGV = agvNodeQueue.LastOrDefault((agv) => {
@@ -82,7 +82,7 @@ namespace A_Star_Demo.Tasks
                         
                         foreach (var neighborNode in neighborNodes)
                         {
-                            var agvNodeQueue = vcsServer.AGVNodeQueue[neighborNode.Location.Y, neighborNode.Location.X];
+                            var agvNodeQueue = vcs.AGVNodeQueue[neighborNode.Location.Y, neighborNode.Location.X];
                             if (agvNodeQueue.FirstOrDefault() != this.AssignedAGV) readyToRotate = false;                            
                         }
                         if (readyToRotate)
@@ -101,7 +101,7 @@ namespace A_Star_Demo.Tasks
                         {
                             foreach (var neighborNode in neighborNodes)
                             {
-                                var agvNodeQueue = vcsServer.AGVNodeQueue[neighborNode.Location.Y, neighborNode.Location.X];
+                                var agvNodeQueue = vcs.AGVNodeQueue[neighborNode.Location.Y, neighborNode.Location.X];
                                 if (agvNodeQueue.FirstOrDefault() == this.AssignedAGV)
                                 {
                                     agvNodeQueue.RemoveFirst();
@@ -119,7 +119,7 @@ namespace A_Star_Demo.Tasks
                     case TaskStatus.Waiting:                        
                         foreach (var neighborNode in neighborNodes)
                         {
-                            var agvNodeQueue = vcsServer.AGVNodeQueue[neighborNode.Location.Y, neighborNode.Location.X];
+                            var agvNodeQueue = vcs.AGVNodeQueue[neighborNode.Location.Y, neighborNode.Location.X];
                             if (agvNodeQueue.FirstOrDefault() != this.AssignedAGV) readyToRotate = false;
                         }
                         if (readyToRotate)
