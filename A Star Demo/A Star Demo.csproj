@@ -84,6 +84,9 @@
     <Compile Include="Tasks\RackPickUpTask.cs" />
     <Compile Include="Tasks\RackRotateTask.cs" />
     <Compile Include="VCS.cs" />
+    <Compile Include="Communication\Command.cs" />
+    <Compile Include="Communication\VCSRequest.cs" />
+    <Compile Include="Communication\VCSServer.cs" />
     <Compile Include="Windows\MapEditor.cs">
       <SubType>Form</SubType>
     </Compile>

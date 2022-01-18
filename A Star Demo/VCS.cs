@@ -9,12 +9,14 @@ using A_Star_Demo.Maps;
 using A_Star_Demo.Models;
 using A_Star_Demo.PathPlanning;
 using A_Star_Demo.Tasks;
+using A_Star_Demo.Communication;
 using System.Threading;
 
 namespace A_Star_Demo
 {
     public class VCS : IDisposable
     {
+        private VCSServer _vcsServer;
         private bool _disposed = false;
         public Map CurrentMap { get; }
         public AGVHandler AGVHandler { get; }
@@ -42,6 +44,7 @@ namespace A_Star_Demo
                     AGVNodeQueue[y, x] = new LinkedList<AGV>();
                 }
             }
+            _vcsServer = new VCSServer(this);
             IsAlive = true;
         }
 
