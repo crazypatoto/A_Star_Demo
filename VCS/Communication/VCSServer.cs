@@ -18,10 +18,11 @@ namespace VCS.Communication
         private Socket _serverSocket;
         private Socket _clientSocket;
         private VCS _vcs;
+        private long _lastCommunicateTime;
         public VCSServer(VCS vcs)
         {
             _vcs = vcs;
-            _serverSocket = new Socket(SocketType.Stream, ProtocolType.Tcp);
+            _serverSocket = new Socket(SocketType.Stream, ProtocolType.Tcp);           
             _serverSocket.Bind(new IPEndPoint(IPAddress.Any, _port));
             _serverSocket.Listen(1);
             Thread t = new Thread(ClientHandling);
@@ -39,6 +40,7 @@ namespace VCS.Communication
                 if (_clientSocket == null)
                 {
                     _clientSocket = _serverSocket.Accept();
+                    _lastCommunicateTime = DateTimeOffset.Now.ToUnixTimeSeconds();
                 }
                 else
                 {
@@ -46,6 +48,7 @@ namespace VCS.Communication
                     {
                         try
                         {
+                            var now = DateTimeOffset.Now.ToUnixTimeSeconds();
                             var read = _clientSocket.Receive(buffer, count, buffer.Length - count, SocketFlags.None);
                             count += read;
 
@@ -57,13 +60,22 @@ namespace VCS.Communication
                             if (count > 2 && buffer[count - 2] == '\r' && buffer[count - 1] == '\n')
                             {
                                 buffer[count] = 0;
-                                HandleRequest(Encoding.UTF8.GetString(buffer,0 ,count));
+                                HandleRequest(Encoding.UTF8.GetString(buffer, 0, count));
+                                _lastCommunicateTime = now;
                                 count = 0;
                             }
+                           
+                            if(now - _lastCommunicateTime > 3)
+                            {
+                                _clientSocket.Close();
+                            }                            
                         }
                         catch (Exception ex)
                         {
                             Debug.WriteLine(ex.Message.ToString());
+                            _clientSocket.Dispose();
+                            _clientSocket = null;
+                            _serverSocket.Listen(1);
                         }
                     }
                     else
@@ -133,7 +145,17 @@ namespace VCS.Communication
 
         private void GetRackInfoRequest()
         {
-
+            var commandData = _vcs.RackList.Count.ToString() + ",";
+            for (int i = 0; i < _vcs.RackList.Count; i++)
+            {
+                var rack = _vcs.RackList[i];
+                commandData += $"{rack.Name},{rack.HomeNode.Name},{rack.CurrentNode.Name},{rack.Heading}";
+                if(i != _vcs.RackList.Count - 1)
+                {
+                    commandData += ",";
+                }
+            }
+            SendResponse(Command.GetRackInfo, commandData);
         }
 
         private void AssignNewMissionRequest()

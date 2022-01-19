@@ -29,12 +29,11 @@ namespace WMS
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.connectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.connectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.disconnectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.loadMapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.materialsStockToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.materialsManagementToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel_Main = new System.Windows.Forms.TableLayoutPanel();
@@ -92,10 +91,11 @@ namespace WMS
             this.columnHeader12 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel_ConnectionState = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel4 = new System.Windows.Forms.ToolStripStatusLabel();
-            this.toolStripStatusLabel5 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel_ServerIP = new System.Windows.Forms.ToolStripStatusLabel();
+            this.timer_mapRefresh = new System.Windows.Forms.Timer(this.components);
             this.menuStrip.SuspendLayout();
             this.tableLayoutPanel_Main.SuspendLayout();
             this.tableLayoutPanel_Map.SuspendLayout();
@@ -120,7 +120,6 @@ namespace WMS
             this.menuStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.connectionToolStripMenuItem,
-            this.loadMapToolStripMenuItem,
             this.materialsStockToolStripMenuItem,
             this.materialsManagementToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
@@ -134,8 +133,7 @@ namespace WMS
             // 
             this.connectionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.connectToolStripMenuItem,
-            this.disconnectToolStripMenuItem,
-            this.settingsToolStripMenuItem});
+            this.disconnectToolStripMenuItem});
             this.connectionToolStripMenuItem.Name = "connectionToolStripMenuItem";
             this.connectionToolStripMenuItem.Size = new System.Drawing.Size(66, 20);
             this.connectionToolStripMenuItem.Text = "VCS連線";
@@ -150,21 +148,9 @@ namespace WMS
             // disconnectToolStripMenuItem
             // 
             this.disconnectToolStripMenuItem.Name = "disconnectToolStripMenuItem";
-            this.disconnectToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.disconnectToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.disconnectToolStripMenuItem.Text = "斷開連接";
-            // 
-            // settingsToolStripMenuItem
-            // 
-            this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
-            this.settingsToolStripMenuItem.Text = "連接設定";
-            // 
-            // loadMapToolStripMenuItem
-            // 
-            this.loadMapToolStripMenuItem.Name = "loadMapToolStripMenuItem";
-            this.loadMapToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
-            this.loadMapToolStripMenuItem.Text = "載入地圖";
-            this.loadMapToolStripMenuItem.Click += new System.EventHandler(this.loadMapToolStripMenuItem_Click);
+            this.disconnectToolStripMenuItem.Click += new System.EventHandler(this.disconnectToolStripMenuItem_Click);
             // 
             // materialsStockToolStripMenuItem
             // 
@@ -253,6 +239,7 @@ namespace WMS
             this.pictureBox_MapViewer.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox_MapViewer.TabIndex = 0;
             this.pictureBox_MapViewer.TabStop = false;
+            this.pictureBox_MapViewer.ClientSizeChanged += new System.EventHandler(this.pictureBox_MapViewer_ClientSizeChanged);
             // 
             // tableLayoutPanel_WorkOrder
             // 
@@ -773,10 +760,10 @@ namespace WMS
             this.statusStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.statusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel1,
-            this.toolStripStatusLabel2,
+            this.toolStripStatusLabel_ConnectionState,
             this.toolStripStatusLabel3,
             this.toolStripStatusLabel4,
-            this.toolStripStatusLabel5});
+            this.toolStripStatusLabel_ServerIP});
             this.statusStrip.Location = new System.Drawing.Point(0, 695);
             this.statusStrip.Name = "statusStrip";
             this.statusStrip.Size = new System.Drawing.Size(1328, 22);
@@ -789,12 +776,12 @@ namespace WMS
             this.toolStripStatusLabel1.Size = new System.Drawing.Size(67, 17);
             this.toolStripStatusLabel1.Text = "連線狀態：";
             // 
-            // toolStripStatusLabel2
+            // toolStripStatusLabel_ConnectionState
             // 
-            this.toolStripStatusLabel2.ForeColor = System.Drawing.Color.Red;
-            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(43, 17);
-            this.toolStripStatusLabel2.Text = "未連線";
+            this.toolStripStatusLabel_ConnectionState.ForeColor = System.Drawing.Color.Red;
+            this.toolStripStatusLabel_ConnectionState.Name = "toolStripStatusLabel_ConnectionState";
+            this.toolStripStatusLabel_ConnectionState.Size = new System.Drawing.Size(43, 17);
+            this.toolStripStatusLabel_ConnectionState.Text = "未連線";
             // 
             // toolStripStatusLabel3
             // 
@@ -808,11 +795,16 @@ namespace WMS
             this.toolStripStatusLabel4.Size = new System.Drawing.Size(93, 17);
             this.toolStripStatusLabel4.Text = "VCS伺服器位置:";
             // 
-            // toolStripStatusLabel5
+            // toolStripStatusLabel_ServerIP
             // 
-            this.toolStripStatusLabel5.Name = "toolStripStatusLabel5";
-            this.toolStripStatusLabel5.Size = new System.Drawing.Size(110, 17);
-            this.toolStripStatusLabel5.Text = "192.168.0.102:987";
+            this.toolStripStatusLabel_ServerIP.Name = "toolStripStatusLabel_ServerIP";
+            this.toolStripStatusLabel_ServerIP.Size = new System.Drawing.Size(110, 17);
+            this.toolStripStatusLabel_ServerIP.Text = "192.168.0.102:987";
+            // 
+            // timer_mapRefresh
+            // 
+            this.timer_mapRefresh.Interval = 33;
+            this.timer_mapRefresh.Tick += new System.EventHandler(this.timer_mapRefresh_Tick);
             // 
             // WMS
             // 
@@ -823,6 +815,7 @@ namespace WMS
             this.Controls.Add(this.tableLayoutPanel_Main);
             this.Controls.Add(this.menuStrip);
             this.Controls.Add(this.statusStrip);
+            this.DoubleBuffered = true;
             this.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.MainMenuStrip = this.menuStrip;
             this.Name = "WMS";
@@ -863,22 +856,20 @@ namespace WMS
         private System.Windows.Forms.ToolStripMenuItem connectionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem connectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem disconnectToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel_Map;
         private System.Windows.Forms.PictureBox pictureBox_MapViewer;
         private System.Windows.Forms.GroupBox groupBox_Events;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.GroupBox groupBox_MapViewer;
-        private System.Windows.Forms.ToolStripMenuItem loadMapToolStripMenuItem;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel_WorkOrder;
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripMenuItem materialsStockToolStripMenuItem;
         private System.Windows.Forms.GroupBox groupBox_WorkOrder;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel_ConnectionState;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel3;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel4;
-        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel5;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel_ServerIP;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.Label label1;
@@ -925,6 +916,7 @@ namespace WMS
         private System.Windows.Forms.ComboBox comboBox4;
         private System.Windows.Forms.ToolStripMenuItem materialsManagementToolStripMenuItem;
         private System.Windows.Forms.ColumnHeader columnHeader12;
+        private System.Windows.Forms.Timer timer_mapRefresh;
     }
 }
 
