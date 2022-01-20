@@ -16,6 +16,7 @@ namespace WMS.Communication
 {
     public class VCSClient
     {
+        private readonly object _lock = new object();
         private readonly int _port = 2312;
         private readonly int _sendTimeout = 100;
         private readonly int _receiveTimeout = 1000;
@@ -56,6 +57,7 @@ namespace WMS.Communication
 
         public void Disconnect()
         {
+            if (_clientSocket == null) return;
             if (_clientSocket.Connected)
             {
                 _clientSocket.Close();
@@ -63,49 +65,52 @@ namespace WMS.Communication
         }
         private VCSResponse SendRequest(Command command, string data = "")
         {
-            var timestamp = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
-            var requestString = timestamp + ";" + command + ";" + data + ";" + "\r\n";
-            var request = Encoding.UTF8.GetBytes(requestString);
-            _clientSocket.SendTimeout = _sendTimeout;
-            _clientSocket.Send(request);
-
-            using (var receiveCts = new CancellationTokenSource(_receiveTimeout))
+            lock (_lock)
             {
-                var buffer = new byte[_rxBuffeSize]; //1MB
-                var count = 0;
-                while (!receiveCts.IsCancellationRequested)
+                var timestamp = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
+                var requestString = timestamp + ";" + command + ";" + data + ";" + "\r\n";
+                var request = Encoding.UTF8.GetBytes(requestString);
+                _clientSocket.SendTimeout = _sendTimeout;
+                _clientSocket.Send(request);
+
+                using (var receiveCts = new CancellationTokenSource(_receiveTimeout))
                 {
-                    try
+                    var buffer = new byte[_rxBuffeSize]; //1MB
+                    var count = 0;
+                    while (!receiveCts.IsCancellationRequested)
                     {
-                        _clientSocket.ReceiveTimeout = _receiveTimeout;
-                        var read = _clientSocket.Receive(buffer, count, buffer.Length - count, SocketFlags.None);
-                        count += read;
-
-                        if (read == 0)
+                        try
                         {
-                            return VCSResponse.Empty;
-                        }
+                            _clientSocket.ReceiveTimeout = _receiveTimeout;
+                            var read = _clientSocket.Receive(buffer, count, buffer.Length - count, SocketFlags.None);
+                            count += read;
 
-                        if (count >= _rxBuffeSize)
-                        {
-                            count = 0;
-                        }
-
-                        if (count > 2 && buffer[count - 2] == '\r' && buffer[count - 1] == '\n')
-                        {
-                            var response = new VCSResponse(Encoding.UTF8.GetString(buffer, 0, count));
-                            if (response.IsValid)
+                            if (read == 0)
                             {
-                                return response;
+                                return VCSResponse.Empty;
+                            }
+
+                            if (count >= _rxBuffeSize)
+                            {
+                                count = 0;
+                            }
+
+                            if (count > 2 && buffer[count - 2] == '\r' && buffer[count - 1] == '\n')
+                            {
+                                var response = new VCSResponse(Encoding.UTF8.GetString(buffer, 0, count));
+                                if (response.IsValid)
+                                {
+                                    return response;
+                                }
                             }
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex.Message);
+                        }
                     }
                 }
-            }
+            }           
             return VCSResponse.Empty;
         }
 

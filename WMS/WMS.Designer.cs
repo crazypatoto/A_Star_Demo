@@ -30,6 +30,7 @@ namespace WMS
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(WMS));
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.connectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.connectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -39,7 +40,7 @@ namespace WMS
             this.tableLayoutPanel_Main = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel_Map = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox_Events = new System.Windows.Forms.GroupBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.textBox_Event = new System.Windows.Forms.TextBox();
             this.groupBox_MapViewer = new System.Windows.Forms.GroupBox();
             this.pictureBox_MapViewer = new System.Windows.Forms.PictureBox();
             this.tableLayoutPanel_WorkOrder = new System.Windows.Forms.TableLayoutPanel();
@@ -69,9 +70,6 @@ namespace WMS
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.button4 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
-            this.tableLayoutPanel5 = new System.Windows.Forms.TableLayoutPanel();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
             this.listView3 = new System.Windows.Forms.ListView();
@@ -95,7 +93,7 @@ namespace WMS
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel4 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel_ServerIP = new System.Windows.Forms.ToolStripStatusLabel();
-            this.timer_mapRefresh = new System.Windows.Forms.Timer(this.components);
+            this.timer_RefreshMap = new System.Windows.Forms.Timer(this.components);
             this.menuStrip.SuspendLayout();
             this.tableLayoutPanel_Main.SuspendLayout();
             this.tableLayoutPanel_Map.SuspendLayout();
@@ -108,7 +106,6 @@ namespace WMS
             this.tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.tableLayoutPanel3.SuspendLayout();
-            this.tableLayoutPanel5.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -141,14 +138,14 @@ namespace WMS
             // connectToolStripMenuItem
             // 
             this.connectToolStripMenuItem.Name = "connectToolStripMenuItem";
-            this.connectToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.connectToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.connectToolStripMenuItem.Text = "連接";
             this.connectToolStripMenuItem.Click += new System.EventHandler(this.connectToolStripMenuItem_Click);
             // 
             // disconnectToolStripMenuItem
             // 
             this.disconnectToolStripMenuItem.Name = "disconnectToolStripMenuItem";
-            this.disconnectToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.disconnectToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.disconnectToolStripMenuItem.Text = "斷開連接";
             this.disconnectToolStripMenuItem.Click += new System.EventHandler(this.disconnectToolStripMenuItem_Click);
             // 
@@ -199,7 +196,7 @@ namespace WMS
             // 
             // groupBox_Events
             // 
-            this.groupBox_Events.Controls.Add(this.textBox1);
+            this.groupBox_Events.Controls.Add(this.textBox_Event);
             this.groupBox_Events.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox_Events.Location = new System.Drawing.Point(3, 568);
             this.groupBox_Events.Name = "groupBox_Events";
@@ -208,15 +205,15 @@ namespace WMS
             this.groupBox_Events.TabStop = false;
             this.groupBox_Events.Text = "事件";
             // 
-            // textBox1
+            // textBox_Event
             // 
-            this.textBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBox1.Location = new System.Drawing.Point(3, 19);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(646, 72);
-            this.textBox1.TabIndex = 0;
+            this.textBox_Event.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBox_Event.Location = new System.Drawing.Point(3, 19);
+            this.textBox_Event.Multiline = true;
+            this.textBox_Event.Name = "textBox_Event";
+            this.textBox_Event.ReadOnly = true;
+            this.textBox_Event.Size = new System.Drawing.Size(646, 72);
+            this.textBox_Event.TabIndex = 0;
             // 
             // groupBox_MapViewer
             // 
@@ -232,14 +229,14 @@ namespace WMS
             // pictureBox_MapViewer
             // 
             this.pictureBox_MapViewer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pictureBox_MapViewer.Image = global::WMS.Properties.Resources.nomap;
+            this.pictureBox_MapViewer.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox_MapViewer.Image")));
             this.pictureBox_MapViewer.Location = new System.Drawing.Point(3, 19);
             this.pictureBox_MapViewer.Name = "pictureBox_MapViewer";
             this.pictureBox_MapViewer.Size = new System.Drawing.Size(646, 537);
             this.pictureBox_MapViewer.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox_MapViewer.TabIndex = 0;
             this.pictureBox_MapViewer.TabStop = false;
-            this.pictureBox_MapViewer.ClientSizeChanged += new System.EventHandler(this.pictureBox_MapViewer_ClientSizeChanged);
+            this.pictureBox_MapViewer.SizeChanged += new System.EventHandler(this.pictureBox_MapViewer_SizeChanged);
             // 
             // tableLayoutPanel_WorkOrder
             // 
@@ -279,7 +276,6 @@ namespace WMS
             this.tableLayoutPanel1.Controls.Add(this.listView1, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.button4, 0, 5);
             this.tableLayoutPanel1.Controls.Add(this.button5, 0, 4);
-            this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel5, 0, 3);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 19);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -518,7 +514,7 @@ namespace WMS
             this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(3, 77);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(640, 144);
+            this.listView1.Size = new System.Drawing.Size(640, 166);
             this.listView1.TabIndex = 2;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -561,43 +557,6 @@ namespace WMS
             this.button5.TabIndex = 4;
             this.button5.Text = "移除所有選取任務";
             this.button5.UseVisualStyleBackColor = true;
-            // 
-            // tableLayoutPanel5
-            // 
-            this.tableLayoutPanel5.AutoSize = true;
-            this.tableLayoutPanel5.ColumnCount = 3;
-            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel5.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel5.Controls.Add(this.label6, 1, 0);
-            this.tableLayoutPanel5.Controls.Add(this.label7, 2, 0);
-            this.tableLayoutPanel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel5.Location = new System.Drawing.Point(3, 227);
-            this.tableLayoutPanel5.Name = "tableLayoutPanel5";
-            this.tableLayoutPanel5.RowCount = 1;
-            this.tableLayoutPanel5.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel5.Size = new System.Drawing.Size(640, 16);
-            this.tableLayoutPanel5.TabIndex = 5;
-            // 
-            // label6
-            // 
-            this.label6.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(356, 0);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(242, 16);
-            this.label6.TabIndex = 0;
-            this.label6.Text = "目前工單所需AGV數量/目前可用AGV數量：";
-            // 
-            // label7
-            // 
-            this.label7.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(604, 0);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(33, 16);
-            this.label7.TabIndex = 1;
-            this.label7.Text = "0/23";
             // 
             // groupBox1
             // 
@@ -801,10 +760,10 @@ namespace WMS
             this.toolStripStatusLabel_ServerIP.Size = new System.Drawing.Size(110, 17);
             this.toolStripStatusLabel_ServerIP.Text = "192.168.0.102:987";
             // 
-            // timer_mapRefresh
+            // timer_RefreshMap
             // 
-            this.timer_mapRefresh.Interval = 33;
-            this.timer_mapRefresh.Tick += new System.EventHandler(this.timer_mapRefresh_Tick);
+            this.timer_RefreshMap.Interval = 33;
+            this.timer_RefreshMap.Tick += new System.EventHandler(this.timer_RefreshMap_Tick);
             // 
             // WMS
             // 
@@ -820,6 +779,7 @@ namespace WMS
             this.MainMenuStrip = this.menuStrip;
             this.Name = "WMS";
             this.Text = "WMS";
+            this.Shown += new System.EventHandler(this.WMS_Shown);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.tableLayoutPanel_Main.ResumeLayout(false);
@@ -837,8 +797,6 @@ namespace WMS
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.tableLayoutPanel3.ResumeLayout(false);
             this.tableLayoutPanel3.PerformLayout();
-            this.tableLayoutPanel5.ResumeLayout(false);
-            this.tableLayoutPanel5.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.tableLayoutPanel4.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
@@ -859,7 +817,7 @@ namespace WMS
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel_Map;
         private System.Windows.Forms.PictureBox pictureBox_MapViewer;
         private System.Windows.Forms.GroupBox groupBox_Events;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox textBox_Event;
         private System.Windows.Forms.GroupBox groupBox_MapViewer;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel_WorkOrder;
         private System.Windows.Forms.StatusStrip statusStrip;
@@ -909,14 +867,11 @@ namespace WMS
         private System.Windows.Forms.ColumnHeader columnHeader10;
         private System.Windows.Forms.ColumnHeader columnHeader11;
         private System.Windows.Forms.ColumnHeader columnHeader9;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel5;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox comboBox4;
         private System.Windows.Forms.ToolStripMenuItem materialsManagementToolStripMenuItem;
         private System.Windows.Forms.ColumnHeader columnHeader12;
-        private System.Windows.Forms.Timer timer_mapRefresh;
+        private System.Windows.Forms.Timer timer_RefreshMap;
     }
 }
 

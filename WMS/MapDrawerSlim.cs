@@ -81,8 +81,7 @@ namespace WMS
         }
         public void DrawNewMap()
         {
-            _mapBMP?.Dispose();
-            GC.Collect();
+            _mapBMP?.Dispose();    
             _mapBMP = new Bitmap(_drawSize.Width, _drawSize.Height);
 
             using (var graphics = Graphics.FromImage(_mapBMP))
