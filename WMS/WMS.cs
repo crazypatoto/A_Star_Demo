@@ -23,19 +23,22 @@ namespace WMS
 {
     public partial class WMS : Form
     {
+        private string _baseFilePath = AppDomain.CurrentDomain.BaseDirectory;
         private VCSClient _vcsClient;
         private Map _currentMap;
         private MapDrawerSlim _mapDrawer;
-        private MaterialsStockWindow _materialsStockWindow;
+        private InventoryManagementWindow _inventoryManagementWindow;
         private MaterialsManagementWindow _materialsManagementWindow;
         public List<Rack> RackList { get; private set; }
         public List<RackInfo> RackInfoList { get; private set; }
+        public List<Material> MaterialList { get; private set; }
+        public List<Inventory> InventoryList { get; private set; }
         public WMS()
         {
             InitializeComponent();
             _vcsClient = new VCSClient();
-            _materialsStockWindow = new MaterialsStockWindow();            
-            _materialsManagementWindow = new MaterialsManagementWindow();            
+            _inventoryManagementWindow = new InventoryManagementWindow(this);
+            _materialsManagementWindow = new MaterialsManagementWindow(this);
         }
 
         #region Menu Strip Buttons
@@ -44,13 +47,15 @@ namespace WMS
             pictureBox_MapViewer.Image = Properties.Resources.demo_map;
         }
 
-        private void materialsStockToolStripMenuItem_Click(object sender, EventArgs e)
+        private void inventoryManagementToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _materialsStockWindow.Show();
+            _inventoryManagementWindow.Show();
+            _inventoryManagementWindow.WindowState = FormWindowState.Normal;
         }
         private void materialsManagementToolStripMenuItem_Click(object sender, EventArgs e)
         {
             _materialsManagementWindow.Show();
+            _materialsManagementWindow.WindowState = FormWindowState.Normal;
         }
 
         private void connectToolStripMenuItem_Click(object sender, EventArgs e)
@@ -110,7 +115,7 @@ namespace WMS
                 LogEvent("料架資訊載入成功");
             }
 
-            if (!_materialsManagementWindow.LoadMaterialsFromFile())
+            if (!LoadMaterialsFromFile())
             {
                 MessageBox.Show("無法載入物料資料，檔案不存在\r\n程式即將關閉", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Environment.Exit(-1);
@@ -118,6 +123,16 @@ namespace WMS
             else
             {
                 LogEvent("物料資料載入成功");
+            }
+
+            if (!LoadInventoryFromFile())
+            {
+                MessageBox.Show("無法載庫存資料，檔案不存在\r\n程式即將關閉", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Environment.Exit(-1);
+            }
+            else
+            {
+                LogEvent("庫存資料載入成功");
             }
 
         }
@@ -146,7 +161,7 @@ namespace WMS
 
         private bool LoadRackInfosFromFile()
         {
-            string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "rackInfos.csv");
+            string filePath = Path.Combine(_baseFilePath, "rackInfos.csv");
             if (File.Exists(filePath))
             {
                 var csvConfig = new CsvConfiguration(CultureInfo.CurrentCulture) { HasHeaderRecord = true };
@@ -154,12 +169,97 @@ namespace WMS
                 using (var streamReader = new StreamReader(fileStream, Encoding.GetEncoding("Big5")))
                 using (var csvReader = new CsvReader(streamReader, csvConfig))
                 {
-                    this.RackInfoList = csvReader.GetRecords<RackInfo>().ToList();                                        
+                    this.RackInfoList = csvReader.GetRecords<RackInfo>().ToList();
+                    _materialsManagementWindow.UpdateRackInfos();
                     return true;
                 }
-            }       
+            }
             return false;
         }
-        #endregion       
+
+        public bool LoadMaterialsFromFile()
+        {
+            string filePath = Path.Combine(_baseFilePath, "materials.csv");
+            if (File.Exists(filePath))
+            {
+                var csvConfig = new CsvConfiguration(CultureInfo.CurrentCulture) { HasHeaderRecord = true };
+                using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (var streamReader = new StreamReader(fileStream, Encoding.GetEncoding("Big5")))
+                using (var csvReader = new CsvReader(streamReader, csvConfig))
+                {
+                    this.MaterialList = csvReader.GetRecords<Material>().ToList();
+                    _materialsManagementWindow.UpdateMaterialList();
+                    return true;
+                }
+            }
+            return false;
+        }
+        public bool SaveMaterialsToFile()
+        {
+            string filePath = Path.Combine(_baseFilePath, "materials.csv");
+            if (File.Exists(filePath))
+            {
+                try
+                {
+                    var csvConfig = new CsvConfiguration(CultureInfo.CurrentCulture) { HasHeaderRecord = true };
+                    using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite, FileShare.Read))
+                    using (var streamWriter = new StreamWriter(fileStream, Encoding.GetEncoding("Big5")))
+                    using (var csvWriter = new CsvWriter(streamWriter, csvConfig))
+                    {
+                        csvWriter.WriteRecords(this.MaterialList);
+                        return true;
+                    }
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        public bool LoadInventoryFromFile()
+        {
+            string filePath = Path.Combine(_baseFilePath, "invnetory.csv");
+            if (File.Exists(filePath))
+            {
+                var csvConfig = new CsvConfiguration(CultureInfo.CurrentCulture) { HasHeaderRecord = true };
+                using (var fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                using (var streamReader = new StreamReader(fileStream, Encoding.GetEncoding("Big5")))
+                using (var csvReader = new CsvReader(streamReader, csvConfig))
+                {
+                    this.InventoryList = csvReader.GetRecords<Inventory>().ToList();
+                    _inventoryManagementWindow.UpdateInventory();
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool SaveInventoryToFile()
+        {
+            string filePath = Path.Combine(_baseFilePath, "invnetory.csv");
+            if (File.Exists(filePath))
+            {
+                try
+                {
+                    var csvConfig = new CsvConfiguration(CultureInfo.CurrentCulture) { HasHeaderRecord = true };
+                    using (var fileStream = new FileStream(filePath, FileMode.Create, FileAccess.ReadWrite, FileShare.Read))
+                    using (var streamWriter = new StreamWriter(fileStream, Encoding.GetEncoding("Big5")))
+                    using (var csvWriter = new CsvWriter(streamWriter, csvConfig))
+                    {
+                        csvWriter.WriteRecords(this.InventoryList);
+                        return true;
+                    }
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        #endregion
     }
 }

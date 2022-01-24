@@ -81,7 +81,8 @@ namespace WMS
         }
         public void DrawNewMap()
         {
-            _mapBMP?.Dispose();    
+            _mapBMP?.Dispose();
+            GC.Collect();
             _mapBMP = new Bitmap(_drawSize.Width, _drawSize.Height);
 
             using (var graphics = Graphics.FromImage(_mapBMP))
@@ -101,13 +102,7 @@ namespace WMS
                             if (currentNode.Type != MapNode.Types.None)
                             {
                                 graphics.FillRectangle(brush, drawX * _scaledCellSize, drawY * _scaledCellSize, _scaledCellSize, _scaledCellSize);
-                            }
-                            if (currentNode.DisallowWaitingOnNode)
-                            {
-                                // Draw X on disallow truning node
-                                //graphics.DrawLine(new Pen(Color.DarkGray, 1), drawX * _scaledCellSize, drawY * _scaledCellSize, (drawX + 1) * _scaledCellSize, (drawY + 1) * _scaledCellSize);
-                                //graphics.DrawLine(new Pen(Color.DarkGray, 1), (drawX + 1) * _scaledCellSize, drawY * _scaledCellSize, drawX * _scaledCellSize, (drawY + 1) * _scaledCellSize);
-                            }
+                            }                            
                         }
                         // Draw gird lines
                         graphics.DrawLine(new Pen(Color.White, GridWidth), OffsetX * _scaledCellSize, drawY * _scaledCellSize, (_currentMap.Width + OffsetX) * _scaledCellSize, drawY * _scaledCellSize);

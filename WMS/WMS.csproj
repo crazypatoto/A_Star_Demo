@@ -80,6 +80,7 @@
       <DependentUpon>ConnectionDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="MapDrawerSlim.cs" />
+    <Compile Include="Models\Inventory.cs" />
     <Compile Include="Models\Material.cs" />
     <Compile Include="Models\RackInfo.cs" />
     <Compile Include="Windows\MaterialsManagementWindow.cs">
@@ -88,11 +89,11 @@
     <Compile Include="Windows\MaterialsManagementWindow.Designer.cs">
       <DependentUpon>MaterialsManagementWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Windows\MaterialsStockWindow.cs">
+    <Compile Include="Windows\InventoryManagementWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Windows\MaterialsStockWindow.Designer.cs">
-      <DependentUpon>MaterialsStockWindow.cs</DependentUpon>
+    <Compile Include="Windows\InventoryManagementWindow.Designer.cs">
+      <DependentUpon>InventoryManagementWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="WMS.cs">
       <SubType>Form</SubType>
@@ -108,8 +109,8 @@
     <EmbeddedResource Include="Windows\MaterialsManagementWindow.resx">
       <DependentUpon>MaterialsManagementWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Windows\MaterialsStockWindow.resx">
-      <DependentUpon>MaterialsStockWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Windows\InventoryManagementWindow.resx">
+      <DependentUpon>InventoryManagementWindow.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="WMS.resx">
       <DependentUpon>WMS.cs</DependentUpon>

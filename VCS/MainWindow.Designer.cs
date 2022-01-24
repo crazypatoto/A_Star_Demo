@@ -73,6 +73,7 @@ namespace VCS
             this.tableLayoutPanel_main = new System.Windows.Forms.TableLayoutPanel();
             this.pictureBox_mapViewer = new System.Windows.Forms.PictureBox();
             this.panel_infos = new System.Windows.Forms.Panel();
+            this.button_sendRackTo = new System.Windows.Forms.Button();
             this.button_Go = new System.Windows.Forms.Button();
             this.comboBox_rackHeading = new System.Windows.Forms.ComboBox();
             this.button_rotateRackTemp = new System.Windows.Forms.Button();
@@ -99,7 +100,6 @@ namespace VCS
             this.textBox_agvName = new System.Windows.Forms.TextBox();
             this.label13 = new System.Windows.Forms.Label();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
-            this.button_sendRackTo = new System.Windows.Forms.Button();
             this.menuStrip.SuspendLayout();
             this.groupBox_nodeInfo.SuspendLayout();
             this.groupBox_mapInfo.SuspendLayout();
@@ -278,7 +278,7 @@ namespace VCS
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(24, 54);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(38, 16);
+            this.label2.Size = new System.Drawing.Size(39, 16);
             this.label2.TabIndex = 2;
             this.label2.Text = "Type:";
             // 
@@ -295,7 +295,7 @@ namespace VCS
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(14, 25);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(48, 16);
+            this.label1.Size = new System.Drawing.Size(49, 16);
             this.label1.TabIndex = 0;
             this.label1.Text = "Name: ";
             // 
@@ -328,7 +328,7 @@ namespace VCS
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(28, 83);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(34, 16);
+            this.label6.Size = new System.Drawing.Size(35, 16);
             this.label6.TabIndex = 4;
             this.label6.Text = "DIM:";
             // 
@@ -345,7 +345,7 @@ namespace VCS
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(30, 25);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(32, 16);
+            this.label3.Size = new System.Drawing.Size(33, 16);
             this.label3.TabIndex = 2;
             this.label3.Text = "S/N:";
             // 
@@ -362,7 +362,7 @@ namespace VCS
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(23, 54);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(39, 16);
+            this.label5.Size = new System.Drawing.Size(40, 16);
             this.label5.TabIndex = 0;
             this.label5.Text = "Zone:";
             // 
@@ -414,7 +414,7 @@ namespace VCS
             this.label12.AutoSize = true;
             this.label12.Location = new System.Drawing.Point(21, 83);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(40, 16);
+            this.label12.Size = new System.Drawing.Size(41, 16);
             this.label12.TabIndex = 19;
             this.label12.Text = "Layer:";
             // 
@@ -458,7 +458,7 @@ namespace VCS
             this.label10.AutoSize = true;
             this.label10.Location = new System.Drawing.Point(6, 54);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(37, 16);
+            this.label10.Size = new System.Drawing.Size(38, 16);
             this.label10.TabIndex = 21;
             this.label10.Text = "Goal:";
             // 
@@ -467,7 +467,7 @@ namespace VCS
             this.label11.AutoSize = true;
             this.label11.Location = new System.Drawing.Point(7, 26);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(36, 16);
+            this.label11.Size = new System.Drawing.Size(37, 16);
             this.label11.TabIndex = 19;
             this.label11.Text = "Start:";
             // 
@@ -483,7 +483,7 @@ namespace VCS
             this.tableLayoutPanel_main.Name = "tableLayoutPanel_main";
             this.tableLayoutPanel_main.RowCount = 1;
             this.tableLayoutPanel_main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel_main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 733F));
+            this.tableLayoutPanel_main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 772F));
             this.tableLayoutPanel_main.Size = new System.Drawing.Size(1450, 772);
             this.tableLayoutPanel_main.TabIndex = 8;
             // 
@@ -520,6 +520,17 @@ namespace VCS
             this.panel_infos.Name = "panel_infos";
             this.panel_infos.Size = new System.Drawing.Size(370, 766);
             this.panel_infos.TabIndex = 3;
+            // 
+            // button_sendRackTo
+            // 
+            this.button_sendRackTo.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.button_sendRackTo.Location = new System.Drawing.Point(12, 723);
+            this.button_sendRackTo.Name = "button_sendRackTo";
+            this.button_sendRackTo.Size = new System.Drawing.Size(160, 33);
+            this.button_sendRackTo.TabIndex = 23;
+            this.button_sendRackTo.Text = "Send Rack To";
+            this.button_sendRackTo.UseVisualStyleBackColor = true;
+            this.button_sendRackTo.Click += new System.EventHandler(this.button_sendRackTo_Click);
             // 
             // button_Go
             // 
@@ -605,7 +616,7 @@ namespace VCS
             this.label17.AutoSize = true;
             this.label17.Location = new System.Drawing.Point(6, 112);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(62, 16);
+            this.label17.Size = new System.Drawing.Size(63, 16);
             this.label17.TabIndex = 10;
             this.label17.Text = "Heading: ";
             // 
@@ -622,7 +633,7 @@ namespace VCS
             this.label18.AutoSize = true;
             this.label18.Location = new System.Drawing.Point(14, 83);
             this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(48, 16);
+            this.label18.Size = new System.Drawing.Size(49, 16);
             this.label18.TabIndex = 8;
             this.label18.Text = "Home: ";
             // 
@@ -639,7 +650,7 @@ namespace VCS
             this.label19.AutoSize = true;
             this.label19.Location = new System.Drawing.Point(14, 54);
             this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(46, 16);
+            this.label19.Size = new System.Drawing.Size(47, 16);
             this.label19.TabIndex = 6;
             this.label19.Text = "Node: ";
             // 
@@ -656,7 +667,7 @@ namespace VCS
             this.label20.AutoSize = true;
             this.label20.Location = new System.Drawing.Point(14, 25);
             this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(48, 16);
+            this.label20.Size = new System.Drawing.Size(49, 16);
             this.label20.TabIndex = 4;
             this.label20.Text = "Name: ";
             // 
@@ -693,7 +704,7 @@ namespace VCS
             this.label21.AutoSize = true;
             this.label21.Location = new System.Drawing.Point(23, 141);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(40, 16);
+            this.label21.Size = new System.Drawing.Size(41, 16);
             this.label21.TabIndex = 12;
             this.label21.Text = "Rack: ";
             // 
@@ -710,7 +721,7 @@ namespace VCS
             this.label16.AutoSize = true;
             this.label16.Location = new System.Drawing.Point(1, 113);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(62, 16);
+            this.label16.Size = new System.Drawing.Size(63, 16);
             this.label16.TabIndex = 10;
             this.label16.Text = "Heading: ";
             // 
@@ -727,7 +738,7 @@ namespace VCS
             this.label15.AutoSize = true;
             this.label15.Location = new System.Drawing.Point(16, 84);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(47, 16);
+            this.label15.Size = new System.Drawing.Size(48, 16);
             this.label15.TabIndex = 8;
             this.label15.Text = "Status: ";
             // 
@@ -744,7 +755,7 @@ namespace VCS
             this.label14.AutoSize = true;
             this.label14.Location = new System.Drawing.Point(17, 54);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(46, 16);
+            this.label14.Size = new System.Drawing.Size(47, 16);
             this.label14.TabIndex = 6;
             this.label14.Text = "Node: ";
             // 
@@ -761,7 +772,7 @@ namespace VCS
             this.label13.AutoSize = true;
             this.label13.Location = new System.Drawing.Point(15, 25);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(48, 16);
+            this.label13.Size = new System.Drawing.Size(49, 16);
             this.label13.TabIndex = 4;
             this.label13.Text = "Name: ";
             // 
@@ -773,18 +784,7 @@ namespace VCS
             this.statusStrip.TabIndex = 9;
             this.statusStrip.Text = "statusStrip";
             // 
-            // button_sendRackTo
-            // 
-            this.button_sendRackTo.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.button_sendRackTo.Location = new System.Drawing.Point(12, 723);
-            this.button_sendRackTo.Name = "button_sendRackTo";
-            this.button_sendRackTo.Size = new System.Drawing.Size(160, 33);
-            this.button_sendRackTo.TabIndex = 23;
-            this.button_sendRackTo.Text = "Send Rack To";
-            this.button_sendRackTo.UseVisualStyleBackColor = true;
-            this.button_sendRackTo.Click += new System.EventHandler(this.button_sendRackTo_Click);
-            // 
-            // AStarDemo
+            // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
@@ -793,7 +793,7 @@ namespace VCS
             this.Controls.Add(this.menuStrip);
             this.Controls.Add(this.statusStrip);
             this.MainMenuStrip = this.menuStrip;
-            this.Name = "AStarDemo";
+            this.Name = "MainWindow";
             this.Text = "A* Demo";
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();

@@ -37,19 +37,20 @@ namespace WMS.Windows
             this.textBox_Dimension = new System.Windows.Forms.TextBox();
             this.button_Add = new System.Windows.Forms.Button();
             this.button_Delete = new System.Windows.Forms.Button();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.comboBox_RackName = new System.Windows.Forms.ComboBox();
+            this.comboBox_RackLayer = new System.Windows.Forms.ComboBox();
+            this.comboBox_RackBox = new System.Windows.Forms.ComboBox();
             this.listView = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.comboBox3 = new System.Windows.Forms.ComboBox();
+            this.button_ChangeRackInfo = new System.Windows.Forms.Button();
             this.tableLayoutPanel_Main.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
@@ -60,12 +61,14 @@ namespace WMS.Windows
             this.tableLayoutPanel_Main.ColumnCount = 1;
             this.tableLayoutPanel_Main.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel_Main.Controls.Add(this.tableLayoutPanel1, 0, 0);
-            this.tableLayoutPanel_Main.Controls.Add(this.listView, 0, 2);
             this.tableLayoutPanel_Main.Controls.Add(this.tableLayoutPanel2, 0, 1);
+            this.tableLayoutPanel_Main.Controls.Add(this.listView, 0, 3);
+            this.tableLayoutPanel_Main.Controls.Add(this.button_ChangeRackInfo, 0, 2);
             this.tableLayoutPanel_Main.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel_Main.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel_Main.Name = "tableLayoutPanel_Main";
-            this.tableLayoutPanel_Main.RowCount = 3;
+            this.tableLayoutPanel_Main.RowCount = 4;
+            this.tableLayoutPanel_Main.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel_Main.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel_Main.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel_Main.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
@@ -154,48 +157,6 @@ namespace WMS.Windows
             this.button_Delete.UseVisualStyleBackColor = true;
             this.button_Delete.Click += new System.EventHandler(this.button_Delete_Click);
             // 
-            // listView
-            // 
-            this.listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2,
-            this.columnHeader3,
-            this.columnHeader4,
-            this.columnHeader5});
-            this.listView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView.FullRowSelect = true;
-            this.listView.HideSelection = false;
-            this.listView.Location = new System.Drawing.Point(3, 72);
-            this.listView.Name = "listView";
-            this.listView.Size = new System.Drawing.Size(469, 513);
-            this.listView.TabIndex = 0;
-            this.listView.UseCompatibleStateImageBehavior = false;
-            this.listView.View = System.Windows.Forms.View.Details;
-            this.listView.SelectedIndexChanged += new System.EventHandler(this.listView_SelectedIndexChanged);
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "物料名稱";
-            this.columnHeader1.Width = 230;
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "材積";
-            this.columnHeader2.Width = 119;
-            // 
-            // columnHeader3
-            // 
-            this.columnHeader3.Text = "料架";
-            this.columnHeader3.Width = 117;
-            // 
-            // columnHeader4
-            // 
-            this.columnHeader4.Text = "層";
-            // 
-            // columnHeader5
-            // 
-            this.columnHeader5.Text = "材料箱";
-            // 
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.AutoSize = true;
@@ -209,9 +170,9 @@ namespace WMS.Windows
             this.tableLayoutPanel2.Controls.Add(this.label3, 0, 0);
             this.tableLayoutPanel2.Controls.Add(this.label4, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.label5, 4, 0);
-            this.tableLayoutPanel2.Controls.Add(this.comboBox1, 1, 0);
-            this.tableLayoutPanel2.Controls.Add(this.comboBox2, 3, 0);
-            this.tableLayoutPanel2.Controls.Add(this.comboBox3, 5, 0);
+            this.tableLayoutPanel2.Controls.Add(this.comboBox_RackName, 1, 0);
+            this.tableLayoutPanel2.Controls.Add(this.comboBox_RackLayer, 3, 0);
+            this.tableLayoutPanel2.Controls.Add(this.comboBox_RackBox, 5, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 40);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
@@ -250,32 +211,86 @@ namespace WMS.Windows
             this.label5.TabIndex = 2;
             this.label5.Text = "材料箱：";
             // 
-            // comboBox1
+            // comboBox_RackName
             // 
-            this.comboBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(50, 3);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(158, 20);
-            this.comboBox1.TabIndex = 3;
+            this.comboBox_RackName.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comboBox_RackName.FormattingEnabled = true;
+            this.comboBox_RackName.Location = new System.Drawing.Point(50, 3);
+            this.comboBox_RackName.Name = "comboBox_RackName";
+            this.comboBox_RackName.Size = new System.Drawing.Size(158, 20);
+            this.comboBox_RackName.TabIndex = 3;
+            this.comboBox_RackName.SelectedIndexChanged += new System.EventHandler(this.comboBox_RackName_SelectedIndexChanged);
             // 
-            // comboBox2
+            // comboBox_RackLayer
             // 
-            this.comboBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(249, 3);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(76, 20);
-            this.comboBox2.TabIndex = 4;
+            this.comboBox_RackLayer.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comboBox_RackLayer.FormattingEnabled = true;
+            this.comboBox_RackLayer.Location = new System.Drawing.Point(249, 3);
+            this.comboBox_RackLayer.Name = "comboBox_RackLayer";
+            this.comboBox_RackLayer.Size = new System.Drawing.Size(76, 20);
+            this.comboBox_RackLayer.TabIndex = 4;
             // 
-            // comboBox3
+            // comboBox_RackBox
             // 
-            this.comboBox3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(390, 3);
-            this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(76, 20);
-            this.comboBox3.TabIndex = 5;
+            this.comboBox_RackBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comboBox_RackBox.FormattingEnabled = true;
+            this.comboBox_RackBox.Location = new System.Drawing.Point(390, 3);
+            this.comboBox_RackBox.Name = "comboBox_RackBox";
+            this.comboBox_RackBox.Size = new System.Drawing.Size(76, 20);
+            this.comboBox_RackBox.TabIndex = 5;
+            // 
+            // listView
+            // 
+            this.listView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2,
+            this.columnHeader3,
+            this.columnHeader4,
+            this.columnHeader5});
+            this.listView.FullRowSelect = true;
+            this.listView.HideSelection = false;
+            this.listView.Location = new System.Drawing.Point(3, 101);
+            this.listView.MultiSelect = false;
+            this.listView.Name = "listView";
+            this.listView.Size = new System.Drawing.Size(469, 484);
+            this.listView.TabIndex = 0;
+            this.listView.UseCompatibleStateImageBehavior = false;
+            this.listView.View = System.Windows.Forms.View.Details;
+            this.listView.SelectedIndexChanged += new System.EventHandler(this.listView_SelectedIndexChanged);
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "物料名稱";
+            this.columnHeader1.Width = 230;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "材積";
+            this.columnHeader2.Width = 119;
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "料架";
+            this.columnHeader3.Width = 117;
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "層";
+            // 
+            // columnHeader5
+            // 
+            this.columnHeader5.Text = "材料箱";
+            // 
+            // button_ChangeRackInfo
+            // 
+            this.button_ChangeRackInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.button_ChangeRackInfo.Location = new System.Drawing.Point(3, 72);
+            this.button_ChangeRackInfo.Name = "button_ChangeRackInfo";
+            this.button_ChangeRackInfo.Size = new System.Drawing.Size(469, 23);
+            this.button_ChangeRackInfo.TabIndex = 4;
+            this.button_ChangeRackInfo.Text = "變更所屬料架資訊";
+            this.button_ChangeRackInfo.UseVisualStyleBackColor = true;
+            this.button_ChangeRackInfo.Click += new System.EventHandler(this.button_ChangeRackInfo_Click);
             // 
             // MaterialsManagementWindow
             // 
@@ -307,9 +322,9 @@ namespace WMS.Windows
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.ComboBox comboBox2;
-        private System.Windows.Forms.ComboBox comboBox3;
+        private System.Windows.Forms.ComboBox comboBox_RackName;
+        private System.Windows.Forms.ComboBox comboBox_RackLayer;
+        private System.Windows.Forms.ComboBox comboBox_RackBox;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
@@ -320,5 +335,6 @@ namespace WMS.Windows
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.ColumnHeader columnHeader5;
+        private System.Windows.Forms.Button button_ChangeRackInfo;
     }
 }

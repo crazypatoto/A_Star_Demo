@@ -19,6 +19,10 @@ namespace WMS.Models
         public int BoxLength { get; set; }
         [Name("材料箱寬")]
         public int BoxWidth { get; set; }    
-        public int BoxCountPerLayer { get { return 2 * (int)(RackLength / this.BoxLength) + 2 * (int)(RackWidth / this.BoxWidth) - 4; } }        
+        public int BoxCountPerLayer { get { return 2 * (int)(RackLength / this.BoxLength) + 2 * (int)(RackWidth / this.BoxWidth) - 4; } }
+        public override string ToString()
+        {
+            return this.RackName;
+        }
     }
 }
