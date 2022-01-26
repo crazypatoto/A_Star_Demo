@@ -81,6 +81,7 @@ namespace WMS
         }
         public void DrawNewMap()
         {
+            if (_drawSize.Width == 0 || _drawSize.Height == 0) return;
             _mapBMP?.Dispose();
             GC.Collect();
             _mapBMP = new Bitmap(_drawSize.Width, _drawSize.Height);
@@ -102,7 +103,7 @@ namespace WMS
                             if (currentNode.Type != MapNode.Types.None)
                             {
                                 graphics.FillRectangle(brush, drawX * _scaledCellSize, drawY * _scaledCellSize, _scaledCellSize, _scaledCellSize);
-                            }                            
+                            }
                         }
                         // Draw gird lines
                         graphics.DrawLine(new Pen(Color.White, GridWidth), OffsetX * _scaledCellSize, drawY * _scaledCellSize, (_currentMap.Width + OffsetX) * _scaledCellSize, drawY * _scaledCellSize);
@@ -142,10 +143,11 @@ namespace WMS
                 }
             }
         }
-               
-       
+
+
         public void DrawRacks(List<Rack> rackList)
         {
+            if (rackList == null) return;
             using (var graphics = Graphics.FromImage(_mapBMP))
             {
                 foreach (var rack in rackList)
@@ -165,13 +167,13 @@ namespace WMS
                         case Rack.RackHeading.Down:
                             rackImage = Properties.Resources.Rack_Down;
                             break;
-                    }                    
+                    }
                     graphics.DrawImage(rackImage, (rack.CurrentNode.Location.X + OffsetX) * _scaledCellSize, (rack.CurrentNode.Location.Y + OffsetY) * _scaledCellSize, _scaledCellSize, _scaledCellSize);
-                    graphics.DrawString(rack.ID.ToString(), new Font("Consolas", (int)(_scaledCellSize*0.4)), new SolidBrush(Color.White), (rack.CurrentNode.Location.X + OffsetX) * _scaledCellSize + _scaledCellSize, (rack.CurrentNode.Location.Y + OffsetY) * _scaledCellSize , new StringFormat() { Alignment = StringAlignment.Far});
+                    graphics.DrawString(rack.ID.ToString(), new Font("Consolas", (int)(_scaledCellSize * 0.4)), new SolidBrush(Color.White), (rack.CurrentNode.Location.X + OffsetX) * _scaledCellSize + _scaledCellSize, (rack.CurrentNode.Location.Y + OffsetY) * _scaledCellSize, new StringFormat() { Alignment = StringAlignment.Far });
                 }
             }
         }
-      
+
         public MapNode GetNodeByPosition(int x, int y)
         {
             int nodeX = x / _scaledCellSize - OffsetX;

@@ -50,43 +50,37 @@ namespace WMS
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
-            this.button1 = new System.Windows.Forms.Button();
-            this.label8 = new System.Windows.Forms.Label();
-            this.comboBox4 = new System.Windows.Forms.ComboBox();
+            this.comboBox_MaterialList = new System.Windows.Forms.ComboBox();
+            this.comboBox_Destination = new System.Windows.Forms.ComboBox();
+            this.numericUpDown_Quantity = new System.Windows.Forms.NumericUpDown();
+            this.button_AddToWorkOrder = new System.Windows.Forms.Button();
             this.tableLayoutPanel3 = new System.Windows.Forms.TableLayoutPanel();
             this.label5 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.button2 = new System.Windows.Forms.Button();
-            this.comboBox3 = new System.Windows.Forms.ComboBox();
+            this.textBox_WorkOrderUUID = new System.Windows.Forms.TextBox();
+            this.button_LoadWorkOderTemplate = new System.Windows.Forms.Button();
+            this.comboBox_WorkOrderTemplates = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.button3 = new System.Windows.Forms.Button();
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.button_NewWorkOrder = new System.Windows.Forms.Button();
+            this.listView_MissionList = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.button4 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
+            this.columnHeader13 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader14 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.button_AddToQueue = new System.Windows.Forms.Button();
+            this.button_DeleteSelectedMission = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
-            this.listView3 = new System.Windows.Forms.ListView();
+            this.listView_WorkOrderQueue = new System.Windows.Forms.ListView();
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader9 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.button7 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
-            this.button8 = new System.Windows.Forms.Button();
-            this.button9 = new System.Windows.Forms.Button();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.listView2 = new System.Windows.Forms.ListView();
-            this.columnHeader8 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader10 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader11 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader12 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.button_RemoveWorkOrderFromQueue = new System.Windows.Forms.Button();
+            this.button_EditWorkOrder = new System.Windows.Forms.Button();
+            this.button_MoveWorkOrderUp = new System.Windows.Forms.Button();
+            this.button_MoveWorkOrderDown = new System.Windows.Forms.Button();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel_ConnectionState = new System.Windows.Forms.ToolStripStatusLabel();
@@ -104,11 +98,10 @@ namespace WMS
             this.groupBox_WorkOrder.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Quantity)).BeginInit();
             this.tableLayoutPanel3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -212,6 +205,7 @@ namespace WMS
             this.textBox_Event.Multiline = true;
             this.textBox_Event.Name = "textBox_Event";
             this.textBox_Event.ReadOnly = true;
+            this.textBox_Event.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBox_Event.Size = new System.Drawing.Size(646, 72);
             this.textBox_Event.TabIndex = 0;
             // 
@@ -245,7 +239,6 @@ namespace WMS
             this.tableLayoutPanel_WorkOrder.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 45F));
             this.tableLayoutPanel_WorkOrder.Controls.Add(this.groupBox_WorkOrder, 0, 0);
             this.tableLayoutPanel_WorkOrder.Controls.Add(this.groupBox1, 0, 1);
-            this.tableLayoutPanel_WorkOrder.Controls.Add(this.groupBox2, 1, 1);
             this.tableLayoutPanel_WorkOrder.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel_WorkOrder.Location = new System.Drawing.Point(667, 3);
             this.tableLayoutPanel_WorkOrder.Name = "tableLayoutPanel_WorkOrder";
@@ -273,9 +266,9 @@ namespace WMS
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel2, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel3, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.listView1, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.button4, 0, 5);
-            this.tableLayoutPanel1.Controls.Add(this.button5, 0, 4);
+            this.tableLayoutPanel1.Controls.Add(this.listView_MissionList, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.button_AddToQueue, 0, 5);
+            this.tableLayoutPanel1.Controls.Add(this.button_DeleteSelectedMission, 0, 4);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 19);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -292,38 +285,34 @@ namespace WMS
             // tableLayoutPanel2
             // 
             this.tableLayoutPanel2.AutoSize = true;
-            this.tableLayoutPanel2.ColumnCount = 9;
+            this.tableLayoutPanel2.ColumnCount = 7;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15F));
             this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tableLayoutPanel2.Controls.Add(this.label1, 0, 0);
             this.tableLayoutPanel2.Controls.Add(this.label2, 2, 0);
             this.tableLayoutPanel2.Controls.Add(this.label3, 4, 0);
-            this.tableLayoutPanel2.Controls.Add(this.comboBox1, 1, 0);
-            this.tableLayoutPanel2.Controls.Add(this.comboBox2, 3, 0);
-            this.tableLayoutPanel2.Controls.Add(this.numericUpDown1, 5, 0);
-            this.tableLayoutPanel2.Controls.Add(this.button1, 8, 0);
-            this.tableLayoutPanel2.Controls.Add(this.label8, 6, 0);
-            this.tableLayoutPanel2.Controls.Add(this.comboBox4, 7, 0);
+            this.tableLayoutPanel2.Controls.Add(this.comboBox_MaterialList, 1, 0);
+            this.tableLayoutPanel2.Controls.Add(this.comboBox_Destination, 3, 0);
+            this.tableLayoutPanel2.Controls.Add(this.numericUpDown_Quantity, 5, 0);
+            this.tableLayoutPanel2.Controls.Add(this.button_AddToWorkOrder, 6, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 40);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(640, 31);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(640, 29);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
             // label1
             // 
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 7);
+            this.label1.Location = new System.Drawing.Point(3, 6);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(68, 16);
             this.label1.TabIndex = 0;
@@ -333,7 +322,7 @@ namespace WMS
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(191, 7);
+            this.label2.Location = new System.Drawing.Point(213, 6);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(56, 16);
             this.label2.TabIndex = 1;
@@ -343,81 +332,68 @@ namespace WMS
             // 
             this.label3.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(329, 7);
+            this.label3.Location = new System.Drawing.Point(411, 6);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(44, 16);
             this.label3.TabIndex = 2;
             this.label3.Text = "數量：";
             // 
-            // comboBox1
+            // comboBox_MaterialList
             // 
-            this.comboBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(77, 3);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(108, 24);
-            this.comboBox1.TabIndex = 4;
+            this.comboBox_MaterialList.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.comboBox_MaterialList.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.comboBox_MaterialList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comboBox_MaterialList.FormattingEnabled = true;
+            this.comboBox_MaterialList.Location = new System.Drawing.Point(77, 3);
+            this.comboBox_MaterialList.Name = "comboBox_MaterialList";
+            this.comboBox_MaterialList.Size = new System.Drawing.Size(130, 24);
+            this.comboBox_MaterialList.TabIndex = 4;
+            this.comboBox_MaterialList.SelectedIndexChanged += new System.EventHandler(this.comboBox_MaterialList_SelectedIndexChanged);
             // 
-            // comboBox2
+            // comboBox_Destination
             // 
-            this.comboBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Location = new System.Drawing.Point(253, 3);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(70, 24);
-            this.comboBox2.TabIndex = 5;
+            this.comboBox_Destination.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.comboBox_Destination.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.comboBox_Destination.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comboBox_Destination.FormattingEnabled = true;
+            this.comboBox_Destination.Location = new System.Drawing.Point(275, 3);
+            this.comboBox_Destination.Name = "comboBox_Destination";
+            this.comboBox_Destination.Size = new System.Drawing.Size(130, 24);
+            this.comboBox_Destination.TabIndex = 5;
             // 
-            // numericUpDown1
+            // numericUpDown_Quantity
             // 
-            this.numericUpDown1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.numericUpDown1.Location = new System.Drawing.Point(379, 3);
-            this.numericUpDown1.Maximum = new decimal(new int[] {
+            this.numericUpDown_Quantity.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.numericUpDown_Quantity.Location = new System.Drawing.Point(461, 3);
+            this.numericUpDown_Quantity.Maximum = new decimal(new int[] {
             1000,
             0,
             0,
             0});
-            this.numericUpDown1.Minimum = new decimal(new int[] {
+            this.numericUpDown_Quantity.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(51, 23);
-            this.numericUpDown1.TabIndex = 6;
-            this.numericUpDown1.Value = new decimal(new int[] {
+            this.numericUpDown_Quantity.Name = "numericUpDown_Quantity";
+            this.numericUpDown_Quantity.Size = new System.Drawing.Size(84, 23);
+            this.numericUpDown_Quantity.TabIndex = 6;
+            this.numericUpDown_Quantity.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
             // 
-            // button1
+            // button_AddToWorkOrder
             // 
-            this.button1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button1.Location = new System.Drawing.Point(567, 3);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(70, 25);
-            this.button1.TabIndex = 3;
-            this.button1.Text = "加到工單";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // label8
-            // 
-            this.label8.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(436, 7);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(68, 16);
-            this.label8.TabIndex = 7;
-            this.label8.Text = "取料方向：";
-            // 
-            // comboBox4
-            // 
-            this.comboBox4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comboBox4.FormattingEnabled = true;
-            this.comboBox4.Location = new System.Drawing.Point(510, 3);
-            this.comboBox4.Name = "comboBox4";
-            this.comboBox4.Size = new System.Drawing.Size(51, 24);
-            this.comboBox4.TabIndex = 8;
+            this.button_AddToWorkOrder.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.button_AddToWorkOrder.Location = new System.Drawing.Point(551, 3);
+            this.button_AddToWorkOrder.Name = "button_AddToWorkOrder";
+            this.button_AddToWorkOrder.Size = new System.Drawing.Size(86, 23);
+            this.button_AddToWorkOrder.TabIndex = 7;
+            this.button_AddToWorkOrder.Text = "加入工單";
+            this.button_AddToWorkOrder.UseVisualStyleBackColor = true;
+            this.button_AddToWorkOrder.Click += new System.EventHandler(this.button_AddToWorkOrder_Click);
             // 
             // tableLayoutPanel3
             // 
@@ -430,11 +406,11 @@ namespace WMS
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
             this.tableLayoutPanel3.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15F));
             this.tableLayoutPanel3.Controls.Add(this.label5, 0, 0);
-            this.tableLayoutPanel3.Controls.Add(this.textBox2, 1, 0);
-            this.tableLayoutPanel3.Controls.Add(this.button2, 5, 0);
-            this.tableLayoutPanel3.Controls.Add(this.comboBox3, 4, 0);
+            this.tableLayoutPanel3.Controls.Add(this.textBox_WorkOrderUUID, 1, 0);
+            this.tableLayoutPanel3.Controls.Add(this.button_LoadWorkOderTemplate, 5, 0);
+            this.tableLayoutPanel3.Controls.Add(this.comboBox_WorkOrderTemplates, 4, 0);
             this.tableLayoutPanel3.Controls.Add(this.label4, 3, 0);
-            this.tableLayoutPanel3.Controls.Add(this.button3, 2, 0);
+            this.tableLayoutPanel3.Controls.Add(this.button_NewWorkOrder, 2, 0);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel3.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
@@ -453,33 +429,34 @@ namespace WMS
             this.label5.TabIndex = 3;
             this.label5.Text = "工單編號：";
             // 
-            // textBox2
+            // textBox_WorkOrderUUID
             // 
-            this.textBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBox2.Location = new System.Drawing.Point(77, 3);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.ReadOnly = true;
-            this.textBox2.Size = new System.Drawing.Size(149, 23);
-            this.textBox2.TabIndex = 4;
+            this.textBox_WorkOrderUUID.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBox_WorkOrderUUID.Location = new System.Drawing.Point(77, 3);
+            this.textBox_WorkOrderUUID.Name = "textBox_WorkOrderUUID";
+            this.textBox_WorkOrderUUID.ReadOnly = true;
+            this.textBox_WorkOrderUUID.Size = new System.Drawing.Size(149, 23);
+            this.textBox_WorkOrderUUID.TabIndex = 4;
             // 
-            // button2
+            // button_LoadWorkOderTemplate
             // 
-            this.button2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button2.Location = new System.Drawing.Point(575, 3);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(62, 25);
-            this.button2.TabIndex = 2;
-            this.button2.Text = "載入";
-            this.button2.UseVisualStyleBackColor = true;
+            this.button_LoadWorkOderTemplate.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.button_LoadWorkOderTemplate.Location = new System.Drawing.Point(575, 3);
+            this.button_LoadWorkOderTemplate.Name = "button_LoadWorkOderTemplate";
+            this.button_LoadWorkOderTemplate.Size = new System.Drawing.Size(62, 25);
+            this.button_LoadWorkOderTemplate.TabIndex = 2;
+            this.button_LoadWorkOderTemplate.Text = "載入";
+            this.button_LoadWorkOderTemplate.UseVisualStyleBackColor = true;
+            this.button_LoadWorkOderTemplate.Click += new System.EventHandler(this.button_LoadWorkOderTemplate_Click);
             // 
-            // comboBox3
+            // comboBox_WorkOrderTemplates
             // 
-            this.comboBox3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Location = new System.Drawing.Point(420, 3);
-            this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(149, 24);
-            this.comboBox3.TabIndex = 1;
+            this.comboBox_WorkOrderTemplates.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.comboBox_WorkOrderTemplates.FormattingEnabled = true;
+            this.comboBox_WorkOrderTemplates.Location = new System.Drawing.Point(420, 3);
+            this.comboBox_WorkOrderTemplates.Name = "comboBox_WorkOrderTemplates";
+            this.comboBox_WorkOrderTemplates.Size = new System.Drawing.Size(149, 24);
+            this.comboBox_WorkOrderTemplates.TabIndex = 1;
             // 
             // label4
             // 
@@ -491,33 +468,37 @@ namespace WMS
             this.label4.TabIndex = 0;
             this.label4.Text = "選擇現有工單模板：";
             // 
-            // button3
+            // button_NewWorkOrder
             // 
-            this.button3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button3.Location = new System.Drawing.Point(232, 3);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(60, 25);
-            this.button3.TabIndex = 5;
-            this.button3.Text = "新工單";
-            this.button3.UseVisualStyleBackColor = true;
+            this.button_NewWorkOrder.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.button_NewWorkOrder.Location = new System.Drawing.Point(232, 3);
+            this.button_NewWorkOrder.Name = "button_NewWorkOrder";
+            this.button_NewWorkOrder.Size = new System.Drawing.Size(60, 25);
+            this.button_NewWorkOrder.TabIndex = 5;
+            this.button_NewWorkOrder.Text = "新工單";
+            this.button_NewWorkOrder.UseVisualStyleBackColor = true;
+            this.button_NewWorkOrder.Click += new System.EventHandler(this.button_NewWorkOrder_Click);
             // 
-            // listView1
+            // listView_MissionList
             // 
-            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.listView_MissionList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader4,
             this.columnHeader2,
-            this.columnHeader3});
-            this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView1.GridLines = true;
-            this.listView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
-            this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(3, 77);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(640, 166);
-            this.listView1.TabIndex = 2;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.Details;
+            this.columnHeader3,
+            this.columnHeader13,
+            this.columnHeader14});
+            this.listView_MissionList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listView_MissionList.FullRowSelect = true;
+            this.listView_MissionList.GridLines = true;
+            this.listView_MissionList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+            this.listView_MissionList.HideSelection = false;
+            this.listView_MissionList.Location = new System.Drawing.Point(3, 75);
+            this.listView_MissionList.Name = "listView_MissionList";
+            this.listView_MissionList.Size = new System.Drawing.Size(640, 168);
+            this.listView_MissionList.TabIndex = 2;
+            this.listView_MissionList.UseCompatibleStateImageBehavior = false;
+            this.listView_MissionList.View = System.Windows.Forms.View.Details;
             // 
             // columnHeader1
             // 
@@ -527,44 +508,58 @@ namespace WMS
             // columnHeader4
             // 
             this.columnHeader4.Text = "所屬料架";
-            this.columnHeader4.Width = 120;
+            this.columnHeader4.Width = 117;
             // 
             // columnHeader2
             // 
             this.columnHeader2.Text = "目的地";
-            this.columnHeader2.Width = 100;
+            this.columnHeader2.Width = 116;
             // 
             // columnHeader3
             // 
             this.columnHeader3.Text = "數量";
+            this.columnHeader3.Width = 70;
             // 
-            // button4
+            // columnHeader13
             // 
-            this.button4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button4.Location = new System.Drawing.Point(3, 278);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(640, 23);
-            this.button4.TabIndex = 3;
-            this.button4.Text = "新增目前工單到佇列";
-            this.button4.UseVisualStyleBackColor = true;
+            this.columnHeader13.Text = "可供取料方向";
+            this.columnHeader13.Width = 95;
             // 
-            // button5
+            // columnHeader14
             // 
-            this.button5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button5.Location = new System.Drawing.Point(3, 249);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(640, 23);
-            this.button5.TabIndex = 4;
-            this.button5.Text = "移除所有選取任務";
-            this.button5.UseVisualStyleBackColor = true;
+            this.columnHeader14.Text = "目前取料方向";
+            this.columnHeader14.Width = 95;
+            // 
+            // button_AddToQueue
+            // 
+            this.button_AddToQueue.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.button_AddToQueue.Location = new System.Drawing.Point(3, 278);
+            this.button_AddToQueue.Name = "button_AddToQueue";
+            this.button_AddToQueue.Size = new System.Drawing.Size(640, 23);
+            this.button_AddToQueue.TabIndex = 3;
+            this.button_AddToQueue.Text = "新增目前工單到佇列";
+            this.button_AddToQueue.UseVisualStyleBackColor = true;
+            this.button_AddToQueue.Click += new System.EventHandler(this.button_AddToQueue_Click);
+            // 
+            // button_DeleteSelectedMission
+            // 
+            this.button_DeleteSelectedMission.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.button_DeleteSelectedMission.Location = new System.Drawing.Point(3, 249);
+            this.button_DeleteSelectedMission.Name = "button_DeleteSelectedMission";
+            this.button_DeleteSelectedMission.Size = new System.Drawing.Size(640, 23);
+            this.button_DeleteSelectedMission.TabIndex = 4;
+            this.button_DeleteSelectedMission.Text = "移除選取任務";
+            this.button_DeleteSelectedMission.UseVisualStyleBackColor = true;
+            this.button_DeleteSelectedMission.Click += new System.EventHandler(this.button_DeleteSelectedMission_Click);
             // 
             // groupBox1
             // 
+            this.tableLayoutPanel_WorkOrder.SetColumnSpan(this.groupBox1, 2);
             this.groupBox1.Controls.Add(this.tableLayoutPanel4);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(3, 335);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(355, 327);
+            this.groupBox1.Size = new System.Drawing.Size(652, 327);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "工單佇列";
@@ -574,11 +569,11 @@ namespace WMS
             this.tableLayoutPanel4.ColumnCount = 2;
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel4.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 30F));
-            this.tableLayoutPanel4.Controls.Add(this.listView3, 0, 0);
-            this.tableLayoutPanel4.Controls.Add(this.button7, 0, 3);
-            this.tableLayoutPanel4.Controls.Add(this.button6, 0, 2);
-            this.tableLayoutPanel4.Controls.Add(this.button8, 1, 0);
-            this.tableLayoutPanel4.Controls.Add(this.button9, 1, 1);
+            this.tableLayoutPanel4.Controls.Add(this.listView_WorkOrderQueue, 0, 0);
+            this.tableLayoutPanel4.Controls.Add(this.button_RemoveWorkOrderFromQueue, 0, 3);
+            this.tableLayoutPanel4.Controls.Add(this.button_EditWorkOrder, 0, 2);
+            this.tableLayoutPanel4.Controls.Add(this.button_MoveWorkOrderUp, 1, 0);
+            this.tableLayoutPanel4.Controls.Add(this.button_MoveWorkOrderDown, 1, 1);
             this.tableLayoutPanel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel4.Location = new System.Drawing.Point(3, 19);
             this.tableLayoutPanel4.Name = "tableLayoutPanel4";
@@ -587,132 +582,94 @@ namespace WMS
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel4.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel4.Size = new System.Drawing.Size(349, 305);
+            this.tableLayoutPanel4.Size = new System.Drawing.Size(646, 305);
             this.tableLayoutPanel4.TabIndex = 0;
             // 
-            // listView3
+            // listView_WorkOrderQueue
             // 
-            this.listView3.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.listView_WorkOrderQueue.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader5,
             this.columnHeader6,
             this.columnHeader7,
             this.columnHeader9});
-            this.listView3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView3.HideSelection = false;
-            this.listView3.Location = new System.Drawing.Point(3, 3);
-            this.listView3.Name = "listView3";
-            this.tableLayoutPanel4.SetRowSpan(this.listView3, 2);
-            this.listView3.Size = new System.Drawing.Size(313, 236);
-            this.listView3.TabIndex = 0;
-            this.listView3.UseCompatibleStateImageBehavior = false;
-            this.listView3.View = System.Windows.Forms.View.Details;
+            this.listView_WorkOrderQueue.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listView_WorkOrderQueue.FullRowSelect = true;
+            this.listView_WorkOrderQueue.HideSelection = false;
+            this.listView_WorkOrderQueue.Location = new System.Drawing.Point(3, 3);
+            this.listView_WorkOrderQueue.MultiSelect = false;
+            this.listView_WorkOrderQueue.Name = "listView_WorkOrderQueue";
+            this.tableLayoutPanel4.SetRowSpan(this.listView_WorkOrderQueue, 2);
+            this.listView_WorkOrderQueue.Size = new System.Drawing.Size(610, 236);
+            this.listView_WorkOrderQueue.TabIndex = 0;
+            this.listView_WorkOrderQueue.UseCompatibleStateImageBehavior = false;
+            this.listView_WorkOrderQueue.View = System.Windows.Forms.View.Details;
+            this.listView_WorkOrderQueue.SelectedIndexChanged += new System.EventHandler(this.listView_WorkOrderQueue_SelectedIndexChanged);
             // 
             // columnHeader5
             // 
             this.columnHeader5.Text = "工單編號";
-            this.columnHeader5.Width = 101;
+            this.columnHeader5.Width = 283;
             // 
             // columnHeader6
             // 
-            this.columnHeader6.Text = "需要AGV數量";
-            this.columnHeader6.Width = 88;
+            this.columnHeader6.Text = "任務數量";
+            this.columnHeader6.Width = 67;
             // 
             // columnHeader7
             // 
-            this.columnHeader7.Text = "建立時間";
-            this.columnHeader7.Width = 70;
+            this.columnHeader7.Text = "佇列時間";
+            this.columnHeader7.Width = 159;
             // 
             // columnHeader9
             // 
             this.columnHeader9.Text = "狀態";
+            this.columnHeader9.Width = 77;
             // 
-            // button7
+            // button_RemoveWorkOrderFromQueue
             // 
-            this.tableLayoutPanel4.SetColumnSpan(this.button7, 2);
-            this.button7.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button7.Location = new System.Drawing.Point(3, 274);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(343, 28);
-            this.button7.TabIndex = 2;
-            this.button7.Text = "從佇列中移除";
-            this.button7.UseVisualStyleBackColor = true;
+            this.tableLayoutPanel4.SetColumnSpan(this.button_RemoveWorkOrderFromQueue, 2);
+            this.button_RemoveWorkOrderFromQueue.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.button_RemoveWorkOrderFromQueue.Location = new System.Drawing.Point(3, 274);
+            this.button_RemoveWorkOrderFromQueue.Name = "button_RemoveWorkOrderFromQueue";
+            this.button_RemoveWorkOrderFromQueue.Size = new System.Drawing.Size(640, 28);
+            this.button_RemoveWorkOrderFromQueue.TabIndex = 2;
+            this.button_RemoveWorkOrderFromQueue.Text = "從佇列中移除";
+            this.button_RemoveWorkOrderFromQueue.UseVisualStyleBackColor = true;
+            this.button_RemoveWorkOrderFromQueue.Click += new System.EventHandler(this.button_RemoveWorkOrderFromQueue_Click);
             // 
-            // button6
+            // button_EditWorkOrder
             // 
-            this.tableLayoutPanel4.SetColumnSpan(this.button6, 2);
-            this.button6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button6.Location = new System.Drawing.Point(3, 245);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(343, 23);
-            this.button6.TabIndex = 1;
-            this.button6.Text = "移到工單任務編輯區";
-            this.button6.UseVisualStyleBackColor = true;
+            this.tableLayoutPanel4.SetColumnSpan(this.button_EditWorkOrder, 2);
+            this.button_EditWorkOrder.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.button_EditWorkOrder.Location = new System.Drawing.Point(3, 245);
+            this.button_EditWorkOrder.Name = "button_EditWorkOrder";
+            this.button_EditWorkOrder.Size = new System.Drawing.Size(640, 23);
+            this.button_EditWorkOrder.TabIndex = 1;
+            this.button_EditWorkOrder.Text = "移到工單任務編輯區";
+            this.button_EditWorkOrder.UseVisualStyleBackColor = true;
+            this.button_EditWorkOrder.Click += new System.EventHandler(this.button_EditWorkOrder_Click);
             // 
-            // button8
+            // button_MoveWorkOrderUp
             // 
-            this.button8.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button8.Location = new System.Drawing.Point(322, 3);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(24, 115);
-            this.button8.TabIndex = 3;
-            this.button8.Text = "上移";
-            this.button8.UseVisualStyleBackColor = true;
+            this.button_MoveWorkOrderUp.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.button_MoveWorkOrderUp.Location = new System.Drawing.Point(619, 3);
+            this.button_MoveWorkOrderUp.Name = "button_MoveWorkOrderUp";
+            this.button_MoveWorkOrderUp.Size = new System.Drawing.Size(24, 115);
+            this.button_MoveWorkOrderUp.TabIndex = 3;
+            this.button_MoveWorkOrderUp.Text = "上移";
+            this.button_MoveWorkOrderUp.UseVisualStyleBackColor = true;
+            this.button_MoveWorkOrderUp.Click += new System.EventHandler(this.button_MoveWorkOrderUp_Click);
             // 
-            // button9
+            // button_MoveWorkOrderDown
             // 
-            this.button9.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button9.Location = new System.Drawing.Point(322, 124);
-            this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(24, 115);
-            this.button9.TabIndex = 4;
-            this.button9.Text = "下移";
-            this.button9.UseVisualStyleBackColor = true;
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.listView2);
-            this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox2.Location = new System.Drawing.Point(364, 335);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(291, 327);
-            this.groupBox2.TabIndex = 2;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "已完成工單";
-            // 
-            // listView2
-            // 
-            this.listView2.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader8,
-            this.columnHeader10,
-            this.columnHeader11,
-            this.columnHeader12});
-            this.listView2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listView2.HideSelection = false;
-            this.listView2.Location = new System.Drawing.Point(3, 19);
-            this.listView2.Name = "listView2";
-            this.listView2.Size = new System.Drawing.Size(285, 305);
-            this.listView2.TabIndex = 0;
-            this.listView2.UseCompatibleStateImageBehavior = false;
-            this.listView2.View = System.Windows.Forms.View.Details;
-            // 
-            // columnHeader8
-            // 
-            this.columnHeader8.Text = "工單編號";
-            this.columnHeader8.Width = 68;
-            // 
-            // columnHeader10
-            // 
-            this.columnHeader10.Text = "建立時間";
-            this.columnHeader10.Width = 67;
-            // 
-            // columnHeader11
-            // 
-            this.columnHeader11.Text = "完成時間";
-            this.columnHeader11.Width = 62;
-            // 
-            // columnHeader12
-            // 
-            this.columnHeader12.Text = "狀態";
+            this.button_MoveWorkOrderDown.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.button_MoveWorkOrderDown.Location = new System.Drawing.Point(619, 124);
+            this.button_MoveWorkOrderDown.Name = "button_MoveWorkOrderDown";
+            this.button_MoveWorkOrderDown.Size = new System.Drawing.Size(24, 115);
+            this.button_MoveWorkOrderDown.TabIndex = 4;
+            this.button_MoveWorkOrderDown.Text = "下移";
+            this.button_MoveWorkOrderDown.UseVisualStyleBackColor = true;
+            this.button_MoveWorkOrderDown.Click += new System.EventHandler(this.button_MoveWorkOrderDown_Click);
             // 
             // statusStrip
             // 
@@ -779,6 +736,7 @@ namespace WMS
             this.MainMenuStrip = this.menuStrip;
             this.Name = "WMS";
             this.Text = "WMS";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.WMS_FormClosed);
             this.Shown += new System.EventHandler(this.WMS_Shown);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
@@ -794,12 +752,11 @@ namespace WMS
             this.tableLayoutPanel1.PerformLayout();
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Quantity)).EndInit();
             this.tableLayoutPanel3.ResumeLayout(false);
             this.tableLayoutPanel3.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.tableLayoutPanel4.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
             this.ResumeLayout(false);
@@ -833,45 +790,39 @@ namespace WMS
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.ComboBox comboBox2;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.ComboBox comboBox_MaterialList;
+        private System.Windows.Forms.ComboBox comboBox_Destination;
+        private System.Windows.Forms.NumericUpDown numericUpDown_Quantity;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel3;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.ComboBox comboBox3;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ComboBox comboBox_WorkOrderTemplates;
+        private System.Windows.Forms.Button button_LoadWorkOderTemplate;
+        private System.Windows.Forms.ListView listView_MissionList;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.TextBox textBox_WorkOrderUUID;
+        private System.Windows.Forms.Button button_NewWorkOrder;
+        private System.Windows.Forms.Button button_AddToQueue;
+        private System.Windows.Forms.Button button_DeleteSelectedMission;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
-        private System.Windows.Forms.ListView listView3;
-        private System.Windows.Forms.Button button7;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.Button button8;
-        private System.Windows.Forms.Button button9;
-        private System.Windows.Forms.ListView listView2;
+        private System.Windows.Forms.ListView listView_WorkOrderQueue;
+        private System.Windows.Forms.Button button_RemoveWorkOrderFromQueue;
+        private System.Windows.Forms.Button button_EditWorkOrder;
+        private System.Windows.Forms.Button button_MoveWorkOrderUp;
+        private System.Windows.Forms.Button button_MoveWorkOrderDown;
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.ColumnHeader columnHeader6;
         private System.Windows.Forms.ColumnHeader columnHeader7;
-        private System.Windows.Forms.ColumnHeader columnHeader8;
-        private System.Windows.Forms.ColumnHeader columnHeader10;
-        private System.Windows.Forms.ColumnHeader columnHeader11;
         private System.Windows.Forms.ColumnHeader columnHeader9;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.ComboBox comboBox4;
         private System.Windows.Forms.ToolStripMenuItem materialsManagementToolStripMenuItem;
-        private System.Windows.Forms.ColumnHeader columnHeader12;
         private System.Windows.Forms.Timer timer_RefreshMap;
+        private System.Windows.Forms.Button button_AddToWorkOrder;
+        private System.Windows.Forms.ColumnHeader columnHeader13;
+        private System.Windows.Forms.ColumnHeader columnHeader14;
     }
 }
 

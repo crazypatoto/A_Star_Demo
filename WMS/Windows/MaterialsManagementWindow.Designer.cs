@@ -261,25 +261,27 @@ namespace WMS.Windows
             // columnHeader1
             // 
             this.columnHeader1.Text = "物料名稱";
-            this.columnHeader1.Width = 230;
+            this.columnHeader1.Width = 120;
             // 
             // columnHeader2
             // 
             this.columnHeader2.Text = "材積";
-            this.columnHeader2.Width = 119;
+            this.columnHeader2.Width = 80;
             // 
             // columnHeader3
             // 
             this.columnHeader3.Text = "料架";
-            this.columnHeader3.Width = 117;
+            this.columnHeader3.Width = 120;
             // 
             // columnHeader4
             // 
             this.columnHeader4.Text = "層";
+            this.columnHeader4.Width = 70;
             // 
             // columnHeader5
             // 
             this.columnHeader5.Text = "材料箱";
+            this.columnHeader5.Width = 70;
             // 
             // button_ChangeRackInfo
             // 

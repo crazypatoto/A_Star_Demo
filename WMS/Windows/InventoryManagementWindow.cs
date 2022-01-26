@@ -48,7 +48,6 @@ namespace WMS.Windows
                     targetItem.EnsureVisible();
                     listView.Select();
                 }
-
             }
             else
             {
@@ -109,6 +108,7 @@ namespace WMS.Windows
                     listViewItem.SubItems.Add(targetMaterial.RackName);
                     listViewItem.SubItems.Add(targetMaterial.Layer.ToString());
                     listViewItem.SubItems.Add(targetMaterial.Box.ToString());
+                    listViewItem.SubItems.Add(WorkOrder.Mission.RackFaceDescription[_wms.GetAvailablePickUpFaces(targetMaterial)]);
                     listView.Items.Add(listViewItem);
                 }
             }

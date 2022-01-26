@@ -21,5 +21,10 @@ namespace WMS.Models
         public int Layer { get; set; }
         [Name("材料箱", "Box")]
         public int Box { get; set; }
+
+        public override string ToString()
+        {
+            return this.Name;
+        }
     }    
 }

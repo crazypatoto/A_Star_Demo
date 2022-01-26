@@ -95,5 +95,10 @@ namespace VCS.Maps
         {
             return Math.Abs(this.Location.X - node.Location.X) + Math.Abs(this.Location.Y - node.Location.Y) == 1;
         }
+
+        public override string ToString()
+        {
+            return this.Name;
+        }
     }
 }

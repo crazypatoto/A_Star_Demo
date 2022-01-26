@@ -197,7 +197,7 @@ namespace WMS.Windows
                 listViewItem.SubItems.Add(material.Box.ToString());
                 listView.Items.Add(listViewItem);
             }
-            listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            //listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
         }
 
         public void UpdateRackInfos()
