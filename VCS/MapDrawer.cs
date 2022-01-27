@@ -56,16 +56,7 @@ namespace VCS
                 if (_cellSize < _minCellSize) _cellSize = _minCellSize;
                 _scale = (float)_scaledCellSize / _cellSize;
             }
-        }
-
-        public static Dictionary<MapNode.Types, Color> NodeTypeColorDict = new Dictionary<MapNode.Types, Color> {
-            {MapNode.Types.None, Color.White },
-            {MapNode.Types.Storage, Color.Orange },
-            {MapNode.Types.ChargingStation, Color.Yellow },
-            {MapNode.Types.WorkStationArea, Color.LightBlue},
-            {MapNode.Types.WorkStation, Color.DeepSkyBlue},
-            {MapNode.Types.Wall, Color.DarkGray },
-        };
+        }       
 
         public MapDrawer(VCS vcs, Size drawSize)
         {
@@ -96,7 +87,7 @@ namespace VCS
                         if (x != _vcs.CurrentMap.Width && y != _vcs.CurrentMap.Height)
                         {
                             var currentNode = _vcs.CurrentMap.AllNodes[y, x];
-                            Brush brush = new SolidBrush(NodeTypeColorDict[currentNode.Type]);
+                            Brush brush = new SolidBrush(MapNode.NodeTypeColorDict[currentNode.Type]);
                             // Draw node
                             if (currentNode.Type != MapNode.Types.None)
                             {
@@ -226,7 +217,7 @@ namespace VCS
                             break;
                     }
                     graphics.DrawImage(agvImage, (agv.CurrentNode.Location.X + OffsetX) * _scaledCellSize, (agv.CurrentNode.Location.Y + OffsetY) * _scaledCellSize, _scaledCellSize, _scaledCellSize);
-                    graphics.DrawString(agv.ID.ToString(), new Font("Arial", 16), new SolidBrush(Color.DarkViolet), (agv.CurrentNode.Location.X + OffsetX ) * _scaledCellSize + 16, (agv.CurrentNode.Location.Y + OffsetY) * _scaledCellSize + 16);
+                    graphics.DrawString(agv.ID.ToString(), new Font("Arial", 16), new SolidBrush(Color.DarkViolet), (agv.CurrentNode.Location.X + OffsetX) * _scaledCellSize + 16, (agv.CurrentNode.Location.Y + OffsetY) * _scaledCellSize + 16);
                 }
             }
         }
@@ -239,9 +230,9 @@ namespace VCS
             {
                 foreach (var agv in _vcs.AGVHandler.AGVList)
                 {
-                    if(agv is SimulatedAGV)
+                    if (agv is SimulatedAGV)
                     {
-                        Pen pen = new Pen(Color.Green, GridWidth * 1.5f);                        
+                        Pen pen = new Pen(Color.Green, GridWidth * 1.5f);
                         var path = (agv as SimulatedAGV).AssignedPath?.ToList();
                         if (path == null) continue;
                         if (path.Count == 0) continue;
@@ -253,7 +244,7 @@ namespace VCS
                             pen.Color = interpolatedColor;
                             graphics.DrawRectangle(pen, (path[i].Location.X + OffsetX) * _scaledCellSize, (path[i].Location.Y + OffsetY) * _scaledCellSize, _scaledCellSize, _scaledCellSize);
                         }
-                    }                    
+                    }
                 }
             }
         }

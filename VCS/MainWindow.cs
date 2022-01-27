@@ -147,14 +147,9 @@ namespace VCS
             if (_selectedRack == null) return;
             VCS.RackList.RemoveAll(rack => rack.CurrentNode == SelectedNode);
             _selectedRack = null;
-        }
-        private void testToolStripMenuItem_Click(object sender, EventArgs e)
+        }    
+        private void addRacksToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //foreach (var agv in VCSServer.AGVHandler.AGVList)
-            //{
-            //    agv.Disconnect();
-            //}
-            //VCSServer.AGVHandler.AGVList.Clear();
             for (int y = 3; y <= 14; y++)
             {
                 for (int x = 3; x <= 4; x++)
@@ -162,12 +157,15 @@ namespace VCS
                     VCS.AddNewRackTemp(VCS.CurrentMap.AllNodes[y, x]);
                 }
             }
+        }
+
+        private void addSimulatedAGVsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
             for (int x = 16; x <= 26; x++)
             {
                 VCS.AddNewSimulationAGVTemp(VCS.CurrentMap.AllNodes[16, x]);
             }
         }
-
         private void testGoToolStripMenuItem_Click(object sender, EventArgs e)
         {
             for (int i = VCS.AGVHandler.AGVList.Count - 1; i >= 0; i--)
@@ -321,6 +319,11 @@ namespace VCS
             }
         }
 
+        private void aGVTaskViewerToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AGVTaskViewer taskViewer = new AGVTaskViewer(VCS);
+            taskViewer.Show();
+        }
         #endregion
 
         #region UI Control Events      
@@ -502,7 +505,7 @@ namespace VCS
                     case MouseButtons.Left:
                         textBox_selectedNodeName.Text = SelectedNode.Name;
                         textBox_selectedNodeType.Text = SelectedNode.Type.ToString();
-                        textBox_selectedNodeType.BackColor = MapDrawer.NodeTypeColorDict[SelectedNode.Type];
+                        textBox_selectedNodeType.BackColor = MapNode.NodeTypeColorDict[SelectedNode.Type];
                         _selectedAGV = VCS.AGVHandler.AGVList.Find(agv => agv.CurrentNode == SelectedNode) ?? _selectedAGV;
                         _selectedRack = VCS.RackList.Find(rack => rack.CurrentNode == SelectedNode) ?? _selectedRack;
                         if (_mapEditorForm.IsEditingType)
@@ -661,6 +664,6 @@ namespace VCS
             }
         }
 
-        
+       
     }
 }

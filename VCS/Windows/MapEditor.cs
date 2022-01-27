@@ -18,7 +18,7 @@ namespace VCS.Windows
         public MapEditor()
         {
             InitializeComponent();      
-            comboBox_types.DataSource = Enum.GetValues(typeof(MapNode.Types));
+            comboBox_types.DataSource = Enum.GetValues(typeof(MapNode.Types));            
             comboBox_types.SelectedIndex = 0;
             comboBox_passingRestrictions.DataSource = Enum.GetValues(typeof(MapEdge.PassingRestrictions));
             comboBox_types.SelectedIndex = 0;
@@ -56,7 +56,7 @@ namespace VCS.Windows
 
         private void comboBox_types_SelectedIndexChanged(object sender, EventArgs e)
         {
-            comboBox_types.BackColor = MapDrawer.NodeTypeColorDict[(MapNode.Types)comboBox_types.SelectedItem];
+            comboBox_types.BackColor = MapNode.NodeTypeColorDict[(MapNode.Types)comboBox_types.SelectedItem];
         }
 
         private void comboBox_constraintLayers_SelectedIndexChanged(object sender, EventArgs e)

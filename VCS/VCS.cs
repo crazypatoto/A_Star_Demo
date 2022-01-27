@@ -4,13 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Threading;
 using VCS.AGVs;
 using VCS.Maps;
 using VCS.Models;
 using VCS.PathPlanning;
 using VCS.Tasks;
 using VCS.Communication;
-using System.Threading;
+using VCS.Missions;
 
 namespace VCS
 {
@@ -24,16 +25,19 @@ namespace VCS
         public List<Rack> RackList { get; }
         public byte[,] OccupancyGrid { get; }
         public LinkedList<AGV>[,] AGVNodeQueue { get; }
-
+        public MissionHandler MissionHandler { get; }
+        
         public bool IsAlive { get; private set; }
 
 
         public VCS(Map map)
         {
+            this.IsAlive = true;
             this.CurrentMap = map;
             this.AGVHandler = new AGVHandler(this);
             this.PathPlanner = new AStarPlanner(this);
             this.RackList = new List<Rack>();
+            this.MissionHandler = new MissionHandler(this);
             OccupancyGrid = new byte[map.Height, map.Width];
             AGVNodeQueue = new LinkedList<AGV>[map.Height, map.Width];
             for (int y = 0; y < map.Height; y++)
@@ -44,8 +48,7 @@ namespace VCS
                     AGVNodeQueue[y, x] = new LinkedList<AGV>();
                 }
             }
-            _vcsServer = new VCSServer(this);
-            IsAlive = true;
+            _vcsServer = new VCSServer(this);            
         }
 
         ~VCS()

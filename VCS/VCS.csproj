@@ -75,6 +75,8 @@
     <Compile Include="Maps\Map.cs" />
     <Compile Include="Maps\MapEdge.cs" />
     <Compile Include="Maps\MapNode.cs" />
+    <Compile Include="Missions\Mission.cs" />
+    <Compile Include="Missions\MissionHandler.cs" />
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\Rack.cs" />
     <Compile Include="PathPlanning\AStarPlanner.cs" />
@@ -85,12 +87,19 @@
     <Compile Include="Tasks\AGVTask.cs" />
     <Compile Include="Tasks\AGVTaskHandler.cs" />
     <Compile Include="Tasks\RackDropOffTask.cs" />
+    <Compile Include="Tasks\AGVWaitTask.cs" />
     <Compile Include="Tasks\RackPickUpTask.cs" />
     <Compile Include="Tasks\RackRotateTask.cs" />
     <Compile Include="VCS.cs" />
     <Compile Include="Communication\Command.cs" />
     <Compile Include="Communication\VCSRequest.cs" />
     <Compile Include="Communication\VCSServer.cs" />
+    <Compile Include="Windows\AGVTaskViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\AGVTaskViewer.Designer.cs">
+      <DependentUpon>AGVTaskViewer.cs</DependentUpon>
+    </Compile>
     <Compile Include="Windows\MapEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -114,6 +123,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Windows\AGVTaskViewer.resx">
+      <DependentUpon>AGVTaskViewer.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Windows\MapEditor.resx">
       <DependentUpon>MapEditor.cs</DependentUpon>
     </EmbeddedResource>

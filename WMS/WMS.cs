@@ -48,11 +48,7 @@ namespace WMS
             WorkOrderQueue = new LinkedList<WorkOrder>();
         }
 
-        #region Menu Strip Buttons
-        private void loadMapToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            pictureBox_MapViewer.Image = Properties.Resources.demo_map;
-        }
+        #region Menu Strip Buttons  
 
         private void inventoryManagementToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -75,26 +71,30 @@ namespace WMS
                     if (_vcsClient.Connect(dialog.IPA, dialog.Port))
                     {
                         LogEvent("成功連線到VCS伺服器");
-                        new Thread(() => { MessageBox.Show("Connected!", "Tip", MessageBoxButtons.OK, MessageBoxIcon.Information); }).Start();
+                        new Thread(() => { MessageBox.Show("成功連線到VCS伺服器", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information); }).Start();
                         toolStripStatusLabel_ConnectionState.Text = "已連線";
                         toolStripStatusLabel_ConnectionState.ForeColor = Color.Green;
                         toolStripStatusLabel_ServerIP.Text = dialog.IPA + ":" + dialog.Port.ToString();
-                        timer_RefreshMap.Interval = 1000 / 30;
-                        timer_RefreshMap.Enabled = true;
                         _currentMap = _vcsClient.GetMapData();
-                        this.AvailableDestinations = new List<MapNode>();
-                        foreach (var node in _currentMap.AllNodes)
-                        {
-                            if (node.Type == MapNode.Types.WorkStation)
-                            {
-                                this.AvailableDestinations.Add(node);
-                            }
-                        }
-                        comboBox_Destination.DataSource = this.AvailableDestinations;
                         if (_currentMap != null)
                         {
-                            _mapDrawer = new MapDrawerSlim(_currentMap, pictureBox_MapViewer.Size);
-                            LogEvent("成功載入地圖");
+                            LogEvent("成功載入地圖");                            
+                            _mapDrawer = new MapDrawerSlim(_currentMap, pictureBox_MapViewer.Size);                            
+                            this.AvailableDestinations = new List<MapNode>();
+                            foreach (var node in _currentMap.AllNodes)
+                            {
+                                if (node.Type == MapNode.Types.WorkStation)
+                                {
+                                    this.AvailableDestinations.Add(node);
+                                }
+                            }
+                            comboBox_Destination.DataSource = this.AvailableDestinations;
+                            timer_MapRefresh.Interval = 1000 / 30;
+                            timer_MapRefresh.Enabled = true;
+                            groupBox_WorkOrderEdit.Enabled = true;
+                            groupBox_WorkOrderQueue.Enabled = true;
+                            timer_WorkOrderHandling.Interval = 100;
+                            timer_WorkOrderHandling.Enabled = true;
                         }
                         else
                         {
@@ -103,7 +103,7 @@ namespace WMS
                     }
                     else
                     {
-                        new Thread(() => { MessageBox.Show("Cannot connect to server!", "Tip", MessageBoxButtons.OK, MessageBoxIcon.Error); }).Start();
+                        new Thread(() => { MessageBox.Show("無法連線至伺服器", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error); }).Start();
                         toolStripStatusLabel_ConnectionState.Text = "連現失敗";
                         toolStripStatusLabel_ConnectionState.ForeColor = Color.Red;
                         LogEvent("無法連線到VCS伺服器");
@@ -164,15 +164,13 @@ namespace WMS
         {
             _vcsClient.Disconnect();
         }
-        private void timer_RefreshMap_Tick(object sender, EventArgs e)
+        private void timer_MapRefresh_Tick(object sender, EventArgs e)
         {
             this.RackList = _vcsClient.GetRackInfo();
             _mapDrawer.DrawNewMap();
             _mapDrawer.DrawRacks(this.RackList);
-            _mapDrawer.DrawSelectedNode(comboBox_Destination.SelectedItem as MapNode);
-            var mapBMP = _mapDrawer.GetMapPicture();
-            pictureBox_MapViewer.Image?.Dispose();
-            pictureBox_MapViewer.Image = mapBMP;
+            _mapDrawer.DrawSelectedNode(comboBox_Destination.SelectedItem as MapNode);            
+            pictureBox_MapViewer.Image = _mapDrawer.GetMapPicture();
         }
 
         private void pictureBox_MapViewer_SizeChanged(object sender, EventArgs e)
@@ -284,12 +282,13 @@ namespace WMS
             else
             {
                 _selectedWorkOrder = WorkOrderQueue.First(workOrder => workOrder.UUID == listView_WorkOrderQueue.SelectedItems[0].Text);
-            }            
+            }
         }
 
         private void button_RemoveWorkOrderFromQueue_Click(object sender, EventArgs e)
         {
             if (_selectedWorkOrder == null) return;
+            if (_selectedWorkOrder.State != WorkOrder.WorkOrderState.Enqueued) return;
             WorkOrderQueue.Remove(_selectedWorkOrder);
             _selectedWorkOrder = null;
             UpdateWorkOrderQueueListView();
@@ -327,6 +326,31 @@ namespace WMS
                 WorkOrderQueue.AddAfter(nextNode, _selectedWorkOrder);
                 UpdateWorkOrderQueueListView();
             }
+        }
+
+        private void timer_WorkOrderHandling_Tick(object sender, EventArgs e)
+        {
+            if (WorkOrderQueue.Count == 0) return;
+            var firstWorkOrder = WorkOrderQueue.First.Value;
+            switch (firstWorkOrder.State)
+            {
+                case WorkOrder.WorkOrderState.Enqueued:
+                    var result = _vcsClient.AssignNewWorkOrder(firstWorkOrder);
+                    if (result)
+                    {
+                        firstWorkOrder.State = WorkOrder.WorkOrderState.Executing;
+                    }
+                    break;
+                case WorkOrder.WorkOrderState.Executing:
+                    firstWorkOrder.State = _vcsClient.GetWorkOrderState(firstWorkOrder);
+                    break;
+                case WorkOrder.WorkOrderState.Finished:
+                    WorkOrderQueue.RemoveFirst();
+                    break;
+                case WorkOrder.WorkOrderState.Error:
+                    break;
+            }
+            UpdateWorkOrderQueueListView();
         }
         #endregion
 
@@ -521,6 +545,7 @@ namespace WMS
             listView_MissionList.Items.Clear();
             textBox_WorkOrderUUID.Clear();
             if (_currentWorkOrder == null) return;
+            textBox_WorkOrderUUID.Text = _currentWorkOrder.UUID;
             if (_currentWorkOrder.MissionList.Count == 0) return;
             foreach (var mission in _currentWorkOrder.MissionList)
             {
@@ -530,10 +555,9 @@ namespace WMS
                 newListViewItem.SubItems.Add(mission.Destination);
                 newListViewItem.SubItems.Add(mission.Quantity.ToString());
                 newListViewItem.SubItems.Add(WorkOrder.Mission.RackFaceDescription[mission.AvailableFaces]);
-                newListViewItem.SubItems.Add(WorkOrder.Mission.RackFaceDescription[mission.Face]);
+                newListViewItem.SubItems.Add(WorkOrder.Mission.RackFaceDescription[mission.PickUpFace]);
                 listView_MissionList.Items.Add(newListViewItem);
             }
-            textBox_WorkOrderUUID.Text = _currentWorkOrder.UUID;
         }
 
         private void SortMissionList()
@@ -598,7 +622,7 @@ namespace WMS
                     {
                         if ((mission.AvailableFaces & maxFace) > 0)
                         {
-                            mission.Face = maxFace;
+                            mission.PickUpFace = maxFace;
                             sortedRackMissionList.Add(mission);
                             removeIndex++;
                         }
@@ -642,6 +666,27 @@ namespace WMS
                 }
             }
         }
-        #endregion       
+        #endregion
+
+        private void testToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (WorkOrderQueue.Count == 0) return;
+            var firstWorkOrder = WorkOrderQueue.First.Value;
+            switch (firstWorkOrder.State)
+            {
+                case WorkOrder.WorkOrderState.Enqueued:
+                    var result = _vcsClient.AssignNewWorkOrder(firstWorkOrder);
+                    firstWorkOrder.State = _vcsClient.GetWorkOrderState(firstWorkOrder);                   
+                    break;
+                case WorkOrder.WorkOrderState.Executing:
+                    firstWorkOrder.State = _vcsClient.GetWorkOrderState(firstWorkOrder);
+                    break;
+                case WorkOrder.WorkOrderState.Finished:
+                    break;
+                case WorkOrder.WorkOrderState.Error:
+                    break;
+            }
+            UpdateWorkOrderQueueListView();
+        }
     }
 }

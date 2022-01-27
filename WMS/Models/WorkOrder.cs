@@ -48,7 +48,7 @@ namespace WMS.Models
             [Name("目的地", "Destination")]
             public string Destination { get; set; }
             public string RackName { get; set; }
-            public RackFace Face { get; set; }
+            public RackFace PickUpFace { get; set; }
             public RackFace AvailableFaces { get; set; }
         }
 

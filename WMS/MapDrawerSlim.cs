@@ -58,16 +58,7 @@ namespace WMS
                 this.Scale = 1;
             }
         }
-
-        public static Dictionary<MapNode.Types, Color> NodeTypeColorDict = new Dictionary<MapNode.Types, Color> {
-            {MapNode.Types.None, Color.White },
-            {MapNode.Types.Storage, Color.Orange },
-            {MapNode.Types.ChargingStation, Color.Yellow },
-            {MapNode.Types.WorkStationArea, Color.LightBlue},
-            {MapNode.Types.WorkStation, Color.DeepSkyBlue},
-            {MapNode.Types.Wall, Color.DarkGray },
-        };
-
+      
         public MapDrawerSlim(Map map, Size drawSize)
         {
             _currentMap = map;
@@ -98,7 +89,7 @@ namespace WMS
                         if (x != _currentMap.Width && y != _currentMap.Height)
                         {
                             var currentNode = _currentMap.AllNodes[y, x];
-                            Brush brush = new SolidBrush(NodeTypeColorDict[currentNode.Type]);
+                            Brush brush = new SolidBrush(MapNode.NodeTypeColorDict[currentNode.Type]);
                             // Draw node
                             if (currentNode.Type != MapNode.Types.None)
                             {

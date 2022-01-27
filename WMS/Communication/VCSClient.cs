@@ -8,9 +8,10 @@ using System.Net.Sockets;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
+using System.IO;
 using VCS.Maps;
 using VCS.Models;
-using System.IO;
+using WMS.Models;
 
 namespace WMS.Communication
 {
@@ -18,8 +19,8 @@ namespace WMS.Communication
     {
         private readonly object _lock = new object();
         private readonly int _port = 2312;
-        private readonly int _sendTimeout = 100;
-        private readonly int _receiveTimeout = 1000;
+        private readonly int _sendTimeout = 1000;
+        private readonly int _receiveTimeout = 5000;
         private readonly int _rxBuffeSize = 1024 * 1000; // 1MB
         private Socket _clientSocket;
         private Map _currentMap;
@@ -70,7 +71,7 @@ namespace WMS.Communication
                 var timestamp = DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
                 var requestString = timestamp + ";" + command + ";" + data + ";" + "\r\n";
                 var request = Encoding.UTF8.GetBytes(requestString);
-                _clientSocket.SendTimeout = _sendTimeout;
+                _clientSocket.SendTimeout = _sendTimeout;  
                 _clientSocket.Send(request);
 
                 using (var receiveCts = new CancellationTokenSource(_receiveTimeout))
@@ -110,7 +111,7 @@ namespace WMS.Communication
                         }
                     }
                 }
-            }           
+            }
             return VCSResponse.Empty;
         }
 
@@ -170,24 +171,67 @@ namespace WMS.Communication
             return null;
         }
 
-        public bool AssignNewMission()
+        public bool AssignNewWorkOrder(WorkOrder workOrder)
         {
+            string data = workOrder.UUID + "," + workOrder.MissionList.Count.ToString();
+            foreach (var mission in workOrder.MissionList)
+            {
+                data += ",";
+                data += mission.RackName + ",";
+                data += mission.Destination + ",";
+                data += mission.PickUpFace;
+            }
+            var response = SendRequest(Command.AssignNewWorkOrder, data);
+            if (response.IsValid)
+            {
+                var dataSegment = response.Data.Split(',');
+                if (dataSegment[0] == workOrder.UUID && dataSegment[1] == "Accepted")
+                {
+                    return true;
+                }
+            }
             return false;
         }
 
-        public void GetMissionState()
+        public WorkOrder.WorkOrderState GetWorkOrderState(WorkOrder workOrder)
         {
-
+            string data = workOrder.UUID;
+            var response = SendRequest(Command.GetWorkOrderState, data);
+            if (response.IsValid)
+            {
+                var dataSegment = response.Data.Split(',');
+                if (dataSegment[0] == workOrder.UUID)
+                {
+                    return (WorkOrder.WorkOrderState)Enum.Parse(typeof(WorkOrder.WorkOrderState), dataSegment[1]);
+                }
+            }
+            return WorkOrder.WorkOrderState.Error;
         }
 
-        public void CancelMission()
+        public bool CancelWorkOrder(WorkOrder workOrder)
         {
-
+            string data = workOrder.UUID;
+            var response = SendRequest(Command.CancelWorkOrder, data);
+            if (response.IsValid)
+            {
+                var dataSegment = response.Data.Split(',');
+                if (dataSegment[0] == workOrder.UUID && dataSegment[1] == "Canceled")
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
-        public void GetCurrentMission()
-        {
-
+        public string GetCurrentWorkOrderUUID()
+        {            
+            var response = SendRequest(Command.GetCurrentWorkOrderUUID);
+            if (response.IsValid)
+            {
+                var dataSegment = response.Data.Split(',');
+                return dataSegment[0];
+            }
+            return "";
         }
     }
 }

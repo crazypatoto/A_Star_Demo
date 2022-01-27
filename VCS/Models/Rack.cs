@@ -43,7 +43,7 @@ namespace VCS.Models
         public Rack(int id, MapNode node, RackHeading heading, string name = null, MapNode homeNode = null)
         {
             this.ID = id;
-            this.Name = name ?? $"Rack{id:D3}";
+            this.Name = name ?? $"RACK{id:D3}";
             this.CurrentNode = node;
             this.HomeNode = homeNode ?? node;
             this.Heading = heading;

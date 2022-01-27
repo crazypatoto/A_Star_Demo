@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
-using System.IO;
-using System.Diagnostics;
-
+using System.Collections.Generic;
+using VCS.Maps;
+using VCS.Models;
+using VCS.Missions;
 
 namespace VCS.Communication
 {
@@ -22,7 +22,7 @@ namespace VCS.Communication
         public VCSServer(VCS vcs)
         {
             _vcs = vcs;
-            _serverSocket = new Socket(SocketType.Stream, ProtocolType.Tcp);           
+            _serverSocket = new Socket(SocketType.Stream, ProtocolType.Tcp);
             _serverSocket.Bind(new IPEndPoint(IPAddress.Any, _port));
             _serverSocket.Listen(1);
             Thread t = new Thread(ClientHandling);
@@ -64,11 +64,11 @@ namespace VCS.Communication
                                 _lastCommunicateTime = now;
                                 count = 0;
                             }
-                           
-                            if(now - _lastCommunicateTime > 3)
+
+                            if (now - _lastCommunicateTime > 3)
                             {
                                 _clientSocket.Close();
-                            }                            
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -92,31 +92,28 @@ namespace VCS.Communication
         {
             var request = new VCSRequest(requestString);
             if (!request.IsValid) return;
-            Debug.WriteLine(request.Timestamp.ToString());
-            Debug.WriteLine(request.Command);
-            Debug.WriteLine(request.Data);
             switch (request.Command)
             {
                 case Command.CheckConnection:
-                    CheckConnectionRequest();
+                    CheckConnectionRequest(request);
                     break;
                 case Command.GetMapData:
-                    GetMapDataRequest();
+                    GetMapDataRequest(request);
                     break;
                 case Command.GetRackInfo:
-                    GetRackInfoRequest();
+                    GetRackInfoRequest(request);
                     break;
-                case Command.AssignNewMission:
-                    AssignNewMissionRequest();
+                case Command.AssignNewWorkOrder:
+                    AssignNewWorkOrderRequest(request);
                     break;
-                case Command.GetMissionState:
-                    GetMissionStateRequest();
+                case Command.GetWorkOrderState:
+                    GetWorkOrderStateRequest(request);
                     break;
-                case Command.CancelMission:
-                    CancelMissionRequest();
+                case Command.CancelWorkOrder:
+                    CancelWorkOrderRequest(request);
                     break;
-                case Command.GetCurrentMission:
-                    GetCurrentMissionRequest();
+                case Command.GetCurrentWorkOrderUUID:
+                    GetCurrentWorkOrderUUIDRequest(request);
                     break;
                 default:
                     break;
@@ -128,12 +125,12 @@ namespace VCS.Communication
             var response = timestamp + ";" + command + ";" + commandData + ";" + "\r\n";
             _clientSocket.Send(Encoding.UTF8.GetBytes(response));
         }
-        private void CheckConnectionRequest()
+        private void CheckConnectionRequest(VCSRequest request)
         {
             SendResponse(Command.CheckConnection, "OK");
         }
 
-        private void GetMapDataRequest()
+        private void GetMapDataRequest(VCSRequest request)
         {
             var tempMapFile = System.IO.Path.GetTempFileName();
             _vcs.CurrentMap.SaveToFile(tempMapFile);
@@ -143,14 +140,14 @@ namespace VCS.Communication
             File.Delete(tempMapFile);
         }
 
-        private void GetRackInfoRequest()
+        private void GetRackInfoRequest(VCSRequest request)
         {
             var commandData = _vcs.RackList.Count.ToString() + ",";
             for (int i = 0; i < _vcs.RackList.Count; i++)
             {
                 var rack = _vcs.RackList[i];
                 commandData += $"{rack.Name},{rack.HomeNode.Name},{rack.CurrentNode.Name},{rack.Heading}";
-                if(i != _vcs.RackList.Count - 1)
+                if (i != _vcs.RackList.Count - 1)
                 {
                     commandData += ",";
                 }
@@ -158,24 +155,70 @@ namespace VCS.Communication
             SendResponse(Command.GetRackInfo, commandData);
         }
 
-        private void AssignNewMissionRequest()
+        private void AssignNewWorkOrderRequest(VCSRequest request)
+        {            
+            var dataSegments = request.Data.Split(',');
+            var uuid = dataSegments[0];
+            var missionCount = int.Parse(dataSegments[1]);
+            var missionList = new List<Mission>();
+            for (int i = 0; i < missionCount; i++)
+            {
+                var offset = i * 3;                
+                var targetRack = _vcs.RackList.Find(rack => rack.Name == dataSegments[offset + 2]);         
+                var destX = int.Parse(dataSegments[offset + 3].Split('-')[1]);
+                var destY = int.Parse(dataSegments[offset + 3].Split('-')[2]);
+                var destNode = _vcs.CurrentMap.AllNodes[destY, destX];
+                var pickUpFace = dataSegments[offset + 4];
+                var neighborNodes = _vcs.CurrentMap.GetNeighborNodes(destNode);
+                var pickUpNode = neighborNodes.Find(node => node.Type == MapNode.Types.WorkStationPickUp);
+                var pickUpDirection = Math.Atan2(pickUpNode.Location.Y - destNode.Location.Y, pickUpNode.Location.X - destNode.Location.X) / Math.PI * 180;
+                int pickUpFaceAngle = 0;
+                switch (pickUpFace)
+                {
+                    case "North":
+                        pickUpFaceAngle = -90;
+                        break;
+                    case "East":
+                        pickUpFaceAngle = 180;
+                        break;
+                    case "West":
+                        pickUpFaceAngle = 0;
+                        break;
+                    case "South":
+                        pickUpFaceAngle = 90;
+                        break;
+                }
+                var targetHeading = pickUpDirection - pickUpFaceAngle;
+                var newMission = new Mission(targetRack, destNode, (Rack.RackHeading)targetHeading);
+                missionList.Add(newMission);                
+            }
+            _vcs.MissionHandler.HandleNewWorkOrder(uuid, missionList);
+            var commandData = uuid + "," + "Accepted";
+            SendResponse(Command.AssignNewWorkOrder, commandData);
+        }
+
+        private void GetWorkOrderStateRequest(VCSRequest request)
+        {
+            var uuid = request.Data;
+            if(_vcs.MissionHandler.CurrentWorkOrderUUID == uuid)
+            {
+                var commandData = uuid + "," + _vcs.MissionHandler.State.ToString();
+                SendResponse(Command.GetWorkOrderState, commandData);
+            }
+            else
+            {
+                SendResponse(Command.GetWorkOrderState, "Failed,Unknown Work Order UUID");
+            }
+        }
+
+        private void CancelWorkOrderRequest(VCSRequest request)
         {
 
         }
 
-        private void GetMissionStateRequest()
+        private void GetCurrentWorkOrderUUIDRequest(VCSRequest request)
         {
-
-        }
-
-        private void CancelMissionRequest()
-        {
-
-        }
-
-        private void GetCurrentMissionRequest()
-        {
-
+            SendResponse(Command.GetWorkOrderState, _vcs.MissionHandler.CurrentWorkOrderUUID);
         }
     }
 }

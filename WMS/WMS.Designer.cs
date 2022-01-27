@@ -37,6 +37,7 @@ namespace WMS
             this.disconnectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.inventoryManagementToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.materialsManagementToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tableLayoutPanel_Main = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel_Map = new System.Windows.Forms.TableLayoutPanel();
             this.groupBox_Events = new System.Windows.Forms.GroupBox();
@@ -44,7 +45,7 @@ namespace WMS
             this.groupBox_MapViewer = new System.Windows.Forms.GroupBox();
             this.pictureBox_MapViewer = new System.Windows.Forms.PictureBox();
             this.tableLayoutPanel_WorkOrder = new System.Windows.Forms.TableLayoutPanel();
-            this.groupBox_WorkOrder = new System.Windows.Forms.GroupBox();
+            this.groupBox_WorkOrderEdit = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
@@ -70,7 +71,7 @@ namespace WMS
             this.columnHeader14 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.button_AddToQueue = new System.Windows.Forms.Button();
             this.button_DeleteSelectedMission = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox_WorkOrderQueue = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel4 = new System.Windows.Forms.TableLayoutPanel();
             this.listView_WorkOrderQueue = new System.Windows.Forms.ListView();
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -87,7 +88,8 @@ namespace WMS
             this.toolStripStatusLabel3 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel4 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel_ServerIP = new System.Windows.Forms.ToolStripStatusLabel();
-            this.timer_RefreshMap = new System.Windows.Forms.Timer(this.components);
+            this.timer_MapRefresh = new System.Windows.Forms.Timer(this.components);
+            this.timer_WorkOrderHandling = new System.Windows.Forms.Timer(this.components);
             this.menuStrip.SuspendLayout();
             this.tableLayoutPanel_Main.SuspendLayout();
             this.tableLayoutPanel_Map.SuspendLayout();
@@ -95,12 +97,12 @@ namespace WMS
             this.groupBox_MapViewer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_MapViewer)).BeginInit();
             this.tableLayoutPanel_WorkOrder.SuspendLayout();
-            this.groupBox_WorkOrder.SuspendLayout();
+            this.groupBox_WorkOrderEdit.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Quantity)).BeginInit();
             this.tableLayoutPanel3.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.groupBox_WorkOrderQueue.SuspendLayout();
             this.tableLayoutPanel4.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -111,7 +113,8 @@ namespace WMS
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.connectionToolStripMenuItem,
             this.inventoryManagementToolStripMenuItem,
-            this.materialsManagementToolStripMenuItem});
+            this.materialsManagementToolStripMenuItem,
+            this.testToolStripMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
             this.menuStrip.Padding = new System.Windows.Forms.Padding(5, 2, 0, 2);
@@ -155,6 +158,13 @@ namespace WMS
             this.materialsManagementToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
             this.materialsManagementToolStripMenuItem.Text = "物料管理";
             this.materialsManagementToolStripMenuItem.Click += new System.EventHandler(this.materialsManagementToolStripMenuItem_Click);
+            // 
+            // testToolStripMenuItem
+            // 
+            this.testToolStripMenuItem.Name = "testToolStripMenuItem";
+            this.testToolStripMenuItem.Size = new System.Drawing.Size(39, 20);
+            this.testToolStripMenuItem.Text = "test";
+            this.testToolStripMenuItem.Click += new System.EventHandler(this.testToolStripMenuItem_Click);
             // 
             // tableLayoutPanel_Main
             // 
@@ -237,8 +247,8 @@ namespace WMS
             this.tableLayoutPanel_WorkOrder.ColumnCount = 2;
             this.tableLayoutPanel_WorkOrder.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 55F));
             this.tableLayoutPanel_WorkOrder.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 45F));
-            this.tableLayoutPanel_WorkOrder.Controls.Add(this.groupBox_WorkOrder, 0, 0);
-            this.tableLayoutPanel_WorkOrder.Controls.Add(this.groupBox1, 0, 1);
+            this.tableLayoutPanel_WorkOrder.Controls.Add(this.groupBox_WorkOrderEdit, 0, 0);
+            this.tableLayoutPanel_WorkOrder.Controls.Add(this.groupBox_WorkOrderQueue, 0, 1);
             this.tableLayoutPanel_WorkOrder.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel_WorkOrder.Location = new System.Drawing.Point(667, 3);
             this.tableLayoutPanel_WorkOrder.Name = "tableLayoutPanel_WorkOrder";
@@ -248,17 +258,18 @@ namespace WMS
             this.tableLayoutPanel_WorkOrder.Size = new System.Drawing.Size(658, 665);
             this.tableLayoutPanel_WorkOrder.TabIndex = 1;
             // 
-            // groupBox_WorkOrder
+            // groupBox_WorkOrderEdit
             // 
-            this.tableLayoutPanel_WorkOrder.SetColumnSpan(this.groupBox_WorkOrder, 2);
-            this.groupBox_WorkOrder.Controls.Add(this.tableLayoutPanel1);
-            this.groupBox_WorkOrder.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox_WorkOrder.Location = new System.Drawing.Point(3, 3);
-            this.groupBox_WorkOrder.Name = "groupBox_WorkOrder";
-            this.groupBox_WorkOrder.Size = new System.Drawing.Size(652, 326);
-            this.groupBox_WorkOrder.TabIndex = 0;
-            this.groupBox_WorkOrder.TabStop = false;
-            this.groupBox_WorkOrder.Text = "工單任務編輯";
+            this.tableLayoutPanel_WorkOrder.SetColumnSpan(this.groupBox_WorkOrderEdit, 2);
+            this.groupBox_WorkOrderEdit.Controls.Add(this.tableLayoutPanel1);
+            this.groupBox_WorkOrderEdit.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox_WorkOrderEdit.Enabled = false;
+            this.groupBox_WorkOrderEdit.Location = new System.Drawing.Point(3, 3);
+            this.groupBox_WorkOrderEdit.Name = "groupBox_WorkOrderEdit";
+            this.groupBox_WorkOrderEdit.Size = new System.Drawing.Size(652, 326);
+            this.groupBox_WorkOrderEdit.TabIndex = 0;
+            this.groupBox_WorkOrderEdit.TabStop = false;
+            this.groupBox_WorkOrderEdit.Text = "工單任務編輯";
             // 
             // tableLayoutPanel1
             // 
@@ -305,14 +316,14 @@ namespace WMS
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 1;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(640, 29);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(640, 31);
             this.tableLayoutPanel2.TabIndex = 0;
             // 
             // label1
             // 
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 6);
+            this.label1.Location = new System.Drawing.Point(3, 7);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(68, 16);
             this.label1.TabIndex = 0;
@@ -322,7 +333,7 @@ namespace WMS
             // 
             this.label2.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(213, 6);
+            this.label2.Location = new System.Drawing.Point(213, 7);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(56, 16);
             this.label2.TabIndex = 1;
@@ -332,7 +343,7 @@ namespace WMS
             // 
             this.label3.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(411, 6);
+            this.label3.Location = new System.Drawing.Point(411, 7);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(44, 16);
             this.label3.TabIndex = 2;
@@ -389,7 +400,7 @@ namespace WMS
             this.button_AddToWorkOrder.Dock = System.Windows.Forms.DockStyle.Fill;
             this.button_AddToWorkOrder.Location = new System.Drawing.Point(551, 3);
             this.button_AddToWorkOrder.Name = "button_AddToWorkOrder";
-            this.button_AddToWorkOrder.Size = new System.Drawing.Size(86, 23);
+            this.button_AddToWorkOrder.Size = new System.Drawing.Size(86, 25);
             this.button_AddToWorkOrder.TabIndex = 7;
             this.button_AddToWorkOrder.Text = "加入工單";
             this.button_AddToWorkOrder.UseVisualStyleBackColor = true;
@@ -493,9 +504,9 @@ namespace WMS
             this.listView_MissionList.GridLines = true;
             this.listView_MissionList.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.listView_MissionList.HideSelection = false;
-            this.listView_MissionList.Location = new System.Drawing.Point(3, 75);
+            this.listView_MissionList.Location = new System.Drawing.Point(3, 77);
             this.listView_MissionList.Name = "listView_MissionList";
-            this.listView_MissionList.Size = new System.Drawing.Size(640, 168);
+            this.listView_MissionList.Size = new System.Drawing.Size(640, 166);
             this.listView_MissionList.TabIndex = 2;
             this.listView_MissionList.UseCompatibleStateImageBehavior = false;
             this.listView_MissionList.View = System.Windows.Forms.View.Details;
@@ -552,17 +563,18 @@ namespace WMS
             this.button_DeleteSelectedMission.UseVisualStyleBackColor = true;
             this.button_DeleteSelectedMission.Click += new System.EventHandler(this.button_DeleteSelectedMission_Click);
             // 
-            // groupBox1
+            // groupBox_WorkOrderQueue
             // 
-            this.tableLayoutPanel_WorkOrder.SetColumnSpan(this.groupBox1, 2);
-            this.groupBox1.Controls.Add(this.tableLayoutPanel4);
-            this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox1.Location = new System.Drawing.Point(3, 335);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(652, 327);
-            this.groupBox1.TabIndex = 1;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "工單佇列";
+            this.tableLayoutPanel_WorkOrder.SetColumnSpan(this.groupBox_WorkOrderQueue, 2);
+            this.groupBox_WorkOrderQueue.Controls.Add(this.tableLayoutPanel4);
+            this.groupBox_WorkOrderQueue.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox_WorkOrderQueue.Enabled = false;
+            this.groupBox_WorkOrderQueue.Location = new System.Drawing.Point(3, 335);
+            this.groupBox_WorkOrderQueue.Name = "groupBox_WorkOrderQueue";
+            this.groupBox_WorkOrderQueue.Size = new System.Drawing.Size(652, 327);
+            this.groupBox_WorkOrderQueue.TabIndex = 1;
+            this.groupBox_WorkOrderQueue.TabStop = false;
+            this.groupBox_WorkOrderQueue.Text = "工單佇列";
             // 
             // tableLayoutPanel4
             // 
@@ -714,13 +726,17 @@ namespace WMS
             // toolStripStatusLabel_ServerIP
             // 
             this.toolStripStatusLabel_ServerIP.Name = "toolStripStatusLabel_ServerIP";
-            this.toolStripStatusLabel_ServerIP.Size = new System.Drawing.Size(110, 17);
-            this.toolStripStatusLabel_ServerIP.Text = "192.168.0.102:987";
+            this.toolStripStatusLabel_ServerIP.Size = new System.Drawing.Size(55, 17);
+            this.toolStripStatusLabel_ServerIP.Text = "尚未設定";
             // 
-            // timer_RefreshMap
+            // timer_MapRefresh
             // 
-            this.timer_RefreshMap.Interval = 33;
-            this.timer_RefreshMap.Tick += new System.EventHandler(this.timer_RefreshMap_Tick);
+            this.timer_MapRefresh.Interval = 33;
+            this.timer_MapRefresh.Tick += new System.EventHandler(this.timer_MapRefresh_Tick);
+            // 
+            // timer_WorkOrderHandling
+            // 
+            this.timer_WorkOrderHandling.Tick += new System.EventHandler(this.timer_WorkOrderHandling_Tick);
             // 
             // WMS
             // 
@@ -747,7 +763,7 @@ namespace WMS
             this.groupBox_MapViewer.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_MapViewer)).EndInit();
             this.tableLayoutPanel_WorkOrder.ResumeLayout(false);
-            this.groupBox_WorkOrder.ResumeLayout(false);
+            this.groupBox_WorkOrderEdit.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.tableLayoutPanel2.ResumeLayout(false);
@@ -755,7 +771,7 @@ namespace WMS
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown_Quantity)).EndInit();
             this.tableLayoutPanel3.ResumeLayout(false);
             this.tableLayoutPanel3.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
+            this.groupBox_WorkOrderQueue.ResumeLayout(false);
             this.tableLayoutPanel4.ResumeLayout(false);
             this.statusStrip.ResumeLayout(false);
             this.statusStrip.PerformLayout();
@@ -779,7 +795,7 @@ namespace WMS
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel_WorkOrder;
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripMenuItem inventoryManagementToolStripMenuItem;
-        private System.Windows.Forms.GroupBox groupBox_WorkOrder;
+        private System.Windows.Forms.GroupBox groupBox_WorkOrderEdit;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel_ConnectionState;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel3;
@@ -807,7 +823,7 @@ namespace WMS
         private System.Windows.Forms.Button button_NewWorkOrder;
         private System.Windows.Forms.Button button_AddToQueue;
         private System.Windows.Forms.Button button_DeleteSelectedMission;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBox_WorkOrderQueue;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel4;
         private System.Windows.Forms.ListView listView_WorkOrderQueue;
         private System.Windows.Forms.Button button_RemoveWorkOrderFromQueue;
@@ -819,10 +835,12 @@ namespace WMS
         private System.Windows.Forms.ColumnHeader columnHeader7;
         private System.Windows.Forms.ColumnHeader columnHeader9;
         private System.Windows.Forms.ToolStripMenuItem materialsManagementToolStripMenuItem;
-        private System.Windows.Forms.Timer timer_RefreshMap;
+        private System.Windows.Forms.Timer timer_MapRefresh;
         private System.Windows.Forms.Button button_AddToWorkOrder;
         private System.Windows.Forms.ColumnHeader columnHeader13;
         private System.Windows.Forms.ColumnHeader columnHeader14;
+        private System.Windows.Forms.Timer timer_WorkOrderHandling;
+        private System.Windows.Forms.ToolStripMenuItem testToolStripMenuItem;
     }
 }
 

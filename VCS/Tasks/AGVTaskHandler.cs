@@ -46,6 +46,10 @@ namespace VCS.Tasks
         {
             TaskQueue.Enqueue(new RackRotateTask(this, targetHeading));
         }
+        public void NewAGVWaitTask()
+        {
+            TaskQueue.Enqueue(new AGVWaitTask(this));
+        }
 
         public void Abort()
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,13 +18,25 @@ namespace VCS.Maps
         {
             None = 0x00,
             ChargingStation,
-            WorkStationArea,       
+            ChargingStationDock,
+            WorkStation,
+            WorkStationArea,
+            WorkStationPickUp,
             Storage,
             Wall,
-            WorkStation,
         }
-
         #endregion
+
+        public static Dictionary<MapNode.Types, Color> NodeTypeColorDict = new Dictionary<MapNode.Types, Color> {
+            {MapNode.Types.None, Color.White },
+            {MapNode.Types.Storage, Color.Orange },
+            {MapNode.Types.ChargingStation, Color.Yellow },
+            {MapNode.Types.ChargingStationDock, Color.YellowGreen },
+            {MapNode.Types.WorkStationArea, Color.LightBlue},
+            {MapNode.Types.WorkStation, Color.DeepSkyBlue},
+            {MapNode.Types.WorkStationPickUp, Color.CadetBlue},
+            {MapNode.Types.Wall, Color.DarkGray },
+        };
 
         /// <summary>
         /// Bytes count of raw node data.

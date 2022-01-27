@@ -310,7 +310,7 @@ namespace WMS.Windows
             this.ClientSize = new System.Drawing.Size(578, 717);
             this.Controls.Add(this.tableLayoutPanel_Main);
             this.Name = "InventoryManagementWindow";
-            this.Text = " ";
+            this.Text = "庫存管理";
             this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.InventoryManagementWindow_FormClosing);
             this.tableLayoutPanel_Main.ResumeLayout(false);

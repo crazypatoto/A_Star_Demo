@@ -27,6 +27,7 @@ namespace VCS.AGVs
             UnDockingChargeStation,             // AGV is undocking with charging staiton.
             Charging,                           // AGV is charging.
             ChargeFinished,                     // AGV has finished charging.
+            WaitingUserResume,                  // AGV is waiting for operator to resume.
 
             Disconnected = 100,                 // AGV is disconnected.
             MovingBlocked,                      // AGV is blocked by obstacle or other AGVs while moving.
@@ -80,6 +81,9 @@ namespace VCS.AGVs
         public abstract void RotateRack(Rack.RackHeading rackHeading);
 
         public abstract void WaitToRotateRack();
+
+        public abstract void WaitForUserResume();
+        public abstract void UserResume();
         public abstract void Disconnect();
         private AGVHeading _heading;
 
@@ -111,6 +115,11 @@ namespace VCS.AGVs
         public override int GetHashCode()
         {
             return (this.Name != null ? this.Name.GetHashCode() : 0);
+        }
+
+        public override string ToString()
+        {
+            return this.Name;
         }
     }
 }

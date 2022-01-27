@@ -20,13 +20,13 @@ namespace VCS.Tasks
         private int _lastDequeuedNodeIndex = -1;
         public MapNode Destination { get; private set; }
         public List<MapNode> FullPath { get; private set; }
-        public Queue<MapNode> RemainingPath { get; private set; }
+        public Queue<MapNode> RemainingPath { get; private set; }        
         public TaskStatus Status { get; private set; }
         public AGVMoveTask(AGVTaskHandler handler, MapNode destination) : base(handler)
         {
             this.Destination = destination;
             this.Status = TaskStatus.Initialzied;
-        }
+        }        
         public override void Execute()
         {
             //bool pathNotFound = false;

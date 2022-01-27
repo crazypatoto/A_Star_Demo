@@ -11,9 +11,9 @@ namespace VCS.Communication
         CheckConnection,
         GetMapData,
         GetRackInfo,
-        AssignNewMission,
-        GetMissionState,
-        CancelMission,
-        GetCurrentMission,
+        AssignNewWorkOrder,
+        GetWorkOrderState,
+        CancelWorkOrder,
+        GetCurrentWorkOrderUUID,
     }
 }

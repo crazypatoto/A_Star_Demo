@@ -138,6 +138,18 @@ namespace VCS.AGVs
             if (this.BoundRack == null) return;
             this.State = AGVStates.WaitingToRotateRack;
         }
+
+        public override void WaitForUserResume()
+        {
+            if (this.State != AGVStates.Idle) return;
+            this.State = AGVStates.WaitingUserResume;
+        }
+
+        public override void UserResume()
+        {
+            if (this.State != AGVStates.WaitingUserResume) return;
+            this.State = AGVStates.Idle;
+        }
         public override void Disconnect()
         {
             _cts.Cancel();
@@ -321,7 +333,7 @@ namespace VCS.AGVs
                     case AGVStates.WaitingToRotateRack:
                         break;
                 }
-                await Task.Delay(50);
+                await Task.Delay(100);
             }
         }
         private AGVHeading GetNextHeading(MapNode currentNode, MapNode nextNode)
