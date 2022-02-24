@@ -31,6 +31,7 @@ namespace VCS
         private AGV _selectedAGV;
         private Rack _selectedRack;
         private MapEditor _mapEditorForm;
+        private MapNode _prevSelectedNode = null;
         public VCS VCS { get; private set; }
         public MapNode SelectedNode { get; private set; }
         public MapNode SelectedEdgeNode1 { get; set; }
@@ -147,7 +148,7 @@ namespace VCS
             if (_selectedRack == null) return;
             VCS.RackList.RemoveAll(rack => rack.CurrentNode == SelectedNode);
             _selectedRack = null;
-        }    
+        }
         private void addRacksToolStripMenuItem_Click(object sender, EventArgs e)
         {
             for (int y = 3; y <= 14; y++)
@@ -203,7 +204,7 @@ namespace VCS
                     {
                         if (agv.State == AGV.AGVStates.WaitingToMove)
                         {
-                            var nextNode = (agv.TaskHandler.CurrentTask as AGVMoveTask).RemainingPath.FirstOrDefault();                
+                            var nextNode = (agv.TaskHandler.CurrentTask as AGVMoveTask).RemainingPath.FirstOrDefault();
                             if (nextNode != null)
                             {
                                 var nextAGVNodeQueue = VCS.AGVNodeQueue[nextNode.Location.Y, nextNode.Location.X];
@@ -225,7 +226,7 @@ namespace VCS
                                     newLinkedList.AddLast(nextAGV);
                                     waitList.Add(newLinkedList);
                                 }
-                            }                                               
+                            }
                         }
                     }
                 }
@@ -400,7 +401,7 @@ namespace VCS
         }
         private void pictureBox_mapViewer_MouseMove(object sender, MouseEventArgs e)
         {
-            NodeSelect(e.Location, e.Button);
+            NodeSelect(e.Location, e.Button, true);
             if (e.Button == MouseButtons.Middle && _mapDrawer != null)
             {
                 int xDiff = e.Location.X - _prevMouseLocation.X;
@@ -482,135 +483,150 @@ namespace VCS
             comboBox_planningLayer.SelectedIndex = 0;
         }
 
-        private void NodeSelect(Point mousePosition, MouseButtons mouseButton)
+        private void NodeSelect(Point mousePosition, MouseButtons mouseButton, bool sequenceMode = false)
         {
             if (mouseButton != MouseButtons.Left && mouseButton != MouseButtons.Right) return;
             SelectedNode = _mapDrawer?.GetNodeByPosition(mousePosition.X, mousePosition.Y);
-            if (SelectedNode != null)
+            if (SelectedNode == null)
             {
-                if (VCS.AGVNodeQueue[SelectedNode.Location.Y, SelectedNode.Location.X].Count > 0)
+                textBox_selectedNodeName.Text = "";
+                textBox_selectedNodeType.Text = "";
+                return;
+            }
+            if (SelectedNode == _prevSelectedNode && sequenceMode) return;
+            _prevSelectedNode = SelectedNode;
+            if (VCS.AGVNodeQueue[SelectedNode.Location.Y, SelectedNode.Location.X].Count > 0)
+            {
+                Debug.WriteLine($"AGV Queue = ");
+                foreach (var AGV in VCS.AGVNodeQueue[SelectedNode.Location.Y, SelectedNode.Location.X])
                 {
-                    Debug.WriteLine($"AGV Queue = ");
-                    foreach (var AGV in VCS.AGVNodeQueue[SelectedNode.Location.Y, SelectedNode.Location.X])
-                    {
-                        Debug.WriteLine($"\t{AGV.Name}");
-                    }
-                }
-                else
-                {
-                    Debug.WriteLine("Empty!");
-                }
-                switch (mouseButton)
-                {
-                    case MouseButtons.Left:
-                        textBox_selectedNodeName.Text = SelectedNode.Name;
-                        textBox_selectedNodeType.Text = SelectedNode.Type.ToString();
-                        textBox_selectedNodeType.BackColor = MapNode.NodeTypeColorDict[SelectedNode.Type];
-                        _selectedAGV = VCS.AGVHandler.AGVList.Find(agv => agv.CurrentNode == SelectedNode) ?? _selectedAGV;
-                        _selectedRack = VCS.RackList.Find(rack => rack.CurrentNode == SelectedNode) ?? _selectedRack;
-                        if (_mapEditorForm.IsEditingType)
-                        {
-                            SelectedNode.Type = (MapNode.Types)_mapEditorForm.comboBox_types.SelectedItem;
-                            SelectedNode.DisallowWaitingOnNode = _mapEditorForm.checkBox_disallowWaitingOnNode.Checked;
-                        }
-                        if (_mapEditorForm.IsEditingEdge)
-                        {
-                            if (SelectedEdgeNode1 == null)
-                            {
-                                SelectedEdgeNode1 = SelectedNode;
-                            }
-                            else
-                            {
-                                if (SelectedNode.IsNeighbourNode(SelectedEdgeNode1))
-                                {
-                                    SelectedEdgeNode2 = SelectedNode;
-                                }
-                                else
-                                {
-                                    if (SelectedEdgeNode2 != null)
-                                    {
-                                        if (SelectedNode.IsNeighbourNode(SelectedEdgeNode2))
-                                        {
-                                            SelectedEdgeNode1 = SelectedEdgeNode2;
-                                            SelectedEdgeNode2 = SelectedNode;
-                                        }
-                                        else
-                                        {
-                                            SelectedEdgeNode1 = SelectedNode;
-                                            SelectedEdgeNode2 = null;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        SelectedEdgeNode1 = SelectedNode;
-                                    }
-                                }
-                            }
-
-                            if (SelectedEdgeNode1 != null && SelectedEdgeNode2 != null)
-                            {
-                                var selectedEdge = VCS.CurrentMap.GetEdgeByNodes(_mapEditorForm.comboBox_constraintLayers.SelectedIndex, SelectedEdgeNode1, SelectedEdgeNode2);
-                                selectedEdge.PassingRestriction = (MapEdge.PassingRestrictions)_mapEditorForm.comboBox_passingRestrictions.SelectedItem;
-                                if (SelectedEdgeNode1.Location.X + SelectedEdgeNode1.Location.Y > SelectedEdgeNode2.Location.X + SelectedEdgeNode2.Location.Y)
-                                {
-                                    selectedEdge.InvertPassingRestrictionDirection();
-                                }
-                            }
-                            _mapEditorForm.textBox_edgeNode1.Text = SelectedEdgeNode1?.Name;
-                            _mapEditorForm.textBox_edgeNode2.Text = SelectedEdgeNode2?.Name;
-                        }
-                        if (_planningFlag == 1)
-                        {
-                            button_startPlanning.Text = "Select goal node";
-                            _startNode = SelectedNode;
-                            textBox_startNode.Text = _startNode.Name;
-                            _planningFlag++;
-                        }
-                        else if (_planningFlag == 2)
-                        {
-                            if (SelectedNode != _startNode)
-                            {
-                                _goalNode = SelectedNode;
-                                button_startPlanning.Text = "Start Planning";
-                                textBox_goalNode.Text = _goalNode.Name;
-                                _planningFlag = 0;
-                                _path = VCS.PathPlanner.FindPath(_startNode, _goalNode, comboBox_planningLayer.SelectedIndex == 1, comboBox_planningLayer.SelectedIndex);
-                                textBox_planningPath.Clear();
-                                textBox_planningPath.AppendText($"Length = {(_path is null ? -1 : _path.Count)}\r\n");
-
-                                var targetAGV = VCS.AGVHandler.AGVList.Find(agv => agv.CurrentNode == _startNode);
-                                if (targetAGV != null)
-                                {
-                                    targetAGV.StartNewPath(_path);
-                                    targetAGV.EndPath();
-                                }
-                                if (_path != null)
-                                    foreach (var node in _path)
-                                    {
-                                        textBox_planningPath.AppendText(node.Name + Environment.NewLine);
-                                    }
-                                button_startPlanning.Enabled = true;
-                            }
-                        }
-                        break;
-                    case MouseButtons.Right:
-                        if (_mapEditorForm.IsEditingType)
-                        {
-                            SelectedNode.Type = MapNode.Types.None;
-                            SelectedNode.DisallowWaitingOnNode = false;
-                        }
-                        break;
-                    case MouseButtons.Middle:
-                        break;
-                    default:
-                        break;
+                    Debug.WriteLine($"\t{AGV.Name}");
                 }
             }
             else
             {
-                textBox_selectedNodeName.Text = "";
-                textBox_selectedNodeType.Text = "";
+                Debug.WriteLine("Empty!");
             }
+            switch (mouseButton)
+            {
+                case MouseButtons.Left:
+                    textBox_selectedNodeName.Text = SelectedNode.Name;
+                    textBox_selectedNodeType.Text = SelectedNode.Type.ToString();
+                    textBox_selectedNodeType.BackColor = MapNode.NodeTypeColorDict[SelectedNode.Type];
+                    _selectedAGV = VCS.AGVHandler.AGVList.Find(agv => agv.CurrentNode == SelectedNode) ?? _selectedAGV;
+                    _selectedRack = VCS.RackList.Find(rack => rack.CurrentNode == SelectedNode) ?? _selectedRack;
+                    if (_mapEditorForm.IsEditingType)
+                    {
+                        if (_mapEditorForm.SmartEditingMode)
+                        {
+                            _mapEditorForm.SetNodeTypeSmart(SelectedNode, (MapNode.Types)_mapEditorForm.comboBox_types.SelectedItem);
+                        }
+                        else
+                        {
+                            SelectedNode.Type = (MapNode.Types)_mapEditorForm.comboBox_types.SelectedItem;
+                        }                                                
+                        SelectedNode.DisallowWaitingOnNode = _mapEditorForm.checkBox_disallowWaitingOnNode.Checked;
+                    }
+                    if (_mapEditorForm.IsEditingEdge)
+                    {
+                        if (SelectedEdgeNode1 == null)
+                        {
+                            SelectedEdgeNode1 = SelectedNode;
+                        }
+                        else
+                        {
+                            if (SelectedNode.IsNeighbourNode(SelectedEdgeNode1))
+                            {
+                                SelectedEdgeNode2 = SelectedNode;
+                            }
+                            else
+                            {
+                                if (SelectedEdgeNode2 != null)
+                                {
+                                    if (SelectedNode.IsNeighbourNode(SelectedEdgeNode2))
+                                    {
+                                        SelectedEdgeNode1 = SelectedEdgeNode2;
+                                        SelectedEdgeNode2 = SelectedNode;
+                                    }
+                                    else
+                                    {
+                                        SelectedEdgeNode1 = SelectedNode;
+                                        SelectedEdgeNode2 = null;
+                                    }
+                                }
+                                else
+                                {
+                                    SelectedEdgeNode1 = SelectedNode;
+                                }
+                            }
+                        }
+
+                        if (SelectedEdgeNode1 != null && SelectedEdgeNode2 != null)
+                        {
+                            var selectedEdge = VCS.CurrentMap.GetEdgeByNodes(_mapEditorForm.comboBox_constraintLayers.SelectedIndex, SelectedEdgeNode1, SelectedEdgeNode2);
+                            selectedEdge.PassingRestriction = (MapEdge.PassingRestrictions)_mapEditorForm.comboBox_passingRestrictions.SelectedItem;
+                            if (SelectedEdgeNode1.Location.X + SelectedEdgeNode1.Location.Y > SelectedEdgeNode2.Location.X + SelectedEdgeNode2.Location.Y)
+                            {
+                                selectedEdge.InvertPassingRestrictionDirection();
+                            }
+                        }
+                        _mapEditorForm.textBox_edgeNode1.Text = SelectedEdgeNode1?.Name;
+                        _mapEditorForm.textBox_edgeNode2.Text = SelectedEdgeNode2?.Name;
+                    }
+                    if (_planningFlag == 1)
+                    {
+                        button_startPlanning.Text = "Select goal node";
+                        _startNode = SelectedNode;
+                        textBox_startNode.Text = _startNode.Name;
+                        _planningFlag++;
+                    }
+                    else if (_planningFlag == 2)
+                    {
+                        if (SelectedNode != _startNode)
+                        {
+                            _goalNode = SelectedNode;
+                            button_startPlanning.Text = "Start Planning";
+                            textBox_goalNode.Text = _goalNode.Name;
+                            _planningFlag = 0;
+                            _path = VCS.PathPlanner.FindPath(_startNode, _goalNode, comboBox_planningLayer.SelectedIndex == 1, comboBox_planningLayer.SelectedIndex);
+                            textBox_planningPath.Clear();
+                            textBox_planningPath.AppendText($"Length = {(_path is null ? -1 : _path.Count)}\r\n");
+
+                            var targetAGV = VCS.AGVHandler.AGVList.Find(agv => agv.CurrentNode == _startNode);
+                            if (targetAGV != null)
+                            {
+                                targetAGV.StartNewPath(_path);
+                                targetAGV.EndPath();
+                            }
+                            if (_path != null)
+                                foreach (var node in _path)
+                                {
+                                    textBox_planningPath.AppendText(node.Name + Environment.NewLine);
+                                }
+                            button_startPlanning.Enabled = true;
+                        }
+                    }
+                    break;
+                case MouseButtons.Right:
+                    if (_mapEditorForm.IsEditingType)
+                    {
+                        if (_mapEditorForm.SmartEditingMode)
+                        {
+                            _mapEditorForm.SetNodeTypeSmart(SelectedNode, MapNode.Types.None);
+                        }
+                        else
+                        {
+                            SelectedNode.Type = MapNode.Types.None;
+                        }                                                
+                        SelectedNode.DisallowWaitingOnNode = false;
+                    }
+                    break;
+                case MouseButtons.Middle:
+                    break;
+                default:
+                    break;
+            }
+
         }
 
 
@@ -664,6 +680,6 @@ namespace VCS
             }
         }
 
-       
+
     }
 }

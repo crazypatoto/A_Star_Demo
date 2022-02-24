@@ -40,6 +40,7 @@ namespace VCS.Maps
 
             this.ConstraintLayers = new List<ConstraintLayer>();
             this.ConstraintLayers.Add(new ConstraintLayer(this, "Default"));
+            this.ConstraintLayers.Add(new ConstraintLayer(this, "Layer 1"));
         }
 
         public Map(string path)
@@ -137,6 +138,26 @@ namespace VCS.Maps
             if (node.Location.X + 1 < this.Width) neighborNodes.Add(this.AllNodes[node.Location.Y, node.Location.X + 1]);
             if (node.Location.Y + 1 < this.Height) neighborNodes.Add(this.AllNodes[node.Location.Y + 1, node.Location.X]);
             return neighborNodes;
+        }
+        public MapNode GetUpNode(MapNode node)
+        {
+            if (node.Location.Y - 1 >= 0) return this.AllNodes[node.Location.Y - 1, node.Location.X];
+            else return null;
+        }
+        public MapNode GetDownNode(MapNode node)
+        {
+            if (node.Location.Y + 1 < this.Height) return this.AllNodes[node.Location.Y + 1, node.Location.X];
+            else return null;
+        }
+        public MapNode GetLeftNode(MapNode node)
+        {
+            if (node.Location.X - 1 >= 0) return this.AllNodes[node.Location.Y, node.Location.X - 1];
+            else return null;
+        }
+        public MapNode GetRightNode(MapNode node)
+        {
+            if (node.Location.X + 1 < this.Width) return this.AllNodes[node.Location.Y, node.Location.X + 1];
+            else return null;
         }
 
         public class ConstraintLayer

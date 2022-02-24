@@ -45,8 +45,13 @@
             this.button_startEditingNode = new System.Windows.Forms.Button();
             this.comboBox_types = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.comboBox_companionNodeDirection = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.groupBox_smartEditing = new System.Windows.Forms.GroupBox();
+            this.button_toggleSmartEditing = new System.Windows.Forms.Button();
             this.groupBox_edgeConstraintsEditor.SuspendLayout();
             this.groupBox_nodeTypeEditor.SuspendLayout();
+            this.groupBox_smartEditing.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox_edgeConstraintsEditor
@@ -63,18 +68,18 @@
             this.groupBox_edgeConstraintsEditor.Controls.Add(this.textBox_edgeNode1);
             this.groupBox_edgeConstraintsEditor.Controls.Add(this.label7);
             this.groupBox_edgeConstraintsEditor.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.groupBox_edgeConstraintsEditor.Location = new System.Drawing.Point(12, 131);
+            this.groupBox_edgeConstraintsEditor.Location = new System.Drawing.Point(12, 229);
             this.groupBox_edgeConstraintsEditor.Name = "groupBox_edgeConstraintsEditor";
-            this.groupBox_edgeConstraintsEditor.Size = new System.Drawing.Size(181, 237);
+            this.groupBox_edgeConstraintsEditor.Size = new System.Drawing.Size(284, 237);
             this.groupBox_edgeConstraintsEditor.TabIndex = 8;
             this.groupBox_edgeConstraintsEditor.TabStop = false;
             this.groupBox_edgeConstraintsEditor.Text = "Edge Constraints Editor";
             // 
             // button_deleteLayer
             // 
-            this.button_deleteLayer.Location = new System.Drawing.Point(94, 142);
+            this.button_deleteLayer.Location = new System.Drawing.Point(147, 142);
             this.button_deleteLayer.Name = "button_deleteLayer";
-            this.button_deleteLayer.Size = new System.Drawing.Size(75, 23);
+            this.button_deleteLayer.Size = new System.Drawing.Size(124, 23);
             this.button_deleteLayer.TabIndex = 18;
             this.button_deleteLayer.Text = "Delete";
             this.button_deleteLayer.UseVisualStyleBackColor = true;
@@ -84,7 +89,7 @@
             // 
             this.button_addLayer.Location = new System.Drawing.Point(9, 142);
             this.button_addLayer.Name = "button_addLayer";
-            this.button_addLayer.Size = new System.Drawing.Size(75, 23);
+            this.button_addLayer.Size = new System.Drawing.Size(132, 23);
             this.button_addLayer.TabIndex = 17;
             this.button_addLayer.Text = "Add";
             this.button_addLayer.UseVisualStyleBackColor = true;
@@ -95,7 +100,7 @@
             this.comboBox_constraintLayers.FormattingEnabled = true;
             this.comboBox_constraintLayers.Location = new System.Drawing.Point(69, 110);
             this.comboBox_constraintLayers.Name = "comboBox_constraintLayers";
-            this.comboBox_constraintLayers.Size = new System.Drawing.Size(100, 24);
+            this.comboBox_constraintLayers.Size = new System.Drawing.Size(202, 24);
             this.comboBox_constraintLayers.TabIndex = 16;
             this.comboBox_constraintLayers.SelectedIndexChanged += new System.EventHandler(this.comboBox_constraintLayers_SelectedIndexChanged);
             // 
@@ -104,7 +109,7 @@
             this.label9.AutoSize = true;
             this.label9.Location = new System.Drawing.Point(19, 113);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(40, 16);
+            this.label9.Size = new System.Drawing.Size(41, 16);
             this.label9.TabIndex = 15;
             this.label9.Text = "Layer:";
             // 
@@ -113,14 +118,14 @@
             this.comboBox_passingRestrictions.FormattingEnabled = true;
             this.comboBox_passingRestrictions.Location = new System.Drawing.Point(9, 171);
             this.comboBox_passingRestrictions.Name = "comboBox_passingRestrictions";
-            this.comboBox_passingRestrictions.Size = new System.Drawing.Size(160, 24);
+            this.comboBox_passingRestrictions.Size = new System.Drawing.Size(262, 24);
             this.comboBox_passingRestrictions.TabIndex = 14;
             // 
             // button_startEditingEdge
             // 
             this.button_startEditingEdge.Location = new System.Drawing.Point(9, 201);
             this.button_startEditingEdge.Name = "button_startEditingEdge";
-            this.button_startEditingEdge.Size = new System.Drawing.Size(166, 30);
+            this.button_startEditingEdge.Size = new System.Drawing.Size(262, 30);
             this.button_startEditingEdge.TabIndex = 13;
             this.button_startEditingEdge.Text = "Strat Editing";
             this.button_startEditingEdge.UseVisualStyleBackColor = true;
@@ -129,9 +134,9 @@
             // checkBox_showConstraints
             // 
             this.checkBox_showConstraints.AutoSize = true;
-            this.checkBox_showConstraints.Location = new System.Drawing.Point(9, 26);
+            this.checkBox_showConstraints.Location = new System.Drawing.Point(62, 26);
             this.checkBox_showConstraints.Name = "checkBox_showConstraints";
-            this.checkBox_showConstraints.Size = new System.Drawing.Size(170, 20);
+            this.checkBox_showConstraints.Size = new System.Drawing.Size(171, 20);
             this.checkBox_showConstraints.TabIndex = 10;
             this.checkBox_showConstraints.Text = "Show Constraints on Map";
             this.checkBox_showConstraints.UseVisualStyleBackColor = true;
@@ -141,7 +146,7 @@
             this.textBox_edgeNode2.Location = new System.Drawing.Point(69, 81);
             this.textBox_edgeNode2.Name = "textBox_edgeNode2";
             this.textBox_edgeNode2.ReadOnly = true;
-            this.textBox_edgeNode2.Size = new System.Drawing.Size(100, 23);
+            this.textBox_edgeNode2.Size = new System.Drawing.Size(202, 23);
             this.textBox_edgeNode2.TabIndex = 5;
             // 
             // label8
@@ -149,7 +154,7 @@
             this.label8.AutoSize = true;
             this.label8.Location = new System.Drawing.Point(6, 84);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(53, 16);
+            this.label8.Size = new System.Drawing.Size(54, 16);
             this.label8.TabIndex = 4;
             this.label8.Text = "Node 2:";
             // 
@@ -158,7 +163,7 @@
             this.textBox_edgeNode1.Location = new System.Drawing.Point(69, 52);
             this.textBox_edgeNode1.Name = "textBox_edgeNode1";
             this.textBox_edgeNode1.ReadOnly = true;
-            this.textBox_edgeNode1.Size = new System.Drawing.Size(100, 23);
+            this.textBox_edgeNode1.Size = new System.Drawing.Size(202, 23);
             this.textBox_edgeNode1.TabIndex = 3;
             // 
             // label7
@@ -166,20 +171,22 @@
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(6, 55);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(56, 16);
+            this.label7.Size = new System.Drawing.Size(57, 16);
             this.label7.TabIndex = 2;
             this.label7.Text = "Node 1: ";
             // 
             // groupBox_nodeTypeEditor
             // 
+            this.groupBox_nodeTypeEditor.Controls.Add(this.label1);
+            this.groupBox_nodeTypeEditor.Controls.Add(this.comboBox_companionNodeDirection);
             this.groupBox_nodeTypeEditor.Controls.Add(this.checkBox_disallowWaitingOnNode);
             this.groupBox_nodeTypeEditor.Controls.Add(this.button_startEditingNode);
             this.groupBox_nodeTypeEditor.Controls.Add(this.comboBox_types);
             this.groupBox_nodeTypeEditor.Controls.Add(this.label4);
             this.groupBox_nodeTypeEditor.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
-            this.groupBox_nodeTypeEditor.Location = new System.Drawing.Point(12, 12);
+            this.groupBox_nodeTypeEditor.Location = new System.Drawing.Point(12, 74);
             this.groupBox_nodeTypeEditor.Name = "groupBox_nodeTypeEditor";
-            this.groupBox_nodeTypeEditor.Size = new System.Drawing.Size(181, 116);
+            this.groupBox_nodeTypeEditor.Size = new System.Drawing.Size(284, 149);
             this.groupBox_nodeTypeEditor.TabIndex = 7;
             this.groupBox_nodeTypeEditor.TabStop = false;
             this.groupBox_nodeTypeEditor.Text = "Node Type Editor";
@@ -187,18 +194,18 @@
             // checkBox_disallowWaitingOnNode
             // 
             this.checkBox_disallowWaitingOnNode.AutoSize = true;
-            this.checkBox_disallowWaitingOnNode.Location = new System.Drawing.Point(33, 52);
+            this.checkBox_disallowWaitingOnNode.Location = new System.Drawing.Point(62, 82);
             this.checkBox_disallowWaitingOnNode.Name = "checkBox_disallowWaitingOnNode";
-            this.checkBox_disallowWaitingOnNode.Size = new System.Drawing.Size(140, 20);
+            this.checkBox_disallowWaitingOnNode.Size = new System.Drawing.Size(177, 20);
             this.checkBox_disallowWaitingOnNode.TabIndex = 4;
-            this.checkBox_disallowWaitingOnNode.Text = "Disallow Waiting On";
-            this.checkBox_disallowWaitingOnNode.UseVisualStyleBackColor = true;           
+            this.checkBox_disallowWaitingOnNode.Text = "Disallow Waiting On Node";
+            this.checkBox_disallowWaitingOnNode.UseVisualStyleBackColor = true;
             // 
             // button_startEditingNode
             // 
-            this.button_startEditingNode.Location = new System.Drawing.Point(17, 78);
+            this.button_startEditingNode.Location = new System.Drawing.Point(9, 108);
             this.button_startEditingNode.Name = "button_startEditingNode";
-            this.button_startEditingNode.Size = new System.Drawing.Size(152, 30);
+            this.button_startEditingNode.Size = new System.Drawing.Size(269, 30);
             this.button_startEditingNode.TabIndex = 3;
             this.button_startEditingNode.Text = "Strat Editing";
             this.button_startEditingNode.UseVisualStyleBackColor = true;
@@ -207,26 +214,65 @@
             // comboBox_types
             // 
             this.comboBox_types.FormattingEnabled = true;
-            this.comboBox_types.Location = new System.Drawing.Point(69, 22);
+            this.comboBox_types.Location = new System.Drawing.Point(54, 22);
             this.comboBox_types.Name = "comboBox_types";
-            this.comboBox_types.Size = new System.Drawing.Size(100, 24);
+            this.comboBox_types.Size = new System.Drawing.Size(224, 24);
             this.comboBox_types.TabIndex = 1;
             this.comboBox_types.SelectedIndexChanged += new System.EventHandler(this.comboBox_types_SelectedIndexChanged);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(24, 25);
+            this.label4.Location = new System.Drawing.Point(6, 25);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(41, 16);
+            this.label4.Size = new System.Drawing.Size(42, 16);
             this.label4.TabIndex = 0;
             this.label4.Text = "Type: ";
+            // 
+            // comboBox_companionNodeDirection
+            // 
+            this.comboBox_companionNodeDirection.FormattingEnabled = true;
+            this.comboBox_companionNodeDirection.Location = new System.Drawing.Point(183, 52);
+            this.comboBox_companionNodeDirection.Name = "comboBox_companionNodeDirection";
+            this.comboBox_companionNodeDirection.Size = new System.Drawing.Size(95, 24);
+            this.comboBox_companionNodeDirection.TabIndex = 5;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 55);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(171, 16);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "Companion Node Direction: ";
+            // 
+            // groupBox_smartEditing
+            // 
+            this.groupBox_smartEditing.Controls.Add(this.button_toggleSmartEditing);
+            this.groupBox_smartEditing.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
+            this.groupBox_smartEditing.Location = new System.Drawing.Point(12, 7);
+            this.groupBox_smartEditing.Name = "groupBox_smartEditing";
+            this.groupBox_smartEditing.Size = new System.Drawing.Size(284, 61);
+            this.groupBox_smartEditing.TabIndex = 9;
+            this.groupBox_smartEditing.TabStop = false;
+            this.groupBox_smartEditing.Text = "Smart Editing Mode";
+            // 
+            // button_toggleSmartEditing
+            // 
+            this.button_toggleSmartEditing.Location = new System.Drawing.Point(9, 21);
+            this.button_toggleSmartEditing.Name = "button_toggleSmartEditing";
+            this.button_toggleSmartEditing.Size = new System.Drawing.Size(269, 30);
+            this.button_toggleSmartEditing.TabIndex = 4;
+            this.button_toggleSmartEditing.Text = "Disable Smart Editing";
+            this.button_toggleSmartEditing.UseVisualStyleBackColor = true;
+            this.button_toggleSmartEditing.Click += new System.EventHandler(this.button_toggleSmartEditing_Click);
             // 
             // MapEditor
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(204, 378);
+            this.ClientSize = new System.Drawing.Size(308, 475);
+            this.Controls.Add(this.groupBox_smartEditing);
             this.Controls.Add(this.groupBox_edgeConstraintsEditor);
             this.Controls.Add(this.groupBox_nodeTypeEditor);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -240,6 +286,7 @@
             this.groupBox_edgeConstraintsEditor.PerformLayout();
             this.groupBox_nodeTypeEditor.ResumeLayout(false);
             this.groupBox_nodeTypeEditor.PerformLayout();
+            this.groupBox_smartEditing.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -263,5 +310,9 @@
         private System.Windows.Forms.Button button_startEditingNode;
         public System.Windows.Forms.ComboBox comboBox_types;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label1;
+        public System.Windows.Forms.ComboBox comboBox_companionNodeDirection;
+        private System.Windows.Forms.GroupBox groupBox_smartEditing;
+        private System.Windows.Forms.Button button_toggleSmartEditing;
     }
 }
