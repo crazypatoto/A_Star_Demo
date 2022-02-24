@@ -13,15 +13,24 @@ namespace VCS.Windows
 {
     public partial class MapEditor : Form
     {
+        private static readonly List<MapNode.Types> _specialNodeTypes = new List<MapNode.Types> { MapNode.Types.ChargingStation, MapNode.Types.WorkStation };
+        private static readonly List<MapNode.Types> _specialSubNodeTypes = new List<MapNode.Types> { MapNode.Types.ChargingStationDock, MapNode.Types.WorkStationPickUp };
         public bool IsEditingType { get; private set; }
         public bool IsEditingEdge { get; private set; }
         public MapEditor()
         {
-            InitializeComponent();      
-            comboBox_types.DataSource = Enum.GetValues(typeof(MapNode.Types));            
+            InitializeComponent();
+            comboBox_types.DataSource = Enum.GetValues(typeof(MapNode.Types));
             comboBox_types.SelectedIndex = 0;
             comboBox_passingRestrictions.DataSource = Enum.GetValues(typeof(MapEdge.PassingRestrictions));
             comboBox_types.SelectedIndex = 0;
+            comboBox_specialNodeType.DataSource = _specialNodeTypes;
+            comboBox_specialNodeType.SelectedIndex = 0;
+            comboBox_speicalNodeDirection.Items.Add("Up");
+            comboBox_speicalNodeDirection.Items.Add("Down");
+            comboBox_speicalNodeDirection.Items.Add("Left");
+            comboBox_speicalNodeDirection.Items.Add("Right");
+            comboBox_speicalNodeDirection.SelectedIndex = 0;
         }
 
         private void MapEditor_FormClosing(object sender, FormClosingEventArgs e)
@@ -56,6 +65,15 @@ namespace VCS.Windows
 
         private void comboBox_types_SelectedIndexChanged(object sender, EventArgs e)
         {
+            var selectedNodeType = (MapNode.Types)Enum.Parse(typeof(MapNode.Types), comboBox_types.SelectedItem.ToString());
+            if (_specialNodeTypes.Contains(selectedNodeType) || _specialSubNodeTypes.Contains(selectedNodeType))
+            {
+                var result = MessageBox.Show("You selected a special node type, do you want to proceed?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == DialogResult.No)
+                {
+                    comboBox_types.SelectedItem = MapNode.Types.None;
+                }
+            }
             comboBox_types.BackColor = MapNode.NodeTypeColorDict[(MapNode.Types)comboBox_types.SelectedItem];
         }
 
@@ -110,6 +128,60 @@ namespace VCS.Windows
                 button_startEditingEdge.Text = "Stop Editing";
                 button_startEditingNode.Enabled = false;
             }
-        }      
+        }
+
+        private void comboBox_specialNodeType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            comboBox_specialNodeType.BackColor = MapNode.NodeTypeColorDict[(MapNode.Types)comboBox_specialNodeType.SelectedItem];
+        }
+
+        private void button_addSpecialNode_Click(object sender, EventArgs e)
+        {
+            var selectedNode = (this.Tag as MainWindow).SelectedNode;
+            if (selectedNode == null)
+            {
+                MessageBox.Show("Please select a node first!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            var currentMap = (this.Tag as MainWindow).VCS.CurrentMap;
+            MapNode neighborNode;
+            switch (comboBox_speicalNodeDirection.SelectedItem as string)
+            {
+                case "Up":
+                    neighborNode = currentMap.GetUpNode(selectedNode);
+                    break;
+                case "Down":
+                    neighborNode = currentMap.GetDownNode(selectedNode);
+                    break;
+                case "Left":
+                    neighborNode = currentMap.GetLeftNode(selectedNode);
+                    break;
+                case "Right":
+                    neighborNode = currentMap.GetRightNode(selectedNode);
+                    break;
+                default:
+                    neighborNode = null;
+                    break;
+            }
+            if (neighborNode == null)
+            {
+                MessageBox.Show("Cannot place specail node here!\r\nSelected direction is inavlid!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            switch ((MapNode.Types)Enum.Parse(typeof(MapNode.Types), comboBox_specialNodeType.SelectedItem.ToString()))
+            {
+                case MapNode.Types.ChargingStation:
+                    selectedNode.Type = MapNode.Types.ChargingStation;
+                    neighborNode.Type = MapNode.Types.ChargingStationDock;
+                    break;
+                case MapNode.Types.WorkStation:
+                    selectedNode.Type = MapNode.Types.WorkStation;
+                    neighborNode.Type = MapNode.Types.WorkStationPickUp;
+                    break;
+                default:
+                    break;
+            }
+
+        }
     }
 }

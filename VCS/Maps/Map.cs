@@ -20,7 +20,7 @@ namespace VCS.Maps
         public MapNode[,] AllNodes { get; }
 
         public List<ConstraintLayer> ConstraintLayers;
-        
+
 
         public Map(byte zoneID, int width, int height)
         {
@@ -35,11 +35,12 @@ namespace VCS.Maps
                 for (int x = 0; x < Width; x++)
                 {
                     this.AllNodes[y, x] = new MapNode(ZoneID, x, y);
-                }
+                } 
             }
 
             this.ConstraintLayers = new List<ConstraintLayer>();
             this.ConstraintLayers.Add(new ConstraintLayer(this, "Default"));
+            this.ConstraintLayers.Add(new ConstraintLayer(this, "Layer 1"));
         }
 
         public Map(string path)
@@ -127,7 +128,7 @@ namespace VCS.Maps
         public MapEdge GetEdgeByNodes(int edgeLayerIndex, MapNode n1, MapNode n2)
         {
             return this.ConstraintLayers[edgeLayerIndex].EdgeConstraints[n1.Location.Y + n2.Location.Y, (n1.Location.X + n2.Location.X) / 2];
-        }        
+        }
 
         public List<MapNode> GetNeighborNodes(MapNode node)
         {
@@ -138,6 +139,28 @@ namespace VCS.Maps
             if (node.Location.Y + 1 < this.Height) neighborNodes.Add(this.AllNodes[node.Location.Y + 1, node.Location.X]);
             return neighborNodes;
         }
+
+        public MapNode GetUpNode(MapNode node)
+        {
+            if (node.Location.Y - 1 >= 0) return this.AllNodes[node.Location.Y - 1, node.Location.X];
+            else return null;
+        }
+        public MapNode GetDownNode(MapNode node)
+        {
+            if (node.Location.Y + 1 < this.Height) return this.AllNodes[node.Location.Y + 1, node.Location.X];
+            else return null;
+        }
+        public MapNode GetLeftNode(MapNode node)
+        {
+            if (node.Location.X - 1 >= 0) return this.AllNodes[node.Location.Y, node.Location.X - 1];
+            else return null;
+        }
+        public MapNode GetRightNode(MapNode node)
+        {
+            if (node.Location.X + 1 < this.Width) return this.AllNodes[node.Location.Y, node.Location.X + 1];
+            else return null;
+        }
+
 
         public class ConstraintLayer
         {
@@ -156,7 +179,7 @@ namespace VCS.Maps
                         this.EdgeConstraints[y, x] = new MapEdge();
                     }
                 }
-            }            
+            }
         }
 
     }
