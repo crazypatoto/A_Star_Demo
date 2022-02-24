@@ -157,6 +157,18 @@ namespace VCS.Windows
                             }
                         }
                         break;
+                    case MapNode.Types.WorkStationArea:
+                        foreach (var neighborNode in currentMap.GetNeighborNodes(node))
+                        {
+                            var edge = currentMap.GetEdgeByNodes(0, node, neighborNode);
+                            if (neighborNode.Type != MapNode.Types.None)
+                            {
+                                edge.PassingRestriction = MapEdge.PassingRestrictions.NoEnterOrLeaving;
+                            }
+                            edge = currentMap.GetEdgeByNodes(1, node, neighborNode);
+                            edge.PassingRestriction = MapEdge.PassingRestrictions.NoEnterOrLeaving;
+                        }
+                        break;
                     case MapNode.Types.Storage:
                         foreach (var neighborNode in currentMap.GetNeighborNodes(node))
                         {
