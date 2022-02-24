@@ -751,7 +751,7 @@ namespace WMS
             this.Font = new System.Drawing.Font("微軟正黑體", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(136)));
             this.MainMenuStrip = this.menuStrip;
             this.Name = "WMS";
-            this.Text = "WMS";
+            this.Text = " ";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.WMS_FormClosed);
             this.Shown += new System.EventHandler(this.WMS_Shown);
             this.menuStrip.ResumeLayout(false);

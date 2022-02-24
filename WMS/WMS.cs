@@ -226,7 +226,7 @@ namespace WMS
                     var newMission = new WorkOrder.Mission()
                     {
                         MaterialName = comboBox_MaterialList.SelectedItem.ToString(),
-                        RackName = targetMaterial.RackName,
+                        RackName = inventory.RackName,
                         Destination = comboBox_Destination.SelectedItem.ToString(),
                         Quantity = (int)numericUpDown_Quantity.Value,
                         AvailableFaces = GetAvailablePickUpFaces(targetMaterial)
@@ -370,8 +370,8 @@ namespace WMS
                 using (var streamReader = new StreamReader(fileStream, Encoding.GetEncoding("Big5")))
                 using (var csvReader = new CsvReader(streamReader, csvConfig))
                 {
-                    this.RackInfoList = csvReader.GetRecords<RackInfo>().ToList();
-                    _materialsManagementWindow.UpdateRackInfos();
+                    this.RackInfoList = csvReader.GetRecords<RackInfo>().ToList();                    
+                    _inventoryManagementWindow.UpdateRackInfos();
                     return true;
                 }
             }
@@ -475,11 +475,11 @@ namespace WMS
                     if (newWorkOrder.IsValid)
                     {
                         foreach (var mission in newWorkOrder.MissionList)
-                        {
-                            var targetMaterial = MaterialList.FirstOrDefault(material => material.Name == mission.MaterialName);
-                            if (targetMaterial != null)
+                        {                            
+                            var targetInventoryInfo = InventoryList.FirstOrDefault(inventoryInfo => inventoryInfo.Name == mission.MaterialName);
+                            if (targetInventoryInfo != null)
                             {
-                                mission.RackName = targetMaterial.RackName;
+                                mission.RackName = targetInventoryInfo.RackName;
                             }
                         }
                         this.WorkOrderTemplates.Add(newWorkOrder);
@@ -495,38 +495,39 @@ namespace WMS
         public WorkOrder.Mission.RackFace GetAvailablePickUpFaces(Material material)
         {
             WorkOrder.Mission.RackFace availableFaces = WorkOrder.Mission.RackFace.None;
-            var targetRackInfo = RackInfoList.First(rackInfo => rackInfo.RackName == material.RackName);
+            var targetInventoryInfo = InventoryList.First(inventoryInfo => inventoryInfo.Name == material.Name);
+            var targetRackInfo = RackInfoList.First(rackInfo => rackInfo.RackName == targetInventoryInfo.RackName);            
             var wn = 1;
             var ne = wn + ((int)(RackInfo.RackWidth / targetRackInfo.BoxWidth) - 1);
             var es = ne + ((int)(RackInfo.RackLength / targetRackInfo.BoxLength) - 1);
             var sw = es + ((int)(RackInfo.RackWidth / targetRackInfo.BoxWidth) - 1);
-            if (material.Box == wn)
+            if (targetInventoryInfo.Box == wn)
             {
                 availableFaces = WorkOrder.Mission.RackFace.West | WorkOrder.Mission.RackFace.North;
             }
-            else if (material.Box == ne)
+            else if (targetInventoryInfo.Box == ne)
             {
                 availableFaces = WorkOrder.Mission.RackFace.North | WorkOrder.Mission.RackFace.East;
             }
-            else if (material.Box == es)
+            else if (targetInventoryInfo.Box == es)
             {
                 availableFaces = WorkOrder.Mission.RackFace.East | WorkOrder.Mission.RackFace.South;
             }
-            else if (material.Box == sw)
+            else if (targetInventoryInfo.Box == sw)
             {
                 availableFaces = WorkOrder.Mission.RackFace.South | WorkOrder.Mission.RackFace.West;
             }
             else
             {
-                if (material.Box < ne)
+                if (targetInventoryInfo.Box < ne)
                 {
                     availableFaces = WorkOrder.Mission.RackFace.North;
                 }
-                else if (material.Box < es)
+                else if (targetInventoryInfo.Box < es)
                 {
                     availableFaces = WorkOrder.Mission.RackFace.East;
                 }
-                else if (material.Box < sw)
+                else if (targetInventoryInfo.Box < sw)
                 {
                     availableFaces = WorkOrder.Mission.RackFace.South;
                 }

@@ -96,28 +96,97 @@ namespace WMS.Windows
         public void UpdateInventory()
         {
             listView.Items.Clear();
+            var deleteList = new List<Inventory>();
             foreach (var inventory in _wms.InventoryList)
             {
                 var targetMaterial = _wms.MaterialList.FirstOrDefault(material => material.Name == inventory.Name);
                 if (targetMaterial != null)
                 {
                     var listViewItem = new ListViewItem();
-                    listViewItem.Text = targetMaterial.Name;
+                    listViewItem.Text = inventory.Name;
                     listViewItem.SubItems.Add(inventory.Quantity.ToString());
                     listViewItem.SubItems.Add($"{targetMaterial.Length.ToString().PadLeft(2)} x {targetMaterial.Width.ToString().PadLeft(2)}");
-                    listViewItem.SubItems.Add(targetMaterial.RackName);
-                    listViewItem.SubItems.Add(targetMaterial.Layer.ToString());
-                    listViewItem.SubItems.Add(targetMaterial.Box.ToString());
-                    listViewItem.SubItems.Add(WorkOrder.Mission.RackFaceDescription[_wms.GetAvailablePickUpFaces(targetMaterial)]);
+                    listViewItem.SubItems.Add(inventory.RackName);
+                    listViewItem.SubItems.Add(inventory.Layer.ToString());
+                    listViewItem.SubItems.Add(inventory.Box.ToString());
+                    if(inventory.RackName != "null")
+                        listViewItem.SubItems.Add(WorkOrder.Mission.RackFaceDescription[_wms.GetAvailablePickUpFaces(targetMaterial)]);
                     listView.Items.Add(listViewItem);
                 }
+                else
+                {
+                    var result = MessageBox.Show($"偵測到未知物料({inventory.Name})的庫存資訊，是否刪除?", "操作", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if(result == DialogResult.Yes) {
+                        deleteList.Add(inventory);
+                    }
+                }               
             }
+            foreach (var inv in deleteList)
+            {
+                _wms.InventoryList.Remove(inv);
+            }
+            _wms.SaveInventoryToFile();
             //listView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
             comboBox_MaterialName.DataSource = _wms.InventoryList;
         }
-
-
+        public void UpdateRackInfos()
+        {
+            comboBox_RackBox.Items.Clear();
+            foreach (var rackInfo in _wms.RackInfoList)
+            {
+                comboBox_RackName.Items.Add(rackInfo);
+            }
+        }
         #endregion
 
+        private void button_ChangeRackInfo_Click(object sender, EventArgs e)
+        {
+            if (this.SelectedInventory == null)
+            {
+                MessageBox.Show("請先選擇欲變更庫存資訊", "無法變更料架資訊", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            if (comboBox_RackName.Text == "" || comboBox_RackLayer.Text == "" || comboBox_RackBox.Text == "")
+            {
+                MessageBox.Show("料架資訊不得為空", "無法變更料架資訊", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            var targetRackInfo = comboBox_RackName.SelectedItem as RackInfo;
+            if (_wms.InventoryList.FirstOrDefault(inventory =>
+                 inventory.RackName == targetRackInfo.RackName && inventory.Layer == int.Parse(comboBox_RackLayer.Text) && inventory.Box == int.Parse(comboBox_RackBox.Text)
+                ) != null)
+            {
+                MessageBox.Show("該物料箱已有物料", "無法變更料架資訊", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            this.SelectedInventory.RackName = (comboBox_RackName.SelectedItem as RackInfo).RackName;
+            this.SelectedInventory.Layer = int.Parse(this.comboBox_RackLayer.Text);
+            this.SelectedInventory.Box = int.Parse(this.comboBox_RackBox.Text);
+            if (!_wms.SaveInventoryToFile())
+            {
+                MessageBox.Show("無法存取庫存檔案", "無法變更料架資訊", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            _wms.LoadInventoryFromFile();
+        }
+
+        private void comboBox_RackName_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            comboBox_RackLayer.Items.Clear();
+            comboBox_RackBox.Items.Clear();
+            comboBox_RackLayer.Text = "";
+            comboBox_RackBox.Text = "";
+            for (int i = 0; i < (comboBox_RackName.SelectedItem as RackInfo).LayerCount; i++)
+            {
+                comboBox_RackLayer.Items.Add(i + 1);
+            }
+            for (int i = 0; i < (comboBox_RackName.SelectedItem as RackInfo).BoxCountPerLayer; i++)
+            {
+                comboBox_RackBox.Items.Add(i + 1);
+            }
+        }
+
+        
     }
 }
