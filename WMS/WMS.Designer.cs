@@ -90,6 +90,7 @@ namespace WMS
             this.toolStripStatusLabel_ServerIP = new System.Windows.Forms.ToolStripStatusLabel();
             this.timer_MapRefresh = new System.Windows.Forms.Timer(this.components);
             this.timer_WorkOrderHandling = new System.Windows.Forms.Timer(this.components);
+            this.button_saveToWorkOrder = new System.Windows.Forms.Button();
             this.menuStrip.SuspendLayout();
             this.tableLayoutPanel_Main.SuspendLayout();
             this.tableLayoutPanel_Map.SuspendLayout();
@@ -134,14 +135,14 @@ namespace WMS
             // connectToolStripMenuItem
             // 
             this.connectToolStripMenuItem.Name = "connectToolStripMenuItem";
-            this.connectToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.connectToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.connectToolStripMenuItem.Text = "連接";
             this.connectToolStripMenuItem.Click += new System.EventHandler(this.connectToolStripMenuItem_Click);
             // 
             // disconnectToolStripMenuItem
             // 
             this.disconnectToolStripMenuItem.Name = "disconnectToolStripMenuItem";
-            this.disconnectToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
+            this.disconnectToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.disconnectToolStripMenuItem.Text = "斷開連接";
             this.disconnectToolStripMenuItem.Click += new System.EventHandler(this.disconnectToolStripMenuItem_Click);
             // 
@@ -280,13 +281,15 @@ namespace WMS
             this.tableLayoutPanel1.Controls.Add(this.listView_MissionList, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.button_AddToQueue, 0, 5);
             this.tableLayoutPanel1.Controls.Add(this.button_DeleteSelectedMission, 0, 4);
+            this.tableLayoutPanel1.Controls.Add(this.button_saveToWorkOrder, 0, 6);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(3, 19);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 6;
+            this.tableLayoutPanel1.RowCount = 7;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -506,7 +509,7 @@ namespace WMS
             this.listView_MissionList.HideSelection = false;
             this.listView_MissionList.Location = new System.Drawing.Point(3, 77);
             this.listView_MissionList.Name = "listView_MissionList";
-            this.listView_MissionList.Size = new System.Drawing.Size(640, 166);
+            this.listView_MissionList.Size = new System.Drawing.Size(640, 137);
             this.listView_MissionList.TabIndex = 2;
             this.listView_MissionList.UseCompatibleStateImageBehavior = false;
             this.listView_MissionList.View = System.Windows.Forms.View.Details;
@@ -544,7 +547,7 @@ namespace WMS
             // button_AddToQueue
             // 
             this.button_AddToQueue.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button_AddToQueue.Location = new System.Drawing.Point(3, 278);
+            this.button_AddToQueue.Location = new System.Drawing.Point(3, 249);
             this.button_AddToQueue.Name = "button_AddToQueue";
             this.button_AddToQueue.Size = new System.Drawing.Size(640, 23);
             this.button_AddToQueue.TabIndex = 3;
@@ -555,7 +558,7 @@ namespace WMS
             // button_DeleteSelectedMission
             // 
             this.button_DeleteSelectedMission.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.button_DeleteSelectedMission.Location = new System.Drawing.Point(3, 249);
+            this.button_DeleteSelectedMission.Location = new System.Drawing.Point(3, 220);
             this.button_DeleteSelectedMission.Name = "button_DeleteSelectedMission";
             this.button_DeleteSelectedMission.Size = new System.Drawing.Size(640, 23);
             this.button_DeleteSelectedMission.TabIndex = 4;
@@ -738,6 +741,17 @@ namespace WMS
             // 
             this.timer_WorkOrderHandling.Tick += new System.EventHandler(this.timer_WorkOrderHandling_Tick);
             // 
+            // button_saveToWorkOrder
+            // 
+            this.button_saveToWorkOrder.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.button_saveToWorkOrder.Location = new System.Drawing.Point(3, 278);
+            this.button_saveToWorkOrder.Name = "button_saveToWorkOrder";
+            this.button_saveToWorkOrder.Size = new System.Drawing.Size(640, 23);
+            this.button_saveToWorkOrder.TabIndex = 5;
+            this.button_saveToWorkOrder.Text = "儲存成功單模板";
+            this.button_saveToWorkOrder.UseVisualStyleBackColor = true;
+            this.button_saveToWorkOrder.Click += new System.EventHandler(this.button_saveToWorkOrder_Click);
+            // 
             // WMS
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -841,6 +855,7 @@ namespace WMS
         private System.Windows.Forms.ColumnHeader columnHeader14;
         private System.Windows.Forms.Timer timer_WorkOrderHandling;
         private System.Windows.Forms.ToolStripMenuItem testToolStripMenuItem;
+        private System.Windows.Forms.Button button_saveToWorkOrder;
     }
 }
 

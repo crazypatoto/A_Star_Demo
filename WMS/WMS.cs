@@ -352,6 +352,24 @@ namespace WMS
             }
             UpdateWorkOrderQueueListView();
         }
+
+        private void button_saveToWorkOrder_Click(object sender, EventArgs e)
+        {            
+            string fileName = "";
+            if (_currentWorkOrder == null) return;
+            if (_currentWorkOrder.MissionList.Count == 0) return;
+            var dialog = new SaveFileDialog();
+            dialog.Title = "選擇檔案儲存位置";
+            dialog.InitialDirectory = _baseFilePath;
+            dialog.DefaultExt = "csv";
+            dialog.Filter = "CSV (*.csv)|*.csv";            
+            dialog.CheckPathExists = true;
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                fileName = dialog.FileName;
+            }
+            _currentWorkOrder.SaveToFile(fileName);
+        }
         #endregion
 
         #region Public Methods
@@ -689,5 +707,6 @@ namespace WMS
             }
             UpdateWorkOrderQueueListView();
         }
+       
     }
 }

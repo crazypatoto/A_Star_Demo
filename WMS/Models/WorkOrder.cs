@@ -47,8 +47,11 @@ namespace WMS.Models
             public int Quantity { get; set; }
             [Name("目的地", "Destination")]
             public string Destination { get; set; }
+            [Ignore]
             public string RackName { get; set; }
+            [Ignore]
             public RackFace PickUpFace { get; set; }
+            [Ignore]
             public RackFace AvailableFaces { get; set; }
         }
 
@@ -115,6 +118,25 @@ namespace WMS.Models
                 }
             }
             this.IsValid = false;
+        }
+
+        public bool SaveToFile(string fileName)
+        {            
+            try
+            {
+                var csvConfig = new CsvConfiguration(CultureInfo.CurrentCulture) { HasHeaderRecord = true };
+                using (var fileStream = new FileStream(fileName, FileMode.Create, FileAccess.ReadWrite, FileShare.Read))
+                using (var streamWriter = new StreamWriter(fileStream, Encoding.GetEncoding("Big5")))
+                using (var csvWriter = new CsvWriter(streamWriter, csvConfig))
+                {
+                    csvWriter.WriteRecords(this.MissionList);
+                    return true;
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }            
         }
 
         public override string ToString()
