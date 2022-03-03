@@ -449,6 +449,11 @@ namespace VCS
         {
             if (_mapDrawer != null) _mapDrawer.DrawSize = pictureBox_mapViewer.Size;
         }
+
+        private void comboBox_selectedNode_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SelectedNode = comboBox_selectedNode.SelectedItem as MapNode;
+        }
         #endregion
 
         private void UpdateNewMapInfo()
@@ -464,7 +469,7 @@ namespace VCS
             SelectedEdgeNode2 = null;
             _selectedAGV = null;
             _selectedRack = null;
-            textBox_selectedNodeName.Clear();
+            comboBox_selectedNode.Text = "";
             textBox_selectedNodeType.Clear();
             _mapEditorForm.textBox_edgeNode1.Clear();
             _mapEditorForm.textBox_edgeNode2.Clear();
@@ -481,6 +486,12 @@ namespace VCS
             }
             _mapEditorForm.comboBox_constraintLayers.SelectedIndex = 0;
             comboBox_planningLayer.SelectedIndex = 0;
+
+            foreach (var node in VCS.CurrentMap.AllNodes)
+            {
+                comboBox_selectedNode.Items.Add(node);
+            }
+           
         }
 
         private void NodeSelect(Point mousePosition, MouseButtons mouseButton, bool sequenceMode = false)
@@ -489,7 +500,7 @@ namespace VCS
             SelectedNode = _mapDrawer?.GetNodeByPosition(mousePosition.X, mousePosition.Y);
             if (SelectedNode == null)
             {
-                textBox_selectedNodeName.Text = "";
+                comboBox_selectedNode.Text = "";
                 textBox_selectedNodeType.Text = "";
                 return;
             }
@@ -510,7 +521,7 @@ namespace VCS
             switch (mouseButton)
             {
                 case MouseButtons.Left:
-                    textBox_selectedNodeName.Text = SelectedNode.Name;
+                    comboBox_selectedNode.SelectedItem = SelectedNode;
                     textBox_selectedNodeType.Text = SelectedNode.Type.ToString();
                     textBox_selectedNodeType.BackColor = MapNode.NodeTypeColorDict[SelectedNode.Type];
                     _selectedAGV = VCS.AGVHandler.AGVList.Find(agv => agv.CurrentNode == SelectedNode) ?? _selectedAGV;
@@ -679,7 +690,6 @@ namespace VCS
                 textBox_rackHeading.Clear();
             }
         }
-
-
+       
     }
 }
